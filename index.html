@@ -1,0 +1,647 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Simts punkti — Angļu valodas trenažieris CE / OL / AL</title>
+<link rel="stylesheet" href="tailwind.css">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --bg:#0A0A0A;
+    --primary:#4F46E5;
+    --secondary:#06B6D4;
+    --muted:#94A3B8;
+  }
+  *{font-family:'Inter',sans-serif;}
+  body{background:var(--bg); overflow-x:hidden;}
+
+  .glass{
+    background:rgba(255,255,255,0.04);
+    border:1px solid rgba(255,255,255,0.08);
+    backdrop-filter:blur(20px);
+    -webkit-backdrop-filter:blur(20px);
+  }
+  .glass-strong{
+    background:rgba(255,255,255,0.06);
+    border:1px solid rgba(255,255,255,0.1);
+    backdrop-filter:blur(24px);
+    -webkit-backdrop-filter:blur(24px);
+  }
+  .grad-text{
+    background:linear-gradient(90deg,#818CF8,#4F46E5 40%,#06B6D4);
+    -webkit-background-clip:text;
+    background-clip:text;
+    color:transparent;
+  }
+  .glow-indigo{box-shadow:0 0 40px -8px rgba(79,70,229,0.55);}
+  .glow-cyan{box-shadow:0 0 40px -8px rgba(6,182,212,0.5);}
+  svg.icon{stroke:currentColor; fill:none; stroke-width:2; stroke-linecap:round; stroke-linejoin:round;}
+
+  @keyframes floating{
+    0%,100%{transform:translateY(0px);}
+    50%{transform:translateY(-14px);}
+  }
+  .float{animation:floating 6s ease-in-out infinite;}
+  .float-delay{animation:floating 6s ease-in-out infinite; animation-delay:1.2s;}
+
+  @keyframes blob{
+    0%,100%{transform:translate(0,0) scale(1);}
+    33%{transform:translate(30px,-40px) scale(1.1);}
+    66%{transform:translate(-20px,20px) scale(0.95);}
+  }
+  .blob{animation:blob 16s ease-in-out infinite;}
+
+  @keyframes fadeUp{
+    from{opacity:0; transform:translateY(28px);}
+    to{opacity:1; transform:translateY(0);}
+  }
+  .fade-up{opacity:0; animation:fadeUp 0.8s ease-out forwards;}
+
+  @keyframes glowPulse{
+    0%,100%{box-shadow:0 0 20px -4px rgba(79,70,229,0.6), 0 0 0px rgba(6,182,212,0);}
+    50%{box-shadow:0 0 40px 4px rgba(79,70,229,0.8), 0 0 30px 4px rgba(6,182,212,0.35);}
+  }
+  .glow-pulse{animation:glowPulse 2.6s ease-in-out infinite;}
+
+  .reveal{opacity:0; transform:translateY(24px); transition:opacity 0.7s ease-out, transform 0.7s ease-out;}
+  .reveal.visible{opacity:1; transform:translateY(0);}
+
+  .hover-card{transition:all 0.3s ease-in-out;}
+  .hover-card:hover{transform:translateY(-6px); border-color:rgba(79,70,229,0.4);}
+
+  ::-webkit-scrollbar{width:8px;}
+  ::-webkit-scrollbar-track{background:#0A0A0A;}
+  ::-webkit-scrollbar-thumb{background:#312e81; border-radius:8px;}
+
+  .gauge-fill{
+    transform:rotate(-90deg);
+    transform-origin:50% 50%;
+    transition:stroke-dashoffset 1.4s ease-out;
+  }
+
+  [data-lang-panel]{display:none;}
+  [data-lang-panel].active{display:block;}
+  [data-lang-panel-inline]{display:none;}
+  [data-lang-panel-inline].active{display:inline;}
+
+  .audience-tab{transition:all 0.3s ease-in-out;}
+  .audience-tab.active{background:var(--primary); color:white;}
+  [data-audience-panel]{display:none;}
+  [data-audience-panel].active{display:grid;}
+
+  .rev-slide{display:none;}
+  .rev-slide.active{display:block; animation:fadeUp 0.5s ease-out;}
+  .rev-dot{width:8px; height:8px; border-radius:9999px; background:rgba(255,255,255,0.2); transition:all 0.3s ease-in-out; cursor:pointer;}
+  .rev-dot.active{width:24px; background:linear-gradient(90deg,var(--primary),var(--secondary));}
+</style>
+</head>
+<body class="text-white antialiased">
+
+<!-- BLOBS -->
+<div class="fixed top-[-10%] left-[-10%] w-[600px] h-[600px] rounded-full blur-3xl opacity-25 blob" style="background:var(--primary);"></div>
+<div class="fixed bottom-[-15%] right-[-10%] w-[600px] h-[600px] rounded-full blur-3xl opacity-20 blob" style="background:var(--secondary); animation-delay:4s;"></div>
+
+<!-- NAVBAR -->
+<nav class="fixed top-0 left-0 right-0 z-50 glass">
+  <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+    <div class="text-xl font-extrabold tracking-tight">Simts <span class="grad-text">punkti</span> <span class="text-sm font-medium text-slate-400">English</span></div>
+    <div class="hidden md:flex items-center gap-8 text-sm font-medium text-slate-300">
+      <a href="#kaastraada" class="hover:text-white transition-all duration-300" data-lang-panel-inline data-lang="lv" class="active" data-key="nav1">Kā strādā</a>
+      <a href="#kaastraada" class="hover:text-white transition-all duration-300" data-lang-panel-inline data-lang="ru" data-key="nav1">Как работает</a>
+      <a href="#salidzinajums" class="hover:text-white transition-all duration-300" data-lang-panel-inline data-lang="lv" class="active" data-key="nav2">Salīdzinājums</a>
+      <a href="#salidzinajums" class="hover:text-white transition-all duration-300" data-lang-panel-inline data-lang="ru" data-key="nav2">Сравнение</a>
+      <a href="#tarifi" class="hover:text-white transition-all duration-300" data-lang-panel-inline data-lang="lv" class="active" data-key="nav3">Tarifi</a>
+      <a href="#tarifi" class="hover:text-white transition-all duration-300" data-lang-panel-inline data-lang="ru" data-key="nav3">Тарифы</a>
+      <a href="#atsauksmes" class="hover:text-white transition-all duration-300" data-lang-panel-inline data-lang="lv" class="active" data-key="nav4">Atsauksmes</a>
+      <a href="#atsauksmes" class="hover:text-white transition-all duration-300" data-lang-panel-inline data-lang="ru" data-key="nav4">Отзывы</a>
+    </div>
+    <div class="flex items-center gap-3">
+      <div class="flex rounded-full glass p-1 text-xs font-semibold">
+        <button onclick="setLang('lv')" id="btn-lv" class="px-3 py-1.5 rounded-full transition-all duration-300" style="background:var(--primary); color:white;">LV</button>
+        <button onclick="setLang('ru')" id="btn-ru" class="px-3 py-1.5 rounded-full transition-all duration-300 text-slate-300">RU</button>
+      </div>
+      <button class="hidden sm:block px-5 py-2 rounded-full glass hover:bg-white/10 transition-all duration-300 text-sm font-semibold">
+        <span data-lang-panel-inline data-lang="lv" class="active" data-key="login">Ienākt</span><span data-lang-panel-inline data-lang="ru" data-key="login">Войти</span>
+      </button>
+    </div>
+  </div>
+</nav>
+
+<!-- HERO -->
+<section class="relative pt-36 pb-24 px-6 max-w-7xl mx-auto grid lg:grid-cols-2 gap-16 items-center">
+  <div class="fade-up" style="animation-delay:0.05s;">
+    <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full glass text-xs font-semibold text-cyan-300 mb-6">
+      <svg class="icon w-3.5 h-3.5" viewBox="0 0 24 24"><path d="M12 3l1.9 5.6L19.5 10.5 13.9 12.4 12 18l-1.9-5.6L4.5 10.5l5.6-1.9L12 3z"/></svg>
+      <span data-lang-panel-inline data-lang="lv" class="active" data-key="badge">Angļu valoda 11.–12. klasei</span>
+      <span data-lang-panel-inline data-lang="ru" data-key="badge">Английский для 11–12 классов</span>
+    </div>
+
+    <h1 class="text-4xl sm:text-5xl lg:text-6xl font-extrabold leading-[1.05] tracking-tight mb-6">
+      <span data-lang-panel data-lang="lv" class="active" data-key="h1">Tavs bezgalīgais <span class="grad-text">angļu valodas trenažieris</span> CE gatavošanai</span>
+      <span data-lang-panel data-lang="ru" data-key="h1">Твой безлимитный <span class="grad-text">тренажёр английского</span> для подготовки к CE</span>
+    </h1>
+
+    <p class="text-lg text-slate-400 mb-8 max-w-xl leading-relaxed">
+      <span data-lang-panel data-lang="lv" class="active" data-key="sub">Sagatavojies CE / OL / AL angļu valodas eksāmenam pēc Skola2030 standartiem — ar tūlītēju kļūdu analīzi un soli pa solim skaidrojumu katrai atbildei.</span>
+      <span data-lang-panel data-lang="ru" data-key="sub">Готовься к экзамену CE / OL / AL по английскому по стандартам Skola2030 — с мгновенным разбором ошибок и пошаговым объяснением каждого ответа.</span>
+    </p>
+
+    <!-- REAL TRIAL HOOK -->
+    <div class="glass rounded-2xl p-5 mb-8 max-w-md">
+      <div class="flex items-center gap-3 mb-1">
+        <svg class="icon w-5 h-5 text-emerald-400" viewBox="0 0 24 24"><rect x="3" y="8" width="18" height="4" rx="1"/><path d="M12 8v13M12 8c0-2 -2-4-4-4s-2 2 0 4M12 8c0-2 2-4 4-4s2 2 0 4"/><path d="M5 12v7a1 1 0 001 1h12a1 1 0 001-1v-7"/></svg>
+        <span class="font-semibold text-sm" data-lang-panel data-lang="lv" class="active" data-key="trial1">Pirmās 20 uzdevumu sērijas — bez maksas</span>
+        <span class="font-semibold text-sm" data-lang-panel data-lang="ru" data-key="trial1">Первые 20 заданий — бесплатно</span>
+      </div>
+      <p class="text-sm text-slate-400" data-lang-panel data-lang="lv" class="active" data-key="trial2">Bez kredītkartes. Atceļ jebkurā brīdī.</p>
+      <p class="text-sm text-slate-400" data-lang-panel data-lang="ru" data-key="trial2">Без карты. Отменить можно в любой момент.</p>
+    </div>
+
+    <div class="flex flex-wrap items-center gap-4">
+      <button class="glow-pulse px-8 py-4 rounded-full font-bold text-white transition-all duration-300 hover:scale-105 hover:-translate-y-1" style="background:linear-gradient(90deg,var(--primary),var(--secondary));">
+        <span data-lang-panel data-lang="lv" class="active" data-key="cta1">Sākt bez maksas →</span>
+        <span data-lang-panel data-lang="ru" data-key="cta1">Начать бесплатно →</span>
+      </button>
+      <span class="text-sm text-slate-500" data-lang-panel data-lang="lv" class="active" data-key="cta2">Bez reģistrācijas ar karti</span>
+      <span class="text-sm text-slate-500" data-lang-panel data-lang="ru" data-key="cta2">Регистрация без карты</span>
+    </div>
+  </div>
+
+  <!-- DASHBOARD MOCKUP -->
+  <div class="relative fade-up" style="animation-delay:0.2s;">
+    <div class="glass-strong rounded-3xl p-6 glow-indigo float relative z-10">
+      <div class="flex items-center justify-between mb-6">
+        <span class="text-sm font-semibold text-slate-300" data-lang-panel data-lang="lv" class="active" data-key="dash-title">Tavs progress</span>
+        <span class="text-sm font-semibold text-slate-300" data-lang-panel data-lang="ru" data-key="dash-title">Твой прогресс</span>
+        <span class="text-xs px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold" data-lang-panel data-lang="lv" class="active" data-key="dash-example">Piemērs</span>
+        <span class="text-xs px-3 py-1 rounded-full bg-emerald-500/20 text-emerald-300 font-semibold" data-lang-panel data-lang="ru" data-key="dash-example">Пример</span>
+      </div>
+
+      <div class="grid grid-cols-2 gap-4 mb-5">
+        <div class="glass rounded-2xl p-4">
+          <p class="text-xs text-slate-400 mb-2" data-lang-panel data-lang="lv" class="active" data-key="dash-writing">Rakstīšana</p>
+          <p class="text-xs text-slate-400 mb-2" data-lang-panel data-lang="ru" data-key="dash-writing">Письмо</p>
+          <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden mb-1">
+            <div class="h-full rounded-full" style="width:0%; background:linear-gradient(90deg,var(--primary),var(--secondary)); transition:width 1.6s ease-out;" data-bar="72"></div>
+          </div>
+          <p class="text-lg font-bold">72%</p>
+        </div>
+        <div class="glass rounded-2xl p-4">
+          <p class="text-xs text-slate-400 mb-2" data-lang-panel data-lang="lv" class="active" data-key="dash-listening">Klausīšanās</p>
+          <p class="text-xs text-slate-400 mb-2" data-lang-panel data-lang="ru" data-key="dash-listening">Аудирование</p>
+          <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden mb-1">
+            <div class="h-full rounded-full" style="width:0%; background:linear-gradient(90deg,var(--primary),var(--secondary)); transition:width 1.6s ease-out;" data-bar="65"></div>
+          </div>
+          <p class="text-lg font-bold">65%</p>
+        </div>
+        <div class="glass rounded-2xl p-4">
+          <p class="text-xs text-slate-400 mb-2" data-lang-panel data-lang="lv" class="active" data-key="dash-vocab">Vārdu krājums</p>
+          <p class="text-xs text-slate-400 mb-2" data-lang-panel data-lang="ru" data-key="dash-vocab">Словарь</p>
+          <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden mb-1">
+            <div class="h-full rounded-full" style="width:0%; background:linear-gradient(90deg,var(--primary),var(--secondary)); transition:width 1.6s ease-out;" data-bar="80"></div>
+          </div>
+          <p class="text-lg font-bold">80%</p>
+        </div>
+        <div class="glass rounded-2xl p-4">
+          <p class="text-xs text-slate-400 mb-2" data-lang-panel data-lang="lv" class="active" data-key="dash-speaking">Runāšana</p>
+          <p class="text-xs text-slate-400 mb-2" data-lang-panel data-lang="ru" data-key="dash-speaking">Говорение</p>
+          <div class="w-full h-2 rounded-full bg-white/10 overflow-hidden mb-1">
+            <div class="h-full rounded-full" style="width:0%; background:linear-gradient(90deg,var(--primary),var(--secondary)); transition:width 1.6s ease-out;" data-bar="58"></div>
+          </div>
+          <p class="text-lg font-bold">58%</p>
+        </div>
+      </div>
+
+      <div class="glass rounded-2xl p-4 flex items-center justify-between">
+        <div>
+          <p class="text-xs text-slate-400" data-lang-panel data-lang="lv" class="active" data-key="dash-weekly">Nedēļas mērķis</p>
+          <p class="text-xs text-slate-400" data-lang-panel data-lang="ru" data-key="dash-weekly">Недельная цель</p>
+          <p class="text-sm font-bold text-emerald-300">4 / 6 <span class="font-normal text-slate-400" data-lang-panel data-lang="lv" class="active" data-key="dash-sessions">sesijas</span><span class="font-normal text-slate-400" data-lang-panel data-lang="ru" data-key="dash-sessions">занятий</span></p>
+        </div>
+        <svg class="icon w-8 h-8 text-emerald-400" viewBox="0 0 24 24"><path d="M3 17l6-6 4 4 8-8"/><path d="M15 7h6v6"/></svg>
+      </div>
+    </div>
+    <div class="absolute -bottom-6 -left-6 glass-strong rounded-2xl p-4 glow-cyan float-delay z-20 hidden sm:block">
+      <div class="flex items-center gap-2">
+        <svg class="icon w-5 h-5 text-cyan-300" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12l3 3 5-5"/></svg>
+        <span class="text-sm font-semibold" data-lang-panel data-lang="lv" class="active" data-key="dash-badge">Uzdevums pabeigts</span>
+        <span class="text-sm font-semibold" data-lang-panel data-lang="ru" data-key="dash-badge">Задание выполнено</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WHO IT'S FOR -->
+<section class="py-16 px-6 max-w-7xl mx-auto reveal">
+  <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-3">
+    <span data-lang-panel data-lang="lv" class="active" data-key="who-title">Šis trenažieris ir domāts tev</span>
+    <span data-lang-panel data-lang="ru" data-key="who-title">Этот тренажёр создан для тебя</span>
+  </h2>
+  <div class="flex justify-center mb-10">
+    <div class="flex glass rounded-full p-1 text-sm font-semibold">
+      <button onclick="setAudience('student')" id="aud-student" class="audience-tab active px-5 py-2 rounded-full">
+        <span data-lang-panel data-lang="lv" class="active">Skolēnam</span><span data-lang-panel data-lang="ru">Ученику</span>
+      </button>
+      <button onclick="setAudience('parent')" id="aud-parent" class="audience-tab px-5 py-2 rounded-full text-slate-300">
+        <span data-lang-panel data-lang="lv" class="active">Vecākiem</span><span data-lang-panel data-lang="ru">Родителям</span>
+      </button>
+    </div>
+  </div>
+
+  <div id="audience-student" data-audience-panel class="active grid md:grid-cols-3 gap-6">
+    <div class="glass rounded-3xl p-7 hover-card border border-white/5">
+      <div class="text-3xl mb-4">😩</div>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="lv" class="active">Grūti piespiest sevi mācīties sausu teoriju</h3>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="ru">Тяжело заставить себя учить сухую теорию</h3>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="lv" class="active">Klasiskās mācību grāmatas nogurdina. Mūsu trenažieris ir kā uzdevumu virkne — katrs solis ir skaidrs izaicinājums, un progress ir redzams uzreiz.</p>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="ru">Классические учебники утомляют. Наш тренажёр — это цепочка понятных заданий, где каждый шаг ясен, а прогресс виден сразу.</p>
+    </div>
+    <div class="glass rounded-3xl p-7 hover-card border border-white/5">
+      <div class="text-3xl mb-4">🤯</div>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="lv" class="active">Pārsātināts ar nesaprotamām gramatikas formulām</h3>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="ru">Перегружен непонятными грамматическими правилами</h3>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="lv" class="active">Katram uzdevumam — vienkāršs, cilvēciskā valodā skaidrojums. Ne akadēmiskas frāzes, bet īsts saprotams teksts.</p>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="ru">Для каждого задания — простое объяснение человеческим языком. Без академических формулировок, только понятный текст.</p>
+    </div>
+    <div class="glass rounded-3xl p-7 hover-card border border-white/5">
+      <div class="text-3xl mb-4">😰</div>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="lv" class="active">Baidies neizturēt eksāmenu</h3>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="ru">Боишься не сдать экзамен</h3>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="lv" class="active">Sistēma pielāgojas tavai kļūdu dinamikai un atgriežas tieši pie tā, kas vēl nav nostiprinājies — līdz pilnīgai apguvei.</p>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="ru">Система подстраивается под твои ошибки и возвращается именно к тому, что ещё не закреплено — до полного усвоения.</p>
+    </div>
+  </div>
+
+  <div id="audience-parent" data-audience-panel class="grid md:grid-cols-3 gap-6">
+    <div class="glass rounded-3xl p-7 hover-card border border-white/5">
+      <div class="text-3xl mb-4">💶</div>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="lv" class="active">Dārgi repetitori nav vienīgā izvēle</h3>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="ru">Дорогой репетитор — не единственный вариант</h3>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="lv" class="active">Viena stunda pie repetitora maksā vairāk nekā mēneša abonements ar neierobežotu uzdevumu skaitu.</p>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="ru">Один час с репетитором стоит дороже, чем месячная подписка с неограниченным числом заданий.</p>
+    </div>
+    <div class="glass rounded-3xl p-7 hover-card border border-white/5">
+      <div class="text-3xl mb-4">📊</div>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="lv" class="active">Redzi progresu, nevis tikai atzīmes</h3>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="ru">Видишь прогресс, а не только оценки</h3>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="lv" class="active">Skaidra aina par to, kuras tēmas ir apgūtas un kur vēl vajadzīgs darbs.</p>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="ru">Чёткая картина, какие темы усвоены, а над чем ещё стоит поработать.</p>
+    </div>
+    <div class="glass rounded-3xl p-7 hover-card border border-white/5">
+      <div class="text-3xl mb-4">🕒</div>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="lv" class="active">Mācības jebkurā brīdī, bez pierakstīšanās</h3>
+      <h3 class="font-bold mb-2" data-lang-panel data-lang="ru">Занятия в любое время, без записи</h3>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="lv" class="active">Nav jāsaskaņo laiks ar pasniedzēju — bērns mācās savā tempā, kad viņam ir ērtāk.</p>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="ru">Не нужно согласовывать время с преподавателем — ребёнок учится в своём темпе, когда удобно.</p>
+    </div>
+  </div>
+</section>
+
+<!-- HOW IT WORKS -->
+<section id="kaastraada" class="py-24 px-6 max-w-7xl mx-auto reveal">
+  <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-14">
+    <span data-lang-panel data-lang="lv" class="active" data-key="how-title">Kā strādā <span class="grad-text">Simts punkti</span></span>
+    <span data-lang-panel data-lang="ru" data-key="how-title">Как работает <span class="grad-text">Simts punkti</span></span>
+  </h2>
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="glass rounded-3xl p-8 hover-card border border-white/5">
+      <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style="background:rgba(79,70,229,0.2);">
+        <svg class="icon w-6 h-6 text-indigo-300" viewBox="0 0 24 24"><path d="M14 3H6a2 2 0 00-2 2v14a2 2 0 002 2h12a2 2 0 002-2V9z"/><path d="M14 3v6h6"/><path d="M9 15l2 2 4-4"/></svg>
+      </div>
+      <h3 class="text-lg font-bold mb-2" data-lang-panel data-lang="lv" class="active" data-key="feat1-t">Tūlītēja eseju pārbaude</h3>
+      <h3 class="text-lg font-bold mb-2" data-lang-panel data-lang="ru" data-key="feat1-t">Мгновенная проверка эссе</h3>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="lv" class="active" data-key="feat1-d">Saņem detalizētu analīzi un ieteikumus dažu sekunžu laikā.</p>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="ru" data-key="feat1-d">Получай подробный разбор и рекомендации за секунды.</p>
+    </div>
+    <div class="glass rounded-3xl p-8 hover-card border border-white/5">
+      <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style="background:rgba(6,182,212,0.2);">
+        <svg class="icon w-6 h-6 text-cyan-300" viewBox="0 0 24 24"><path d="M3 14a9 9 0 0118 0"/><path d="M21 19a2 2 0 01-2 2h-1a2 2 0 01-2-2v-3a2 2 0 012-2h3zM3 19a2 2 0 002 2h1a2 2 0 002-2v-3a2 2 0 00-2-2H3z"/></svg>
+      </div>
+      <h3 class="text-lg font-bold mb-2" data-lang-panel data-lang="lv" class="active" data-key="feat2-t">Klausīšanās trenažieris</h3>
+      <h3 class="text-lg font-bold mb-2" data-lang-panel data-lang="ru" data-key="feat2-t">Тренажёр аудирования</h3>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="lv" class="active" data-key="feat2-d">Treinējies ar reāliem eksāmena tipa uzdevumiem.</p>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="ru" data-key="feat2-d">Тренируйся на заданиях в формате реального экзамена.</p>
+    </div>
+    <div class="glass rounded-3xl p-8 hover-card border border-white/5">
+      <div class="w-12 h-12 rounded-2xl flex items-center justify-center mb-5" style="background:rgba(79,70,229,0.2);">
+        <svg class="icon w-6 h-6 text-indigo-300" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M5 10v1a7 7 0 0014 0v-1"/><path d="M12 18v4M9 22h6"/></svg>
+      </div>
+      <h3 class="text-lg font-bold mb-2" data-lang-panel data-lang="lv" class="active" data-key="feat3-t">Runāšanas prakse</h3>
+      <h3 class="text-lg font-bold mb-2" data-lang-panel data-lang="ru" data-key="feat3-t">Практика говорения</h3>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="lv" class="active" data-key="feat3-d">Novērtē izrunu un palīdz labot kļūdas soli pa solim.</p>
+      <p class="text-slate-400 text-sm leading-relaxed" data-lang-panel data-lang="ru" data-key="feat3-d">Оценка произношения и пошаговая работа над ошибками.</p>
+    </div>
+  </div>
+</section>
+
+<!-- BEFORE/AFTER ESSAY CHECK -->
+<section class="py-16 px-6 max-w-6xl mx-auto reveal">
+  <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-3">
+    <span data-lang-panel data-lang="lv" class="active" data-key="ba-title">Kā izskatās eseju pārbaude</span>
+    <span data-lang-panel data-lang="ru" data-key="ba-title">Как выглядит проверка эссе</span>
+  </h2>
+  <p class="text-center text-slate-400 mb-10" data-lang-panel data-lang="lv" class="active" data-key="ba-sub">Ilustratīvs piemērs</p>
+  <p class="text-center text-slate-400 mb-10" data-lang-panel data-lang="ru" data-key="ba-sub">Иллюстративный пример</p>
+
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="glass rounded-3xl p-6 border border-white/5">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="w-2.5 h-2.5 rounded-full bg-red-400"></span>
+        <span class="text-sm font-semibold text-slate-300" data-lang-panel data-lang="lv" class="active" data-key="before">Pirms pārbaudes</span>
+        <span class="text-sm font-semibold text-slate-300" data-lang-panel data-lang="ru" data-key="before">До проверки</span>
+      </div>
+      <p class="text-sm leading-relaxed text-slate-300">
+        In my opinion, <span class="bg-red-500/25 rounded px-1">technology have</span> changed the way <span class="bg-red-500/25 rounded px-1">people is</span> learning. Many students <span class="bg-red-500/25 rounded px-1">doesn't</span> realize how much <span class="bg-red-500/25 rounded px-1">it effect</span> their daily habits.
+      </p>
+    </div>
+    <div class="glass rounded-3xl p-6 border border-white/5">
+      <div class="flex items-center gap-2 mb-4">
+        <span class="w-2.5 h-2.5 rounded-full bg-emerald-400"></span>
+        <span class="text-sm font-semibold text-slate-300" data-lang-panel data-lang="lv" class="active" data-key="after">Pēc pārbaudes</span>
+        <span class="text-sm font-semibold text-slate-300" data-lang-panel data-lang="ru" data-key="after">После проверки</span>
+      </div>
+      <p class="text-sm leading-relaxed text-slate-300">
+        In my opinion, <span class="bg-emerald-500/25 rounded px-1">technology has</span> changed the way <span class="bg-emerald-500/25 rounded px-1">people are</span> learning. Many students <span class="bg-emerald-500/25 rounded px-1">don't</span> realize how much <span class="bg-emerald-500/25 rounded px-1">it affects</span> their daily habits.
+      </p>
+    </div>
+  </div>
+</section>
+
+<!-- ANALYTICS -->
+<section class="py-16 px-6 max-w-6xl mx-auto reveal">
+  <div class="grid md:grid-cols-3 gap-6">
+    <div class="glass rounded-3xl p-7 hover-card border border-white/5">
+      <p class="text-sm text-slate-400 mb-4" data-lang-panel data-lang="lv" class="active" data-key="an1-t">Progresa piemērs</p>
+      <p class="text-sm text-slate-400 mb-4" data-lang-panel data-lang="ru" data-key="an1-t">Пример прогресса</p>
+      <div class="flex items-end gap-3">
+        <span class="text-3xl font-extrabold text-slate-500">58</span>
+        <svg class="icon w-5 h-5 text-slate-500 mb-1.5" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg>
+        <span class="text-3xl font-extrabold grad-text">76</span>
+      </div>
+      <p class="text-xs text-slate-500 mt-2" data-lang-panel data-lang="lv" class="active" data-key="an1-d">Ilustratīvi — atkarīgs no individuālā progresa</p>
+      <p class="text-xs text-slate-500 mt-2" data-lang-panel data-lang="ru" data-key="an1-d">Иллюстративно — зависит от личного прогресса</p>
+    </div>
+
+    <div class="glass rounded-3xl p-7 hover-card border border-white/5 flex flex-col items-center">
+      <p class="text-sm text-slate-400 mb-4 self-start" data-lang-panel data-lang="lv" class="active" data-key="an2-t">Piemērs: aktivitāte</p>
+      <p class="text-sm text-slate-400 mb-4 self-start" data-lang-panel data-lang="ru" data-key="an2-t">Пример: активность</p>
+      <svg width="140" height="80" viewBox="0 0 140 80">
+        <path d="M 10 70 A 60 60 0 0 1 130 70" fill="none" stroke="rgba(255,255,255,0.08)" stroke-width="10" stroke-linecap="round"/>
+        <path id="gaugeArc" d="M 10 70 A 60 60 0 0 1 130 70" fill="none" stroke="url(#gaugeGrad)" stroke-width="10" stroke-linecap="round" stroke-dasharray="188" stroke-dashoffset="188" class="gauge-fill"/>
+        <defs>
+          <linearGradient id="gaugeGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stop-color="#4F46E5"/>
+            <stop offset="100%" stop-color="#06B6D4"/>
+          </linearGradient>
+        </defs>
+      </svg>
+      <span class="text-2xl font-extrabold -mt-2">72%</span>
+    </div>
+
+    <div class="glass rounded-3xl p-7 hover-card border border-white/5">
+      <p class="text-sm text-slate-400 mb-4" data-lang-panel data-lang="lv" class="active" data-key="an3-t">Sesiju piemērs / nedēļā</p>
+      <p class="text-sm text-slate-400 mb-4" data-lang-panel data-lang="ru" data-key="an3-t">Пример занятий / неделя</p>
+      <div class="flex items-end gap-2 h-16">
+        <div class="w-5 rounded-t bg-indigo-500/40" style="height:35%"></div>
+        <div class="w-5 rounded-t bg-indigo-500/50" style="height:50%"></div>
+        <div class="w-5 rounded-t bg-indigo-500/60" style="height:45%"></div>
+        <div class="w-5 rounded-t bg-indigo-500/70" style="height:70%"></div>
+        <div class="w-5 rounded-t" style="height:100%; background:linear-gradient(180deg,var(--primary),var(--secondary));"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- COMPARISON TABLE -->
+<section id="salidzinajums" class="py-24 px-6 max-w-6xl mx-auto reveal">
+  <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-14">
+    <span data-lang-panel data-lang="lv" class="active" data-key="comp-title">Kur gatavoties efektīvāk?</span>
+    <span data-lang-panel data-lang="ru" data-key="comp-title">Где готовиться эффективнее?</span>
+  </h2>
+  <div class="glass rounded-3xl overflow-hidden border border-white/5">
+    <div class="grid grid-cols-4 text-sm">
+      <div class="p-5"></div>
+      <div class="p-5 text-center font-bold" style="background:rgba(79,70,229,0.15);">Simts punkti</div>
+      <div class="p-5 text-center font-semibold text-slate-400" data-lang-panel data-lang="lv" class="active" data-key="comp-tutor">Repetitors</div>
+      <div class="p-5 text-center font-semibold text-slate-400" data-lang-panel data-lang="ru" data-key="comp-tutor">Репетитор</div>
+      <div class="p-5 text-center font-semibold text-slate-400 col-start-4 row-start-1" data-lang-panel data-lang="lv" class="active" data-key="comp-pdf">PDF</div>
+      <div class="p-5 text-center font-semibold text-slate-400 col-start-4 row-start-1" data-lang-panel data-lang="ru" data-key="comp-pdf">PDF</div>
+    </div>
+
+    <div id="compRows"></div>
+  </div>
+</section>
+
+<!-- TESTIMONIALS CAROUSEL -->
+<section id="atsauksmes" class="py-24 px-6 max-w-4xl mx-auto reveal">
+  <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-3">
+    <span data-lang-panel data-lang="lv" class="active" data-key="rev-title">Ko saka tie, kas jau izmēģināja</span>
+    <span data-lang-panel data-lang="ru" data-key="rev-title">Что говорят те, кто уже попробовал</span>
+  </h2>
+  <p class="text-center text-slate-500 text-sm mb-10">
+    <!-- TODO: replace with real, verifiable reviews before launch -->
+    <span data-lang-panel data-lang="lv" class="active" data-key="rev-sub">Vietturis — nomainīt pret reālām atsauksmēm pirms publicēšanas</span>
+    <span data-lang-panel data-lang="ru" data-key="rev-sub">Плейсхолдер — заменить на реальные отзывы перед публикацией</span>
+  </p>
+
+  <div class="glass rounded-3xl p-8 min-h-[220px]">
+    <div class="rev-slide active" data-rev="0">
+      <div class="flex text-amber-400 mb-3">★★★★★</div>
+      <p class="text-slate-300 leading-relaxed mb-4" data-lang-panel data-lang="lv" class="active">"[Vietturis atsauksmei — skolēna vārds, klase, pilsēta un citāts par pieredzi ar trenažieri]"</p>
+      <p class="text-slate-300 leading-relaxed mb-4" data-lang-panel data-lang="ru">"[Плейсхолдер отзыва — имя ученика, класс, город и цитата об опыте использования тренажёра]"</p>
+      <p class="text-sm text-slate-500">— <span data-lang-panel data-lang="lv" class="active">vietturis, 11. klase</span><span data-lang-panel data-lang="ru">плейсхолдер, 11 класс</span></p>
+    </div>
+    <div class="rev-slide" data-rev="1">
+      <div class="flex text-amber-400 mb-3">★★★★★</div>
+      <p class="text-slate-300 leading-relaxed mb-4" data-lang-panel data-lang="lv" class="active">"[Vietturis atsauksmei — skolēna vārds, klase, pilsēta un citāts par pieredzi ar trenažieri]"</p>
+      <p class="text-slate-300 leading-relaxed mb-4" data-lang-panel data-lang="ru">"[Плейсхолдер отзыва — имя ученика, класс, город и цитата об опыте использования тренажёра]"</p>
+      <p class="text-sm text-slate-500">— <span data-lang-panel data-lang="lv" class="active">vietturis, 12. klase</span><span data-lang-panel data-lang="ru">плейсхолдер, 12 класс</span></p>
+    </div>
+    <div class="rev-slide" data-rev="2">
+      <div class="flex text-amber-400 mb-3">★★★★★</div>
+      <p class="text-slate-300 leading-relaxed mb-4" data-lang-panel data-lang="lv" class="active">"[Vietturis atsauksmei — skolēna vārds, klase, pilsēta un citāts par pieredzi ar trenažieri]"</p>
+      <p class="text-slate-300 leading-relaxed mb-4" data-lang-panel data-lang="ru">"[Плейсхолдер отзыва — имя ученика, класс, город и цитата об опыте использования тренажёра]"</p>
+      <p class="text-sm text-slate-500">— <span data-lang-panel data-lang="lv" class="active">vietturis, 11. klase</span><span data-lang-panel data-lang="ru">плейсхолдер, 11 класс</span></p>
+    </div>
+  </div>
+
+  <div class="flex items-center justify-center gap-4 mt-6">
+    <button onclick="revShift(-1)" class="w-10 h-10 rounded-full glass hover:bg-white/10 transition-all duration-300 flex items-center justify-center">
+      <svg class="icon w-4 h-4" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <div class="flex gap-2" id="revDots"></div>
+    <button onclick="revShift(1)" class="w-10 h-10 rounded-full glass hover:bg-white/10 transition-all duration-300 flex items-center justify-center">
+      <svg class="icon w-4 h-4" viewBox="0 0 24 24"><path d="M9 18l6-6-6-6"/></svg>
+    </button>
+  </div>
+</section>
+
+<!-- PRICING -->
+<section id="tarifi" class="py-24 px-6 max-w-5xl mx-auto reveal">
+  <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-14">
+    <span data-lang-panel data-lang="lv" class="active" data-key="price-title">Izvēlies savu formātu</span>
+    <span data-lang-panel data-lang="ru" data-key="price-title">Выбери свой формат</span>
+  </h2>
+  <div class="grid md:grid-cols-2 gap-6">
+    <div class="glass rounded-3xl p-8 hover-card border border-white/5">
+      <p class="font-bold text-lg mb-1" data-lang-panel data-lang="lv" class="active">Mēneša abonements</p>
+      <p class="font-bold text-lg mb-1" data-lang-panel data-lang="ru">Месячная подписка</p>
+      <p class="text-4xl font-extrabold mb-1">7.99€</p>
+      <p class="text-slate-400 text-sm mb-6" data-lang-panel data-lang="lv" class="active">/ mēnesī</p>
+      <p class="text-slate-400 text-sm mb-6" data-lang-panel data-lang="ru">/ в месяц</p>
+      <ul class="text-sm text-slate-300 space-y-2 mb-6">
+        <li class="flex items-center gap-2"><svg class="icon w-4 h-4 text-emerald-400" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> <span data-lang-panel data-lang="lv" class="active">Bezgalīgi uzdevumi</span><span data-lang-panel data-lang="ru">Безлимит заданий</span></li>
+        <li class="flex items-center gap-2"><svg class="icon w-4 h-4 text-emerald-400" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> <span data-lang-panel data-lang="lv" class="active">Atceļams jebkurā brīdī</span><span data-lang-panel data-lang="ru">Отмена в любой момент</span></li>
+      </ul>
+      <button class="w-full py-3 rounded-full glass hover:bg-white/10 transition-all duration-300 font-semibold"><span data-lang-panel data-lang="lv" class="active">Izvēlēties</span><span data-lang-panel data-lang="ru">Выбрать</span></button>
+    </div>
+    <div class="relative glass-strong rounded-3xl p-8 hover-card glow-indigo border border-indigo-500/30">
+      <span class="absolute -top-3 left-8 px-4 py-1 rounded-full text-xs font-bold text-white" style="background:linear-gradient(90deg,var(--primary),var(--secondary));"><span data-lang-panel data-lang="lv" class="active">Labākā izvēle</span><span data-lang-panel data-lang="ru">Лучший выбор</span></span>
+      <p class="font-bold text-lg mb-1" data-lang-panel data-lang="lv" class="active">Absolvents 11./12.</p>
+      <p class="font-bold text-lg mb-1" data-lang-panel data-lang="ru">Выпускник 11/12</p>
+      <p class="text-4xl font-extrabold mb-1">39.99€</p>
+      <p class="text-slate-400 text-sm mb-6" data-lang-panel data-lang="lv" class="active">vienreizējs maksājums, pieeja līdz CE</p>
+      <p class="text-slate-400 text-sm mb-6" data-lang-panel data-lang="ru">разовый платёж, доступ до сдачи CE</p>
+      <ul class="text-sm text-slate-300 space-y-2 mb-6">
+        <li class="flex items-center gap-2"><svg class="icon w-4 h-4 text-emerald-400" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> <span data-lang-panel data-lang="lv" class="active">Viss no mēneša plāna</span><span data-lang-panel data-lang="ru">Всё из месячного плана</span></li>
+        <li class="flex items-center gap-2"><svg class="icon w-4 h-4 text-emerald-400" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5"/></svg> <span data-lang-panel data-lang="lv" class="active">Bez atkārtotiem maksājumiem</span><span data-lang-panel data-lang="ru">Без повторных платежей</span></li>
+      </ul>
+      <button class="w-full py-3 rounded-full font-semibold transition-all duration-300 hover:scale-[1.02]" style="background:linear-gradient(90deg,var(--primary),var(--secondary));"><span data-lang-panel data-lang="lv" class="active">Izvēlēties</span><span data-lang-panel data-lang="ru">Выбрать</span></button>
+    </div>
+  </div>
+</section>
+
+<!-- FAQ -->
+<section class="py-24 px-6 max-w-3xl mx-auto reveal">
+  <h2 class="text-3xl sm:text-4xl font-extrabold text-center mb-12">
+    <span data-lang-panel data-lang="lv" class="active" data-key="faq-title">Biežāk uzdotie jautājumi</span>
+    <span data-lang-panel data-lang="ru" data-key="faq-title">Частые вопросы</span>
+  </h2>
+  <div id="faqList" class="space-y-3"></div>
+</section>
+
+<!-- FOOTER -->
+<footer class="py-10 px-6 border-t border-white/5 text-center">
+  <div class="flex flex-wrap justify-center gap-6 text-sm text-slate-400 mb-4">
+    <a href="#" class="hover:text-white transition-all duration-300"><span data-lang-panel data-lang="lv" class="active">Atbalsts</span><span data-lang-panel data-lang="ru">Поддержка</span></a>
+    <a href="#" class="hover:text-white transition-all duration-300"><span data-lang-panel data-lang="lv" class="active">Privātuma politika</span><span data-lang-panel data-lang="ru">Политика конфиденциальности</span></a>
+    <a href="#" class="hover:text-white transition-all duration-300"><span data-lang-panel data-lang="lv" class="active">Lietošanas noteikumi</span><span data-lang-panel data-lang="ru">Условия использования</span></a>
+  </div>
+  <p class="text-xs text-slate-600">© 2026 Simts punkti</p>
+</footer>
+
+<script>
+// ---- Language switch ----
+function setLang(lang){
+  document.querySelectorAll('[data-lang-panel]').forEach(el=>{
+    el.classList.toggle('active', el.getAttribute('data-lang')===lang);
+  });
+  document.querySelectorAll('[data-lang-panel-inline]').forEach(el=>{
+    el.classList.toggle('active', el.getAttribute('data-lang')===lang);
+  });
+  document.getElementById('btn-lv').style.background = lang==='lv' ? 'var(--primary)' : 'transparent';
+  document.getElementById('btn-ru').style.background = lang==='ru' ? 'var(--primary)' : 'transparent';
+  buildDynamic(lang);
+}
+
+// ---- Audience toggle (Skolēnam / Vecākiem) ----
+function setAudience(who){
+  document.getElementById('audience-student').classList.toggle('active', who==='student');
+  document.getElementById('audience-parent').classList.toggle('active', who==='parent');
+  document.getElementById('aud-student').classList.toggle('active', who==='student');
+  document.getElementById('aud-parent').classList.toggle('active', who==='parent');
+}
+
+// ---- Testimonial carousel ----
+let revIndex = 0;
+const revTotal = 3;
+function renderRevDots(){
+  const wrap = document.getElementById('revDots');
+  wrap.innerHTML = '';
+  for(let i=0;i<revTotal;i++){
+    const d = document.createElement('span');
+    d.className = 'rev-dot' + (i===revIndex ? ' active' : '');
+    d.onclick = ()=>{ revIndex = i; updateRev(); };
+    wrap.appendChild(d);
+  }
+}
+function updateRev(){
+  document.querySelectorAll('.rev-slide').forEach(el=>{
+    el.classList.toggle('active', Number(el.getAttribute('data-rev'))===revIndex);
+  });
+  renderRevDots();
+}
+function revShift(dir){
+  revIndex = (revIndex + dir + revTotal) % revTotal;
+  updateRev();
+}
+
+// ---- Comparison table + FAQ (language-synced) ----
+const compRows = [
+  {lv:'Cena', ru:'Цена', us:'7.99–39.99€', tutor:'20–30€ / stundā', tutorRu:'20–30€ / час', pdf:'Bezmaksas', pdfRu:'Бесплатно'},
+  {lv:'Pieejamība 24/7', ru:'Доступность 24/7', us:'✓', tutor:'✗', tutorRu:'✗', pdf:'✓', pdfRu:'✓'},
+  {lv:'Eseju pārbaude', ru:'Проверка эссе', us:'✓', tutor:'Tikai nodarbībā', tutorRu:'Только на занятии', pdf:'✗', pdfRu:'✗'},
+  {lv:'Runāšanas prakse', ru:'Практика говорения', us:'✓', tutor:'✓', tutorRu:'✓', pdf:'✗', pdfRu:'✗'},
+  {lv:'Progresa aina', ru:'Отслеживание прогресса', us:'✓', tutor:'Manuāli', tutorRu:'Вручную', pdf:'✗', pdfRu:'✗'},
+  {lv:'Atbildes ātrums', ru:'Скорость обратной связи', us:'Uzreiz', tutor:'Nākamā nodarbība', tutorRu:'До следующего занятия', pdf:'—', pdfRu:'—'}
+];
+
+function buildDynamic(lang){
+  const rowsHTML = compRows.map(r=>`
+    <div class="grid grid-cols-4 text-sm border-t border-white/5 hover:bg-white/[0.03] transition-all duration-300">
+      <div class="p-5 text-slate-300 font-medium">${lang==='lv'?r.lv:r.ru}</div>
+      <div class="p-5 text-center font-semibold" style="background:rgba(79,70,229,0.08);">${r.us}</div>
+      <div class="p-5 text-center text-slate-400">${lang==='lv'?r.tutor:(r.tutorRu||r.tutor)}</div>
+      <div class="p-5 text-center text-slate-400">${lang==='lv'?r.pdf:(r.pdfRu||r.pdf)}</div>
+    </div>`).join('');
+  document.getElementById('compRows').innerHTML = rowsHTML;
+
+  const faqs = lang==='lv' ? [
+    ['Vai vajadzīga reģistrācija izmēģinājumam?','Nē, pirmās 20 uzdevumu sērijas var izmēģināt bez kredītkartes un reģistrācijas ar e-pastu vien.'],
+    ['Vai trenažieris atbilst CE / OL / AL prasībām?','Jā, uzdevumi ir veidoti pēc Skola2030 standarta un CE eksāmena formāta.'],
+    ['Vai ir runāšanas prakse?','Jā, sadaļa ietver izrunas novērtējumu un ieteikumus uzlabošanai.'],
+    ['Vai var atcelt abonementu?','Jā, abonementu var atcelt jebkurā brīdī no konta iestatījumiem.'],
+    ['Kā darbojas eseju pārbaude?','Sistēma analizē tavu tekstu, iezīmē kļūdas un sniedz soli pa solim izskaidrojumu katrai labotajai vietai.']
+  ] : [
+    ['Нужна ли регистрация для пробной версии?','Нет, первые 20 заданий можно попробовать без карты — достаточно указать e-mail.'],
+    ['Подходит ли тренажёр для CE / OL / AL?','Да, задания составлены по стандарту Skola2030 и формату экзамена CE.'],
+    ['Есть ли практика говорения?','Да, раздел включает оценку произношения и рекомендации по улучшению.'],
+    ['Можно ли отменить подписку?','Да, подписку можно отменить в любой момент в настройках аккаунта.'],
+    ['Как работает проверка эссе?','Система анализирует текст, отмечает ошибки и даёт пошаговое объяснение к каждой правке.']
+  ];
+  document.getElementById('faqList').innerHTML = faqs.map((f,i)=>`
+    <div class="glass rounded-2xl overflow-hidden border border-white/5">
+      <button onclick="toggleFaq(${i})" class="w-full flex items-center justify-between p-5 text-left font-semibold hover:text-indigo-300 transition-all duration-300">
+        ${f[0]}
+        <svg class="icon w-4 h-4 flex-shrink-0" viewBox="0 0 24 24"><path d="M12 5v14M5 12h14"/></svg>
+      </button>
+      <div id="faq-body-${i}" class="hidden px-5 pb-5 text-sm text-slate-400 leading-relaxed">${f[1]}</div>
+    </div>`).join('');
+}
+
+function toggleFaq(i){
+  document.getElementById('faq-body-'+i).classList.toggle('hidden');
+}
+
+buildDynamic('lv');
+renderRevDots();
+
+// ---- Progress bars fill on load ----
+window.addEventListener('load', ()=>{
+  document.querySelectorAll('[data-bar]').forEach(el=>{
+    requestAnimationFrame(()=>{ el.style.width = el.getAttribute('data-bar')+'%'; });
+  });
+  const gauge = document.getElementById('gaugeArc');
+  if(gauge){ gauge.style.strokeDashoffset = 188 - (188*0.72); }
+});
+
+// ---- Scroll reveal ----
+const io = new IntersectionObserver((entries)=>{
+  entries.forEach(e=>{ if(e.isIntersecting) e.target.classList.add('visible'); });
+},{threshold:0.15});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+</script>
+</body>
+</html>
