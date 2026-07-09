@@ -783,7 +783,6 @@ lv: {
     statusRight: "Pareizi!",
     statusWrong: "Nepareizi — pareizā atbilde ir “since”",
     whyLbl: "Kāpēc tā? — paskaidrojums",
-    ruleA: "for", ruleB: "since",
     ruleD: "“Since” lieto, ja norāda konkrētu sākuma punktu laikā (piem., “since 2019”). “For” lieto ar laika periodu (piem., “for 5 years”).",
     hint: "Izvēlies vienu no variantiem, lai redzētu rezultātu",
   },
@@ -916,7 +915,6 @@ ru: {
     statusRight: "Верно!",
     statusWrong: "Неверно — правильный ответ “since”",
     whyLbl: "Почему так? — объяснение",
-    ruleA: "for", ruleB: "since",
     ruleD: "“Since” используется для конкретной точки отсчёта во времени (напр., “since 2019”). “For” используется с периодом времени (напр., “for 5 years”).",
     hint: "Выбери один из вариантов, чтобы увидеть результат",
   },
@@ -1229,7 +1227,11 @@ ru: {
     const statusIcon = isRight ? '✓' : '✗';
     $('demoStatus').innerHTML = `<span style="color:${statusColor}; font-weight:700;">${statusIcon}</span> <span style="color:${statusColor};">${isRight ? t.statusRight : t.statusWrong}</span>`;
 
-    $('demoRule').innerHTML = `<span class="hl-err">${t.ruleA}</span> <span style="color:var(--ink-mute);">→</span> <span class="hl-fix">${t.ruleB}</span>`;
+    if(isRight){
+      $('demoRule').innerHTML = `<span class="hl-fix">${t.opts[t.correct]}</span>`;
+    } else {
+      $('demoRule').innerHTML = `<span class="hl-err">${t.opts[selOpt]}</span> <span style="color:var(--ink-mute);">→</span> <span class="hl-fix">${t.opts[t.correct]}</span>`;
+    }
     txt('demoExplain', t.ruleD);
   }
 
