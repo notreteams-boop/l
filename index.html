@@ -355,9 +355,66 @@ footer{border-top:1px solid var(--line-soft);}
   position:absolute; border-radius:50%; filter:blur(90px); opacity:.35; pointer-events:none;
 }
 
+/* ================= AUTH MODAL ================= */
+.modal-ov{
+  position:fixed; inset:0; z-index:999; display:none;
+  background:rgba(5,6,9,.72); backdrop-filter:blur(6px);
+  align-items:center; justify-content:center; padding:20px;
+}
+.modal-ov.open{display:flex;}
+.modal-card{
+  position:relative; width:100%; max-width:400px;
+  background:var(--bg-soft); border:1px solid var(--line);
+  border-radius:20px; padding:32px 28px 28px;
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.6), var(--shadow-glow);
+  animation:modalIn .35s cubic-bezier(.16,.85,.24,1);
+}
+@keyframes modalIn{from{opacity:0; transform:translateY(16px) scale(.97);} to{opacity:1; transform:translateY(0) scale(1);}}
+.modal-close{
+  position:absolute; top:16px; right:16px; width:32px; height:32px;
+  border-radius:10px; background:var(--line-soft); border:1px solid var(--line);
+  color:var(--ink-dim); font-size:15px; display:flex; align-items:center; justify-content:center;
+}
+.modal-close:hover{color:var(--ink); background:var(--line);}
+.modal-logo{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:19px; margin-bottom:22px;}
+.modal-tabs{display:flex; gap:6px; background:var(--line-soft); border-radius:12px; padding:4px; margin-bottom:22px;}
+.mtab{flex:1; padding:9px 0; border-radius:9px; font-size:14px; font-weight:600; color:var(--ink-mute); text-align:center;}
+.mtab.active{background:#14151b; color:var(--ink); box-shadow:0 1px 0 rgba(255,255,255,.04) inset;}
+.mform{display:none; flex-direction:column; gap:14px;}
+.mform.on{display:flex;}
+.mfield label{display:block; font-size:12.5px; color:var(--ink-dim); margin-bottom:6px; font-weight:600;}
+.mfield input{
+  width:100%; padding:11px 13px; border-radius:11px; border:1px solid var(--line);
+  background:rgba(255,255,255,.03); color:var(--ink); font-size:14.5px; font-family:inherit;
+  transition:border-color .2s;
+}
+.mfield input:focus{outline:none; border-color:var(--indigo2);}
+.mbtn{
+  width:100%; padding:12px 0; border-radius:11px; font-size:14.5px; font-weight:700;
+  background:var(--grad-main); color:#04050a; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.mbtn:hover{filter:brightness(1.08);}
+.mbtn:disabled{opacity:.65;}
+.merr{display:none; color:var(--rose); font-size:13px; background:rgba(251,113,133,.1); border:1px solid rgba(251,113,133,.25); border-radius:10px; padding:9px 12px;}
+.mok{display:none; color:var(--emerald); font-size:13px; background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.25); border-radius:10px; padding:9px 12px;}
+.mreg-note{font-size:12.5px; color:var(--ink-mute); line-height:1.5;}
+.mspinner{
+  display:inline-block; width:14px; height:14px; border-radius:50%;
+  border:2px solid rgba(4,5,10,.3); border-top-color:#04050a; animation:mspin .7s linear infinite;
+}
+@keyframes mspin{to{transform:rotate(360deg);}}
+
 </style>
 </head>
 <body>
+
+<!-- ════ AUTH CHECK ════ -->
+<script>
+  /* Если уже авторизован — сразу в меню, ничего не меняем в логике */
+  if (localStorage.getItem("session_token")) {
+    window.location.href = "/menu.html";
+  }
+</script>
 
 <!-- ================= NAV ================= -->
 <header class="nav">
@@ -1284,9 +1341,293 @@ ru: {
     bindNav();
     render();
     animateOnLoad();
+    bindAuthModal();
   });
 })();
 
+</script>
+
+<!-- ════ AUTH MODAL ════ -->
+<div class="modal-ov" id="authModal" onclick="modalOverlayClick(event)">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+    <div class="modal-logo">English OL</div>
+
+    <div class="modal-tabs">
+      <button class="mtab active" id="tabLogin" onclick="switchTab('login')">
+        <span data-i18n="m.login">Ienākt</span>
+      </button>
+      <button class="mtab" id="tabReg" onclick="switchTab('register')">
+        <span data-i18n="m.register">Reģistrēties</span>
+      </button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div class="mform on" id="mfLogin">
+      <div class="mfield">
+        <label data-i18n="m.user">Lietotājvārds</label>
+        <input type="text" id="mUser" autocomplete="username" autocapitalize="none" />
+      </div>
+      <div class="mfield">
+        <label data-i18n="m.pass">Parole</label>
+        <input type="password" id="mPass" autocomplete="current-password" />
+      </div>
+      <button class="mbtn" id="mLoginBtn" onclick="doLogin()">
+        <span data-i18n="m.login.btn">Ieiet</span>
+      </button>
+      <div class="merr" id="mLoginErr"></div>
+      <div class="mok" id="mLoginOk"></div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="mform" id="mfReg">
+      <div class="mfield">
+        <label data-i18n="m.reg.name">Vārds</label>
+        <input type="text" id="mRegName" autocomplete="name" maxlength="60" />
+      </div>
+      <div class="mfield">
+        <label data-i18n="m.reg.username">Vēlamais lietotājvārds</label>
+        <input type="text" id="mRegUser" autocomplete="username" autocapitalize="none" maxlength="20" placeholder="piem. janis123" />
+      </div>
+      <div class="mreg-note" data-i18n="m.reg.note">Pēc pārbaudes tiksi novirzīts uz Telegram, lai pabeigtu reģistrāciju un saņemtu pieejas datus.</div>
+      <button class="mbtn" id="mRegBtn" onclick="doRegister()">
+        <span data-i18n="m.reg.btn">Turpināt →</span>
+      </button>
+      <div class="merr" id="mRegErr"></div>
+      <div class="mok" id="mRegOk"></div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── AUTH: логин / регистрация ─────────────────────────────
+   Отдельный WORKER_URL от нейросети — этот модуль бьёт ТОЛЬКО
+   в auth-worker (безопасность/логин/регистрация), никогда в ai-worker.
+   ЗАМЕНИ на свой URL после деплоя auth-worker.
+   ─────────────────────────────────────────────────────────── */
+var AUTH_WORKER_URL = "https://auth-worker.gegeodin.workers.dev/";
+var TELEGRAM_BOT_USERNAME = "mismisimsbot"; // без @ и без t.me/
+
+// i18n для модалки — берёт текущий язык из внешнего замыкания через atrribute lang на <html>
+var MODAL_T = {
+  lv: {
+    "m.login": "Ienākt", "m.register": "Reģistrēties",
+    "m.user": "Lietotājvārds", "m.pass": "Parole", "m.login.btn": "Ieiet",
+    "m.reg.name": "Vārds", "m.reg.username": "Vēlamais lietotājvārds",
+    "m.reg.note": "Pēc pārbaudes tiksi novirzīts uz Telegram, lai pabeigtu reģistrāciju un saņemtu pieejas datus.",
+    "m.reg.btn": "Turpināt →", "m.reg.redirecting": "Novirzām uz Telegram...",
+    "m.fill": "Lūdzu, aizpildi visus laukus.", "m.ok": "Veiksmīgi! Novirzām...",
+    "m.err.net": "Savienojuma kļūda.",
+    "err.missing_fields": "Nav aizpildīti visi lauki", "err.invalid_credentials": "Nepareizs lietotājvārds vai parole",
+    "err.rate_limited": "Pārāk daudz mēģinājumu. Mēģini vēlāk.", "err.subscription_inactive": "Abonements nav aktīvs",
+    "err.subscription_expired": "Abonements beidzies", "err.device_limit": "Pārsniegts ierīču limits (maks. 3). Raksti Telegram, lai saņemtu palīdzību.",
+    "err.name_too_long": "Vārds pārāk garš", "err.username_invalid_format": "Lietotājvārdā drīkst būt tikai latīņu burti, cipari un _ (3-20 simboli).",
+    "err.username_taken": "Šis lietotājvārds jau aizņemts", "err.content_rejected": "Lūdzu, izmanto atbilstošu vārdu un lietotājvārdu",
+    "err.server_error": "Servera kļūda", "err.unknown": "Kļūda. Mēģini vēlreiz."
+  },
+  ru: {
+    "m.login": "Войти", "m.register": "Регистрация",
+    "m.user": "Имя пользователя", "m.pass": "Пароль", "m.login.btn": "Войти",
+    "m.reg.name": "Имя", "m.reg.username": "Желаемое имя пользователя",
+    "m.reg.note": "После проверки ты будешь перенаправлен в Telegram, чтобы завершить регистрацию и получить данные для входа.",
+    "m.reg.btn": "Продолжить →", "m.reg.redirecting": "Перенаправляем в Telegram...",
+    "m.fill": "Пожалуйста, заполни все поля.", "m.ok": "Успешно! Перенаправляем...",
+    "m.err.net": "Ошибка соединения.",
+    "err.missing_fields": "Заполнены не все поля", "err.invalid_credentials": "Неверное имя пользователя или пароль",
+    "err.rate_limited": "Слишком много попыток. Попробуй позже.", "err.subscription_inactive": "Подписка не активна",
+    "err.subscription_expired": "Подписка истекла", "err.device_limit": "Превышен лимит устройств (макс. 3). Напиши в Telegram для помощи.",
+    "err.name_too_long": "Имя слишком длинное", "err.username_invalid_format": "В имени пользователя допустимы только латинские буквы, цифры и _ (3-20 символов).",
+    "err.username_taken": "Это имя пользователя уже занято", "err.content_rejected": "Пожалуйста, используй подходящее имя и имя пользователя",
+    "err.server_error": "Ошибка сервера", "err.unknown": "Ошибка. Попробуй снова."
+  }
+};
+
+function currentModalLang() {
+  var l = document.documentElement.lang;
+  return (l === "ru") ? "ru" : "lv";
+}
+
+function openModal(tab) {
+  document.getElementById("authModal").classList.add("open");
+  document.body.style.overflow = "hidden";
+  switchTab(tab || "login");
+  applyModalLang();
+  setTimeout(function() {
+    var first = document.querySelector(".mform.on input");
+    if (first) first.focus();
+  }, 120);
+}
+
+function closeModal() {
+  document.getElementById("authModal").classList.remove("open");
+  document.body.style.overflow = "";
+  clearModalErrors();
+}
+
+function modalOverlayClick(e) {
+  if (e.target === document.getElementById("authModal")) closeModal();
+}
+
+function switchTab(tab) {
+  var isLogin = tab === "login";
+  document.getElementById("tabLogin").classList.toggle("active", isLogin);
+  document.getElementById("tabReg").classList.toggle("active", !isLogin);
+  document.getElementById("mfLogin").classList.toggle("on", isLogin);
+  document.getElementById("mfReg").classList.toggle("on", !isLogin);
+  clearModalErrors();
+}
+
+function applyModalLang() {
+  var dict = MODAL_T[currentModalLang()];
+  document.querySelectorAll("#authModal [data-i18n]").forEach(function(el) {
+    var k = el.getAttribute("data-i18n");
+    if (dict[k] !== undefined) el.textContent = dict[k];
+  });
+}
+
+function clearModalErrors() {
+  ["mLoginErr","mLoginOk","mRegErr","mRegOk"].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.style.display="none"; el.textContent=""; }
+  });
+  var dict = MODAL_T[currentModalLang()];
+  var lb = document.getElementById("mLoginBtn");
+  if (lb) { lb.disabled = false; lb.innerHTML = "<span>" + dict["m.login.btn"] + "</span>"; }
+  var rb = document.getElementById("mRegBtn");
+  if (rb) { rb.disabled = false; rb.innerHTML = "<span>" + dict["m.reg.btn"] + "</span>"; }
+}
+
+function setBtnLoading(btnId) {
+  var btn = document.getElementById(btnId);
+  var label = btn.querySelector("span") ? btn.querySelector("span").textContent : btn.textContent;
+  btn.disabled = true;
+  btn.innerHTML = "<span>" + label + "</span><span class='mspinner'></span>";
+}
+
+function showErr(errId, msg) {
+  var el = document.getElementById(errId);
+  el.textContent = msg; el.style.display = "block";
+}
+function showOk(okId, msg) {
+  var el = document.getElementById(okId);
+  el.textContent = msg; el.style.display = "block";
+}
+
+function translateError(data) {
+  var dict = MODAL_T[currentModalLang()];
+  if (data && data.errorCode && dict["err." + data.errorCode]) {
+    return dict["err." + data.errorCode];
+  }
+  if (data && data.error) return data.error;
+  return dict["err.unknown"];
+}
+
+async function doLogin() {
+  var dict = MODAL_T[currentModalLang()];
+  var user = document.getElementById("mUser").value.trim();
+  var pass = document.getElementById("mPass").value.trim();
+  if (!user || !pass) { showErr("mLoginErr", dict["m.fill"]); return; }
+  setBtnLoading("mLoginBtn");
+  document.getElementById("mLoginErr").style.display = "none";
+  try {
+    var res = await fetch(AUTH_WORKER_URL + "login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: user, password: pass })
+    });
+    var data = await res.json();
+    if (!res.ok) {
+      showErr("mLoginErr", translateError(data));
+      document.getElementById("mLoginBtn").disabled = false;
+      document.getElementById("mLoginBtn").innerHTML = "<span>" + dict["m.login.btn"] + "</span>";
+      return;
+    }
+    localStorage.setItem("session_token", data.token);
+    showOk("mLoginOk", dict["m.ok"]);
+    setTimeout(function() { window.location.href = "/menu.html"; }, 900);
+  } catch(e) {
+    showErr("mLoginErr", dict["m.err.net"]);
+    document.getElementById("mLoginBtn").disabled = false;
+    document.getElementById("mLoginBtn").innerHTML = "<span>" + dict["m.login.btn"] + "</span>";
+  }
+}
+
+async function doRegister() {
+  var dict = MODAL_T[currentModalLang()];
+  var name = document.getElementById("mRegName").value.trim();
+  var user = document.getElementById("mRegUser").value.trim().toLowerCase();
+
+  if (!name || !user) { showErr("mRegErr", dict["m.fill"]); return; }
+
+  if (!/^[a-z0-9_]{3,20}$/.test(user)) {
+    showErr("mRegErr", dict["err.username_invalid_format"]);
+    return;
+  }
+
+  setBtnLoading("mRegBtn");
+  document.getElementById("mRegErr").style.display = "none";
+  try {
+    var res = await fetch(AUTH_WORKER_URL + "register-check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name, username: user })
+    });
+    var data = await res.json();
+    if (!res.ok) {
+      showErr("mRegErr", translateError(data));
+      document.getElementById("mRegBtn").disabled = false;
+      document.getElementById("mRegBtn").innerHTML = "<span>" + dict["m.reg.btn"] + "</span>";
+      return;
+    }
+    showOk("mRegOk", dict["m.reg.redirecting"]);
+    setTimeout(function() {
+      window.location.href = "https://t.me/" + TELEGRAM_BOT_USERNAME + "?start=" + data.code;
+    }, 600);
+  } catch(e) {
+    showErr("mRegErr", dict["m.err.net"]);
+    document.getElementById("mRegBtn").disabled = false;
+    document.getElementById("mRegBtn").innerHTML = "<span>" + dict["m.reg.btn"] + "</span>";
+  }
+}
+
+function bindAuthModal() {
+  // Кнопка "Ienākt/Войти" в шапке
+  var loginBtn = document.getElementById("loginBtn");
+  if (loginBtn) loginBtn.onclick = function() { openModal("login"); };
+
+  // heroCta ("Reģistrēties") ведёт сразу на регистрацию.
+  // survCta ("Sākt bez maksas") — это <a href="#pricing">, просто скроллит к тарифам,
+  // модалку открывать не нужно — сначала человек должен увидеть цены.
+  var heroCta = document.getElementById("heroCta");
+  if (heroCta) heroCta.addEventListener("click", function() { openModal("register"); });
+
+  // Кнопки внутри тарифных карточек (рендерятся динамически в prGrid)
+  var prGrid = document.getElementById("prGrid");
+  if (prGrid) {
+    prGrid.addEventListener("click", function(e) {
+      var btn = e.target.closest("button");
+      if (btn) openModal("register");
+    });
+  }
+
+  ["mUser","mPass"].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener("keydown", function(e) { if (e.key === "Enter") doLogin(); });
+  });
+  ["mRegName","mRegUser"].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener("keydown", function(e) { if (e.key === "Enter") doRegister(); });
+  });
+
+  document.addEventListener("keydown", function(e) { if (e.key === "Escape") closeModal(); });
+
+  // Модалка должна переводиться при смене языка через основной переключатель
+  document.querySelectorAll('#langSwitch button').forEach(function(b) {
+    b.addEventListener('click', function() {
+      if (document.getElementById("authModal").classList.contains("open")) applyModalLang();
+    });
+  });
+}
 </script>
 </body>
 </html>
