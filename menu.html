@@ -2,7 +2,7 @@
 <html lang="lv">
 <head>
 <!-- !! DROŠĪBA: auth.js — OBLIGĀTI PIRMĀ RINDA !! -->
-<script src="/auth.js"></script>
+<script src="/l/auth.js"></script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>English OL — Dashboard</title>
@@ -224,7 +224,7 @@
         <div class="seg-item" data-lang="ru">RU</div>
       </div>
 
-      <button class="avatar" id="profileBtn" aria-label="Profile">R</button>
+      <button class="avatar" id="profileBtn" aria-label="Profile"><span id="avatarInitial">R</span></button>
       <button class="ghost" id="logoutBtn" aria-label="Logout">
         <svg class="i" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </button>
@@ -467,7 +467,7 @@
 /* ============ i18n ============ */
 const dict = {
   lv:{
-    streak:"dienu straiks", greeting:"Sveiks, Rihards!", subGreeting:"Kuru uzdevumu izvēlēsimies šodien?",
+    streak:"dienu straiks", greeting:"Sveiks, {name}!", subGreeting:"Kuru uzdevumu izvēlēsimies šodien?",
     t3l:"Klausīšanās", t3lc:"3", t3lu:"uzdevumi",
     t3r:"Lasīšana",    t3rc:"3", t3ru:"uzdevumi",
     t2w:"Rakstīšana",  t2wc:"2", t2wu:"uzdevumi",
@@ -486,7 +486,7 @@ const dict = {
     days:["Pr","Ot","Tr","Ce","Pk","Se","Sv"], locale:"lv-LV"
   },
   ru:{
-    streak:"дней подряд", greeting:"Привет, Рихард!", subGreeting:"Какое задание выберем на сегодня?",
+    streak:"дней подряд", greeting:"Привет, {name}!", subGreeting:"Какое задание выберем на сегодня?",
     t3l:"Аудирование", t3lc:"3", t3lu:"задания",
     t3r:"Чтение",      t3rc:"3", t3ru:"задания",
     t2w:"Письмо",      t2wc:"2", t2wu:"задания",
@@ -554,6 +554,14 @@ function applyLang(){
   });
   // Today eyebrow
   $('#today').textContent = new Date().toLocaleDateString(t.locale,{weekday:"long",day:"numeric",month:"long"});
+  // Реальное имя пользователя — auth.js сохраняет его в localStorage при
+  // проверке токена (/check у auth-worker). Плейсхолдер {name} подставлен
+  // в greeting внутри словаря dict, а не хардкожен в HTML.
+  const realName = localStorage.getItem("display_name") || (lang==="lv" ? "Skolēns" : "Ученик");
+  const greetingEl = document.querySelector('[data-i="greeting"]');
+  if (greetingEl) greetingEl.textContent = t.greeting.replace("{name}", realName);
+  const avatarEl = document.getElementById("avatarInitial");
+  if (avatarEl) avatarEl.textContent = realName.charAt(0).toUpperCase();
   document.documentElement.lang = lang;
   renderLb();
 }
@@ -576,7 +584,8 @@ function renderLb(){
   $('.lb-hero .l b').innerHTML = `#<span id="myRank">${my.rank}</span><span style="color:rgba(255,255,255,.5);font-size:14px;margin-left:6px;font-weight:500">${t.of} ${totalNow.toLocaleString()}</span>`;
 
   // Full modal
-  const meName = lang==="lv"?"Tu (Rihards)":"Ты (Рихард)";
+  const realNameLb = localStorage.getItem("display_name") || (lang==="lv" ? "Skolēns" : "Ученик");
+  const meName = lang==="lv" ? ("Tu (" + realNameLb + ")") : ("Ты (" + realNameLb + ")");
   const full = list.map((it,i)=>rowHTML(i,it,unit,false)).join("")
              + '<div class="hr"></div>'
              + rowHTML(my.rank-1,{name:meName,city:"Rīga",val:my.val},unit,true);
@@ -637,7 +646,7 @@ document.addEventListener('keydown',e=>{
 // Она сама шлёт запрос на auth-worker /logout и чистит localStorage.
 $('#logoutBtn').addEventListener('click', () => {
   if (typeof window.logout === 'function') window.logout();
-  else { localStorage.removeItem('session_token'); window.location.href = '/'; }
+  else { localStorage.removeItem('session_token'); window.location.href = '/l/'; }
 });
 
 /* ============ Реальный лидерборд с auth-worker ============
