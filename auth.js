@@ -14,7 +14,7 @@ var AI_WORKER_URL = "https://ai-worker.gegeodin.workers.dev/";
   var token = localStorage.getItem("session_token");
 
   if (!token) {
-    window.location.href = "/login.html";
+    window.location.href = "/l/login.html";
     return;
   }
 
@@ -31,8 +31,16 @@ var AI_WORKER_URL = "https://ai-worker.gegeodin.workers.dev/";
 
     if (res.status === 401 || res.status === 403) {
       localStorage.removeItem("session_token");
-      window.location.href = "/login.html?expired=1";
+      window.location.href = "/l/login.html?expired=1";
       return;
+    }
+
+    // Сохраняем реальное имя пользователя — страницы (menu.html) читают
+    // его синхронно из localStorage вместо отдельного запроса.
+    if (res.ok) {
+      var checkData = await res.json();
+      if (checkData.displayName) localStorage.setItem("display_name", checkData.displayName);
+      if (checkData.username) localStorage.setItem("username", checkData.username);
     }
   } catch(e) {
     // Если сеть недоступна — пускаем, токен есть локально
@@ -53,7 +61,7 @@ window.callGemini = async function(prompt, generationConfig) {
   var GEMINI_MODEL = "gemini-2.5-flash";
 
   if (!token) {
-    window.location.href = "/login.html";
+    window.location.href = "/l/login.html";
     throw new Error("Нет токена");
   }
 
@@ -78,7 +86,7 @@ window.callGemini = async function(prompt, generationConfig) {
 
     if (res.status === 401 || res.status === 403) {
       localStorage.removeItem("session_token");
-      window.location.href = "/login.html?expired=1";
+      window.location.href = "/l/login.html?expired=1";
       throw new Error("Сессия истекла");
     }
 
@@ -122,5 +130,7 @@ window.logout = async function() {
     }
   }
   localStorage.removeItem("session_token");
-  window.location.href = "/";
+  localStorage.removeItem("display_name");
+  localStorage.removeItem("username");
+  window.location.href = "/l/";
 };
