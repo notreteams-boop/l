@@ -124,7 +124,7 @@
   <div class="ok" id="lOk"></div>
 
   <div class="foot">
-    <span id="tNoAcc">Nav konta?</span> <a href="/" id="tGoReg">Reģistrēties galvenajā lapā</a>
+    <span id="tNoAcc">Nav konta?</span> <a href="/l/" id="tGoReg">Reģistrēties galvenajā lapā</a>
   </div>
 </div>
 
@@ -186,7 +186,7 @@ if (new URLSearchParams(window.location.search).get("expired") === "1") {
 
 // Если уже залогинен — сразу в меню
 if (localStorage.getItem("session_token")) {
-  window.location.href = "/menu.html";
+  window.location.href = "/l/menu.html";
 }
 
 function translateError(data) {
@@ -234,7 +234,7 @@ async function doLogin() {
     }
     localStorage.setItem("session_token", data.token);
     showOk(t.ok);
-    setTimeout(function() { window.location.href = "/menu.html"; }, 700);
+    setTimeout(function() { window.location.href = "/l/menu.html"; }, 700);
   } catch (e) {
     showErr(t.errNet);
     btn.disabled = false;
