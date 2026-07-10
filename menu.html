@@ -1,6 +1,8 @@
 <!doctype html>
 <html lang="lv">
 <head>
+<!-- !! DROŠĪBA: auth.js — OBLIGĀTI PIRMĀ RINDA !! -->
+<script src="/auth.js"></script>
 <meta charset="utf-8" />
 <meta name="viewport" content="width=device-width, initial-scale=1" />
 <title>English OL — Dashboard</title>
@@ -223,7 +225,7 @@
       </div>
 
       <button class="avatar" id="profileBtn" aria-label="Profile">R</button>
-      <button class="ghost" aria-label="Logout">
+      <button class="ghost" id="logoutBtn" aria-label="Logout">
         <svg class="i" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
       </button>
     </div>
@@ -570,7 +572,8 @@ function renderLb(){
   $('#myRank').textContent = my.rank;
   $('#myVal').textContent  = my.val.toLocaleString();
   $('#lbUnitHead').textContent = unit;
-  $('.lb-hero .l b').innerHTML = `#<span id="myRank">${my.rank}</span><span style="color:rgba(255,255,255,.5);font-size:14px;margin-left:6px;font-weight:500">${t.of} ${TOTAL.toLocaleString()}</span>`;
+  const totalNow = window.TOTAL_OVERRIDE || TOTAL;
+  $('.lb-hero .l b').innerHTML = `#<span id="myRank">${my.rank}</span><span style="color:rgba(255,255,255,.5);font-size:14px;margin-left:6px;font-weight:500">${t.of} ${totalNow.toLocaleString()}</span>`;
 
   // Full modal
   const meName = lang==="lv"?"Tu (Rihards)":"Ты (Рихард)";
@@ -629,9 +632,65 @@ document.addEventListener('keydown',e=>{
   if(e.key==='Escape') $$('.backdrop').forEach(b=>b.classList.remove('open'));
 });
 
+/* ============ Logout ============ */
+// window.logout() определена в auth.js (уже подключён первой строкой в <head>).
+// Она сама шлёт запрос на auth-worker /logout и чистит localStorage.
+$('#logoutBtn').addEventListener('click', () => {
+  if (typeof window.logout === 'function') window.logout();
+  else { localStorage.removeItem('session_token'); window.location.href = '/'; }
+});
+
+/* ============ Реальный лидерборд с auth-worker ============
+   auth.js уже подключён (первая строка в <head>) и объявляет глобальную
+   переменную AUTH_WORKER_URL — используем её напрямую, чтобы URL воркера
+   настраивался в ОДНОМ месте (auth.js), а не дублировался по файлам. */
+
+async function loadRealLeaderboard() {
+  var token = localStorage.getItem("session_token");
+  if (!token) return; // auth.js уже должен был увести на /login.html, но на всякий случай
+
+  try {
+    var res = await fetch(AUTH_WORKER_URL + "leaderboard", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": "Bearer " + token
+      },
+      body: JSON.stringify({})
+    });
+    if (!res.ok) return; // тихо остаёмся на demo-данных при ошибке
+    var data = await res.json();
+
+    // Перегоняем реальный ответ auth-worker в формат, который понимает
+    // rowHTML()/renderLb(): { name, city, val }. city у реальных юзеров
+    // не хранится — оставляем пустым, вёрстка это переживает нормально.
+    var real = (data.top || []).map(function(u) {
+      return { name: u.displayName || u.username, city: "", val: u.solvedCount || 0 };
+    });
+    if (real.length === 0) return; // пока никто не решал задания — оставляем demo
+
+    lbXP.length = 0;
+    Array.prototype.push.apply(lbXP, real);
+    lbGL.length = 0;
+    Array.prototype.push.apply(lbGL, real);
+
+    if (data.myRank && data.myRank > 0) {
+      MY.xp.rank = data.myRank;
+      MY.global.rank = data.myRank;
+    }
+    if (typeof data.totalUsers === "number" && data.totalUsers > 0) {
+      window.TOTAL_OVERRIDE = data.totalUsers;
+    }
+
+    renderLb();
+  } catch (e) {
+    console.warn("Leaderboard load failed, showing demo data:", e.message);
+  }
+}
+
 /* ============ Init ============ */
 applyLang();
+loadRealLeaderboard();
 </script>
-<script>(function(){function c(){var b=a.contentDocument||a.contentWindow.document;if(b){var d=b.createElement('script');d.innerHTML="window.__CF$cv$params={r:'a188d64fa927eb35',t:'MTc4MzYxNTkyNQ=='};var a=document.createElement('script');a.src='/cdn-cgi/challenge-platform/scripts/jsd/main.js';document.getElementsByTagName('head')[0].appendChild(a);";b.getElementsByTagName('head')[0].appendChild(d)}}if(document.body){var a=document.createElement('iframe');a.height=1;a.width=1;a.style.position='absolute';a.style.top=0;a.style.left=0;a.style.border='none';a.style.visibility='hidden';document.body.appendChild(a);if('loading'!==document.readyState)c();else if(window.addEventListener)document.addEventListener('DOMContentLoaded',c);else{var e=document.onreadystatechange||function(){};document.onreadystatechange=function(b){e(b);'loading'!==document.readyState&&(document.onreadystatechange=e,c())}}}})();</script><script defer src="https://static.cloudflareinsights.com/beacon.min.js/v4513226cdae34746b4dedf0b4dfa099e1781791509496" integrity="sha512-ZE9pZaUXND66v380QUtch/5sE9tPFh2zg45pR2PB0CVkCtOREv2AJKkSidISWkysEuQ0EH8faUU5du78bx87UQ==" data-cf-beacon='{"version":"2024.11.0","token":"7f7b0fd8732c4326aae4b9d58d5c514a","server_timing":{"name":{"cfCacheStatus":true,"cfEdge":true,"cfExtPri":true,"cfL4":true,"cfOrigin":true,"cfSpeedBrain":true},"location_startswith":null}}' crossorigin="anonymous"></script>
 </body>
 </html>
