@@ -1,0 +1,254 @@
+<!doctype html>
+<html lang="lv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>English OL — Ienākt</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#08080b; --card:#101017; --card2:#14141c;
+    --bd:rgba(255,255,255,.06); --bdh:rgba(255,255,255,.12);
+    --t:#f4f5f7; --td:#a4a7b3; --tm:#6a6d7a;
+    --cyan:#6cf0e0; --indigo:#7c8cff; --violet:#a78bfa;
+    --amber:#fbbf24; --green:#34d399; --red:#f87171;
+    --grad:linear-gradient(135deg,#7c8cff 0%,#56d4ff 55%,#6cf0e0 100%);
+    --r:18px;
+  }
+  *{box-sizing:border-box}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--t);min-height:100%}
+  body{font-family:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;
+    display:flex; align-items:center; justify-content:center; min-height:100vh; padding:20px;}
+  .mono{font-family:"JetBrains Mono",ui-monospace,monospace;letter-spacing:0}
+  a,button{font-family:inherit; cursor:pointer}
+  button{border:0;background:transparent;color:inherit}
+
+  .ambient{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(600px 400px at 12% -5%,rgba(124,140,255,.14),transparent 60%),
+      radial-gradient(500px 380px at 100% 10%,rgba(108,240,224,.10),transparent 60%);
+  }
+
+  .card{
+    position:relative; z-index:1; width:100%; max-width:400px;
+    background:var(--card); border:1px solid var(--bd); border-radius:20px;
+    padding:34px 30px 30px; box-shadow:0 30px 80px -20px rgba(0,0,0,.6);
+  }
+  .logo{display:flex; align-items:center; gap:10px; margin-bottom:26px;}
+  .logo-b{width:34px;height:34px;border-radius:10px;background:var(--grad);display:flex;align-items:center;justify-content:center;flex:none;}
+  .logo-t{font-weight:800; font-size:16px;}
+  .logo-t span{background:var(--grad); -webkit-background-clip:text; background-clip:text; color:transparent;}
+
+  h1{font-size:20px; font-weight:800; margin:0 0 6px;}
+  .sub{color:var(--td); font-size:14px; margin:0 0 24px; line-height:1.5;}
+
+  .expired-note{
+    display:none; margin-bottom:18px; padding:10px 13px; border-radius:11px;
+    background:rgba(251,191,36,.1); border:1px solid rgba(251,191,36,.25);
+    color:var(--amber); font-size:13px; line-height:1.5;
+  }
+  .expired-note.show{display:block;}
+
+  .field{margin-bottom:14px;}
+  .field label{display:block; font-size:12.5px; color:var(--td); margin-bottom:6px; font-weight:600;}
+  .field input{
+    width:100%; padding:11px 13px; border-radius:11px; border:1px solid var(--bd);
+    background:rgba(255,255,255,.03); color:var(--t); font-size:14.5px; font-family:inherit;
+    transition:border-color .2s;
+  }
+  .field input:focus{outline:none; border-color:var(--indigo);}
+
+  .btn-main{
+    width:100%; padding:12px 0; border-radius:11px; font-size:14.5px; font-weight:700;
+    background:var(--grad); color:#04050a; margin-top:6px;
+    display:flex; align-items:center; justify-content:center; gap:8px;
+  }
+  .btn-main:hover{filter:brightness(1.08);}
+  .btn-main:disabled{opacity:.65;}
+
+  .err{display:none; margin-top:12px; color:var(--red); font-size:13px; background:rgba(248,113,113,.1); border:1px solid rgba(248,113,113,.25); border-radius:10px; padding:9px 12px;}
+  .ok{display:none; margin-top:12px; color:var(--green); font-size:13px; background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.25); border-radius:10px; padding:9px 12px;}
+
+  .foot{margin-top:22px; text-align:center; font-size:13.5px; color:var(--tm);}
+  .foot a{color:var(--cyan); font-weight:600; text-decoration:none;}
+  .foot a:hover{text-decoration:underline;}
+
+  .spinner{display:inline-block; width:14px; height:14px; border-radius:50%; border:2px solid rgba(4,5,10,.3); border-top-color:#04050a; animation:spin .7s linear infinite;}
+  @keyframes spin{to{transform:rotate(360deg);}}
+
+  .lang-sw{position:absolute; top:22px; right:22px; display:flex; gap:4px; background:rgba(255,255,255,.04); border-radius:10px; padding:3px; z-index:2;}
+  .lang-sw button{padding:5px 10px; border-radius:7px; font-size:12px; font-weight:700; color:var(--tm);}
+  .lang-sw button.active{background:var(--card2); color:var(--t);}
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+
+<div class="lang-sw" id="langSwitch">
+  <button data-lang="lv" class="active">LV</button>
+  <button data-lang="ru">RU</button>
+</div>
+
+<div class="card">
+  <div class="logo">
+    <div class="logo-b">
+      <svg width="17" height="17" viewBox="0 0 24 24" fill="none"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z" fill="#04050a"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z" fill="#04050a"/></svg>
+    </div>
+    <div class="logo-t">English <span>OL</span></div>
+  </div>
+
+  <h1 id="tTitle">Ienākt savā kontā</h1>
+  <p class="sub" id="tSub">Ievadi savus datus, lai turpinātu mācības.</p>
+
+  <div class="expired-note" id="expiredNote">
+    <span id="tExpired">Tava sesija ir beigusies. Lūdzu, ieej vēlreiz.</span>
+  </div>
+
+  <div class="field">
+    <label id="tUserLabel">Lietotājvārds</label>
+    <input type="text" id="lUser" autocomplete="username" autocapitalize="none" />
+  </div>
+  <div class="field">
+    <label id="tPassLabel">Parole</label>
+    <input type="password" id="lPass" autocomplete="current-password" />
+  </div>
+
+  <button class="btn-main" id="loginBtn" onclick="doLogin()">
+    <span id="tBtn">Ieiet</span>
+  </button>
+
+  <div class="err" id="lErr"></div>
+  <div class="ok" id="lOk"></div>
+
+  <div class="foot">
+    <span id="tNoAcc">Nav konta?</span> <a href="/" id="tGoReg">Reģistrēties galvenajā lapā</a>
+  </div>
+</div>
+
+<script>
+// ЗАМЕНИ на свой URL после деплоя auth-worker (тот же, что в auth.js).
+var AUTH_WORKER_URL = "https://auth-worker.gegeodin.workers.dev/";
+
+var T = {
+  lv: {
+    title: "Ienākt savā kontā", sub: "Ievadi savus datus, lai turpinātu mācības.",
+    expired: "Tava sesija ir beigusies. Lūdzu, ieej vēlreiz.",
+    userLabel: "Lietotājvārds", passLabel: "Parole", btn: "Ieiet",
+    noAcc: "Nav konta?", goReg: "Reģistrēties galvenajā lapā",
+    fill: "Lūdzu, aizpildi visus laukus.", ok: "Veiksmīgi! Novirzām...", errNet: "Savienojuma kļūda.",
+    "err.missing_fields": "Nav aizpildīti visi lauki", "err.invalid_credentials": "Nepareizs lietotājvārds vai parole",
+    "err.rate_limited": "Pārāk daudz mēģinājumu. Mēģini vēlāk.", "err.subscription_inactive": "Abonements nav aktīvs",
+    "err.subscription_expired": "Abonements beidzies", "err.device_limit": "Pārsniegts ierīču limits (maks. 3). Raksti Telegram, lai saņemtu palīdzību.",
+    "err.server_error": "Servera kļūda", "err.unknown": "Kļūda. Mēģini vēlreiz."
+  },
+  ru: {
+    title: "Вход в аккаунт", sub: "Введи свои данные, чтобы продолжить обучение.",
+    expired: "Твоя сессия истекла. Пожалуйста, войди снова.",
+    userLabel: "Имя пользователя", passLabel: "Пароль", btn: "Войти",
+    noAcc: "Нет аккаунта?", goReg: "Регистрация на главной странице",
+    fill: "Пожалуйста, заполни все поля.", ok: "Успешно! Перенаправляем...", errNet: "Ошибка соединения.",
+    "err.missing_fields": "Заполнены не все поля", "err.invalid_credentials": "Неверное имя пользователя или пароль",
+    "err.rate_limited": "Слишком много попыток. Попробуй позже.", "err.subscription_inactive": "Подписка не активна",
+    "err.subscription_expired": "Подписка истекла", "err.device_limit": "Превышен лимит устройств (макс. 3). Напиши в Telegram для помощи.",
+    "err.server_error": "Ошибка сервера", "err.unknown": "Ошибка. Попробуй снова."
+  }
+};
+var lang = "lv";
+
+function applyLang() {
+  var t = T[lang];
+  document.documentElement.lang = lang;
+  document.getElementById("tTitle").textContent = t.title;
+  document.getElementById("tSub").textContent = t.sub;
+  document.getElementById("tExpired").textContent = t.expired;
+  document.getElementById("tUserLabel").textContent = t.userLabel;
+  document.getElementById("tPassLabel").textContent = t.passLabel;
+  document.getElementById("tBtn").textContent = t.btn;
+  document.getElementById("tNoAcc").textContent = t.noAcc;
+  document.getElementById("tGoReg").textContent = t.goReg;
+}
+
+document.querySelectorAll("#langSwitch button").forEach(function(b) {
+  b.addEventListener("click", function() {
+    lang = b.getAttribute("data-lang");
+    document.querySelectorAll("#langSwitch button").forEach(function(x) { x.classList.toggle("active", x === b); });
+    applyLang();
+  });
+});
+
+// Показываем баннер "сессия истекла", если пришли по редиректу из auth.js
+if (new URLSearchParams(window.location.search).get("expired") === "1") {
+  document.getElementById("expiredNote").classList.add("show");
+}
+
+// Если уже залогинен — сразу в меню
+if (localStorage.getItem("session_token")) {
+  window.location.href = "/menu.html";
+}
+
+function translateError(data) {
+  var t = T[lang];
+  if (data && data.errorCode && t["err." + data.errorCode]) return t["err." + data.errorCode];
+  if (data && data.error) return data.error;
+  return t["err.unknown"];
+}
+
+function showErr(msg) {
+  var el = document.getElementById("lErr");
+  el.textContent = msg; el.style.display = "block";
+}
+function showOk(msg) {
+  var el = document.getElementById("lOk");
+  el.textContent = msg; el.style.display = "block";
+}
+
+async function doLogin() {
+  var t = T[lang];
+  var user = document.getElementById("lUser").value.trim();
+  var pass = document.getElementById("lPass").value.trim();
+  document.getElementById("lErr").style.display = "none";
+  document.getElementById("lOk").style.display = "none";
+
+  if (!user || !pass) { showErr(t.fill); return; }
+
+  var btn = document.getElementById("loginBtn");
+  var btnSpan = document.getElementById("tBtn");
+  btn.disabled = true;
+  btnSpan.innerHTML = t.btn + " <span class='spinner'></span>";
+
+  try {
+    var res = await fetch(AUTH_WORKER_URL + "login", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: user, password: pass })
+    });
+    var data = await res.json();
+    if (!res.ok) {
+      showErr(translateError(data));
+      btn.disabled = false;
+      btnSpan.textContent = t.btn;
+      return;
+    }
+    localStorage.setItem("session_token", data.token);
+    showOk(t.ok);
+    setTimeout(function() { window.location.href = "/menu.html"; }, 700);
+  } catch (e) {
+    showErr(t.errNet);
+    btn.disabled = false;
+    btnSpan.textContent = t.btn;
+  }
+}
+
+["lUser", "lPass"].forEach(function(id) {
+  document.getElementById(id).addEventListener("keydown", function(e) {
+    if (e.key === "Enter") doLogin();
+  });
+});
+
+applyLang();
+</script>
+</body>
+</html>
