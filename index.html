@@ -412,7 +412,7 @@ footer{border-top:1px solid var(--line-soft);}
 <script>
   /* Если уже авторизован — сразу в меню, ничего не меняем в логике */
   if (localStorage.getItem("session_token")) {
-    window.location.href = "/menu.html";
+    window.location.href = "/l/menu.html";
   }
 </script>
 
@@ -1544,7 +1544,7 @@ async function doLogin() {
     }
     localStorage.setItem("session_token", data.token);
     showOk("mLoginOk", dict["m.ok"]);
-    setTimeout(function() { window.location.href = "/menu.html"; }, 900);
+    setTimeout(function() { window.location.href = "/l/menu.html"; }, 900);
   } catch(e) {
     showErr("mLoginErr", dict["m.err.net"]);
     document.getElementById("mLoginBtn").disabled = false;
@@ -1630,4 +1630,4 @@ function bindAuthModal() {
 }
 </script>
 </body>
-</html>
+          </html>
