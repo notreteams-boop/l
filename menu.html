@@ -238,6 +238,7 @@
     <!-- Greeting -->
     <section class="rise">
       <div class="eyebrow" id="today"></div>
+      <div id="debugBox" style="background:#2a1a00;border:1px solid #ffaa00;color:#ffaa00;padding:10px;border-radius:8px;margin-bottom:12px;font-size:12px;font-family:monospace;word-break:break-all;"></div>
       <h1 data-i="greeting">Sveiks, Rihards!</h1>
       <p class="sub" data-i="subGreeting">Kuru uzdevumu izvēlēsimies šodien?</p>
     </section>
@@ -557,7 +558,10 @@ function applyLang(){
   // Реальное имя пользователя — auth.js сохраняет его в localStorage при
   // проверке токена (/check у auth-worker). Плейсхолдер {name} подставлен
   // в greeting внутри словаря dict, а не хардкожен в HTML.
-  const realName = localStorage.getItem("display_name") || (lang==="lv" ? "Skolēns" : "Ученик");
+  // Обрезаем до 24 символов на всякий случай — auth-worker разрешает имена
+  // до 60 символов при регистрации, но такая длина сломает вёрстку заголовка.
+  let realName = localStorage.getItem("display_name") || (lang==="lv" ? "Skolēns" : "Ученик");
+  if (realName.length > 24) realName = realName.slice(0, 24) + "…";
   const greetingEl = document.querySelector('[data-i="greeting"]');
   if (greetingEl) greetingEl.textContent = t.greeting.replace("{name}", realName);
   const avatarEl = document.getElementById("avatarInitial");
@@ -584,7 +588,8 @@ function renderLb(){
   $('.lb-hero .l b').innerHTML = `#<span id="myRank">${my.rank}</span><span style="color:rgba(255,255,255,.5);font-size:14px;margin-left:6px;font-weight:500">${t.of} ${totalNow.toLocaleString()}</span>`;
 
   // Full modal
-  const realNameLb = localStorage.getItem("display_name") || (lang==="lv" ? "Skolēns" : "Ученик");
+  let realNameLb = localStorage.getItem("display_name") || (lang==="lv" ? "Skolēns" : "Ученик");
+  if (realNameLb.length > 20) realNameLb = realNameLb.slice(0, 20) + "…";
   const meName = lang==="lv" ? ("Tu (" + realNameLb + ")") : ("Ты (" + realNameLb + ")");
   const full = list.map((it,i)=>rowHTML(i,it,unit,false)).join("")
              + '<div class="hr"></div>'
@@ -700,6 +705,32 @@ async function loadRealLeaderboard() {
 /* ============ Init ============ */
 applyLang();
 loadRealLeaderboard();
+
+/* ============ ВРЕМЕННАЯ ДИАГНОСТИКА (убрать после проверки) ============ */
+(function debugPanel() {
+  var box = document.getElementById("debugBox");
+  if (!box) return;
+  var token = localStorage.getItem("session_token");
+  var name = localStorage.getItem("display_name");
+  var uname = localStorage.getItem("username");
+  box.textContent =
+    "DEBUG: token=" + (token ? token.slice(0, 8) + "..." : "НЕТ") +
+    " | display_name=" + JSON.stringify(name) +
+    " | username=" + JSON.stringify(uname);
+
+  // Дополнительно дёргаем /check ещё раз прямо тут и показываем сырой ответ
+  if (token) {
+    fetch(AUTH_WORKER_URL + "check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+      body: JSON.stringify({ check: true })
+    }).then(function(r) { return r.text(); }).then(function(text) {
+      box.textContent += " | /check raw response: " + text;
+    }).catch(function(e) {
+      box.textContent += " | /check FETCH ERROR: " + e.message;
+    });
+  }
+})();
 </script>
 </body>
 </html>
