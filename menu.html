@@ -238,7 +238,6 @@
     <!-- Greeting -->
     <section class="rise">
       <div class="eyebrow" id="today"></div>
-      <div id="debugBox" style="background:#2a1a00;border:1px solid #ffaa00;color:#ffaa00;padding:10px;border-radius:8px;margin-bottom:12px;font-size:12px;font-family:monospace;word-break:break-all;"></div>
       <h1 data-i="greeting">Sveiks, Rihards!</h1>
       <p class="sub" data-i="subGreeting">Kuru uzdevumu izvēlēsimies šodien?</p>
     </section>
@@ -716,32 +715,6 @@ if (window.authReady) {
 } else {
   document.addEventListener("auth-ready", initMenu, { once: true });
 }
-
-/* ============ ВРЕМЕННАЯ ДИАГНОСТИКА (убрать после проверки) ============ */
-(function debugPanel() {
-  var box = document.getElementById("debugBox");
-  if (!box) return;
-  var token = localStorage.getItem("session_token");
-  var name = localStorage.getItem("display_name");
-  var uname = localStorage.getItem("username");
-  box.textContent =
-    "DEBUG: token=" + (token ? token.slice(0, 8) + "..." : "НЕТ") +
-    " | display_name=" + JSON.stringify(name) +
-    " | username=" + JSON.stringify(uname);
-
-  // Дополнительно дёргаем /check ещё раз прямо тут и показываем сырой ответ
-  if (token) {
-    fetch(AUTH_WORKER_URL + "check", {
-      method: "POST",
-      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-      body: JSON.stringify({ check: true })
-    }).then(function(r) { return r.text(); }).then(function(text) {
-      box.textContent += " | /check raw response: " + text;
-    }).catch(function(e) {
-      box.textContent += " | /check FETCH ERROR: " + e.message;
-    });
-  }
-})();
 </script>
 </body>
 </html>
