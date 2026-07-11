@@ -703,8 +703,19 @@ async function loadRealLeaderboard() {
 }
 
 /* ============ Init ============ */
-applyLang();
-loadRealLeaderboard();
+// auth.js — асинхронный и не блокирует остальную загрузку страницы, поэтому
+// display_name/username могут ещё не быть в localStorage в момент, когда
+// этот код выполняется. Ждём window.authReady (флаг на случай, если auth.js
+// уже закончил раньше) либо событие auth-ready (на случай, если ещё нет).
+function initMenu() {
+  applyLang();
+  loadRealLeaderboard();
+}
+if (window.authReady) {
+  initMenu();
+} else {
+  document.addEventListener("auth-ready", initMenu, { once: true });
+}
 
 /* ============ ВРЕМЕННАЯ ДИАГНОСТИКА (убрать после проверки) ============ */
 (function debugPanel() {
