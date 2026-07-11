@@ -1,719 +1,1632 @@
 <!DOCTYPE html>
 <html lang="lv">
 <head>
-<!-- !! DROŠĪBA: auth.js — OBLIGĀTI PIRMĀ RINDA !! -->
-<script src="/l/auth.js"></script>
-<meta charset="utf-8" />
-<meta name="viewport" content="width=device-width, initial-scale=1" />
-<title>English OL — Dashboard</title>
-<link rel="preconnect" href="https://fonts.googleapis.com" />
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>English OL — CE OL/AL trenažieris</title>
 <style>
-  :root{
-    --bg:#08080b; --card:#101017; --card2:#14141c;
-    --bd:rgba(255,255,255,.06); --bdh:rgba(255,255,255,.12);
-    --t:#f4f5f7; --td:#a4a7b3; --tm:#6a6d7a;
-    --cyan:#6cf0e0; --indigo:#7c8cff; --violet:#a78bfa;
-    --amber:#fbbf24; --green:#34d399; --red:#f87171;
-    --grad:linear-gradient(135deg,#7c8cff 0%,#56d4ff 55%,#6cf0e0 100%);
-    --r:18px;
-  }
-  *{box-sizing:border-box}
-  html,body{margin:0;padding:0;background:var(--bg);color:var(--t);min-height:100%}
-  body{font-family:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
-  .mono{font-family:"JetBrains Mono",ui-monospace,monospace;letter-spacing:0}
-  a,button{font-family:inherit}
-  button{cursor:pointer;border:0;background:transparent;color:inherit}
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
 
-  /* Ambient + grain */
-  .ambient{position:fixed;inset:0;z-index:0;pointer-events:none;
-    background:
-      radial-gradient(600px 400px at 12% -5%,rgba(124,140,255,.14),transparent 60%),
-      radial-gradient(700px 500px at 105% 10%,rgba(108,240,224,.08),transparent 60%),
-      radial-gradient(800px 600px at 50% 110%,rgba(86,212,255,.06),transparent 60%);}
-  .grain{position:fixed;inset:0;z-index:1;pointer-events:none;opacity:.035;mix-blend-mode:overlay;
-    background-image:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/></svg>")}
+:root{
+  --bg:#08090b;
+  --bg-soft:#0d0f13;
+  --ink:#eef0f4;
+  --ink-dim:#9aa2b1;
+  --ink-mute:#5f6675;
+  --line:rgba(255,255,255,.08);
+  --line-soft:rgba(255,255,255,.05);
+  --indigo:#6366f1;
+  --indigo2:#818cf8;
+  --cyan:#22d3ee;
+  --emerald:#34d399;
+  --rose:#fb7185;
+  --amber:#fbbf24;
+  --grad-main: linear-gradient(120deg, var(--indigo) 0%, var(--cyan) 100%);
+  --grad-text: linear-gradient(120deg, #a5b4fc 0%, #67e8f9 100%);
+  --shadow-glow: 0 0 0 1px rgba(99,102,241,.15), 0 20px 60px -20px rgba(99,102,241,.35);
+  --deg: 302deg;
+}
 
-  .wrap{position:relative;z-index:2;max-width:1240px;margin:0 auto;padding:0 32px}
-  @media(max-width:640px){.wrap{padding:0 18px}}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+@media (prefers-reduced-motion: reduce){
+  html{scroll-behavior:auto;}
+  *,*::before,*::after{animation-duration:.001ms !important; animation-iteration-count:1 !important; transition-duration:.001ms !important; scroll-behavior:auto !important;}
+}
 
-  /* Header */
-  header{border-bottom:1px solid var(--bd)}
-  .hd{display:flex;align-items:center;justify-content:space-between;padding:20px 0;gap:14px}
-  .logo{display:flex;align-items:center;gap:12px}
-  .logo-b{width:36px;height:36px;border-radius:12px;background:var(--grad);display:flex;align-items:center;justify-content:center;color:#0b0b12}
-  .logo-t{font-weight:800;font-size:17px;letter-spacing:-.02em}
-  .logo-t span{color:rgba(255,255,255,.55)}
-  .logo-s{font-size:10px;letter-spacing:.22em;color:rgba(255,255,255,.4);text-transform:uppercase;margin-top:2px}
+body{
+  margin:0;
+  background:
+    radial-gradient(1100px 620px at 78% -8%, rgba(99,102,241,.16), transparent 60%),
+    radial-gradient(900px 520px at 8% 12%, rgba(34,211,238,.10), transparent 55%),
+    var(--bg);
+  color:var(--ink);
+  font-family:'Inter',system-ui,-apple-system,sans-serif;
+  -webkit-font-smoothing:antialiased;
+  overflow-x:hidden;
+}
 
-  .cluster{display:flex;align-items:center;gap:10px}
-  .chip{display:inline-flex;align-items:center;gap:8px;padding:6px 12px;border-radius:999px;background:rgba(255,255,255,.04);border:1px solid var(--bd);font-size:12.5px;font-weight:600}
-  @media(max-width:640px){.chip{display:none}}
+::selection{background:rgba(99,102,241,.35); color:#fff;}
 
-  .seg{background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:999px;padding:3px;display:inline-flex;gap:2px}
-  .seg-item{padding:6px 12px;border-radius:999px;font-size:12px;font-weight:600;color:var(--td);cursor:pointer;transition:color .18s,background .18s;display:inline-flex;align-items:center;gap:6px}
-  .seg-item.active{color:#0b0b12;background:var(--grad)}
+::-webkit-scrollbar{width:10px; height:10px;}
+::-webkit-scrollbar-track{background:var(--bg);}
+::-webkit-scrollbar-thumb{background:linear-gradient(180deg,var(--indigo),var(--cyan)); border-radius:8px; border:2px solid var(--bg);}
 
-  .avatar{width:36px;height:36px;border-radius:999px;background:var(--grad);color:#0b0b12;font-weight:800;font-size:13px;display:inline-flex;align-items:center;justify-content:center;box-shadow:0 6px 22px -8px rgba(86,212,255,.55)}
-  .ghost{width:36px;height:36px;border-radius:999px;background:rgba(255,255,255,.03);border:1px solid var(--bd);display:inline-flex;align-items:center;justify-content:center;transition:background .2s,border-color .2s}
-  .ghost:hover{background:rgba(255,255,255,.06);border-color:var(--bdh)}
+a{color:inherit; text-decoration:none;}
+button{font-family:inherit; cursor:pointer;}
+img{max-width:100%; display:block;}
 
-  .flame{filter:drop-shadow(0 0 6px rgba(251,191,36,.6));animation:pulse 2.4s ease-in-out infinite}
-  @keyframes pulse{0%,100%{filter:drop-shadow(0 0 6px rgba(251,191,36,.6))}50%{filter:drop-shadow(0 0 14px rgba(251,191,36,.9))}}
+.wrap{max-width:1180px; margin:0 auto; padding:0 24px;}
+.eyebrow{
+  font-family:'JetBrains Mono',monospace;
+  font-size:12.5px;
+  letter-spacing:.14em;
+  text-transform:uppercase;
+  color:var(--indigo2);
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+}
+.eyebrow::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--cyan); box-shadow:0 0 10px var(--cyan);}
 
-  main{padding:40px 0 60px}
-  .rise{opacity:0;transform:translateY(14px);animation:rise .62s cubic-bezier(.2,.7,.2,1) forwards}
-  @keyframes rise{to{opacity:1;transform:none}}
+h1,h2,h3,.disp{
+  font-family:'Space Grotesk',sans-serif;
+  letter-spacing:-.02em;
+  line-height:1.05;
+  margin:0;
+}
+.grad-text{
+  background:var(--grad-text);
+  -webkit-background-clip:text;
+  background-clip:text;
+  color:transparent;
+}
 
-  .eyebrow{font-size:11px;letter-spacing:.24em;color:rgba(108,240,224,.85);text-transform:uppercase;display:inline-flex;align-items:center;gap:8px;margin-bottom:12px}
-  .eyebrow::before{content:"";width:6px;height:6px;border-radius:50%;background:var(--cyan)}
-  h1{font-size:44px;line-height:1.05;letter-spacing:-.03em;margin:0 0 10px;font-weight:800}
-  .sub{color:rgba(255,255,255,.6);font-size:17px;margin:0 0 32px}
+.mono{font-family:'JetBrains Mono',monospace;}
 
-  /* Task grid */
-  .tasks{display:grid;grid-template-columns:repeat(4,1fr);gap:18px;margin-bottom:44px}
-  @media(max-width:1000px){.tasks{grid-template-columns:repeat(2,1fr)}}
-  @media(max-width:520px){.tasks{grid-template-columns:1fr}}
+/* ---------- glass surfaces ---------- */
+.glass{
+  background:rgba(255,255,255,.035);
+  border:1px solid var(--line);
+  border-radius:18px;
+  backdrop-filter:blur(20px);
+  -webkit-backdrop-filter:blur(20px);
+}
+.glass-strong{
+  background:rgba(255,255,255,.045);
+  border:1px solid rgba(255,255,255,.10);
+  border-radius:22px;
+  backdrop-filter:blur(28px);
+  -webkit-backdrop-filter:blur(28px);
+  box-shadow:0 30px 80px -40px rgba(0,0,0,.7);
+}
 
-  .card{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),var(--card);border:1px solid var(--bd);border-radius:var(--r);transition:border-color .24s,transform .24s,box-shadow .24s}
-  .card:hover{border-color:var(--bdh)}
-  .glow{position:relative}
-  .glow::before{content:"";position:absolute;inset:-1px;border-radius:calc(var(--r) + 1px);padding:1px;background:var(--grad);-webkit-mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);-webkit-mask-composite:xor;mask-composite:exclude;opacity:0;transition:opacity .3s;pointer-events:none}
-  .glow:hover::before{opacity:1}
-  .glow:hover{transform:translateY(-2px);box-shadow:0 20px 60px -20px rgba(86,212,255,.25)}
+.card-hover{transition:transform .35s cubic-bezier(.2,.8,.2,1), border-color .35s ease, box-shadow .35s ease;}
+.card-hover:hover{transform:translateY(-6px); border-color:rgba(99,102,241,.4); box-shadow:var(--shadow-glow);}
 
-  .task{padding:26px;text-align:left;display:flex;flex-direction:column;gap:22px;min-height:220px;overflow:hidden}
-  .task::after{content:"";position:absolute;right:-30%;top:-50%;width:260px;height:260px;border-radius:50%;background:radial-gradient(closest-side,color-mix(in oklab,var(--ta,#7c8cff) 45%,transparent),transparent);opacity:0;transition:opacity .38s;pointer-events:none}
-  .task:hover::after{opacity:.55}
-  .task .icon-b{width:48px;height:48px;border-radius:16px;display:flex;align-items:center;justify-content:center;background:linear-gradient(135deg,color-mix(in oklab,var(--ta) 20%,transparent),color-mix(in oklab,var(--tb) 12%,transparent));border:1px solid color-mix(in oklab,var(--ta) 35%,transparent);color:var(--ta)}
-  .task h3{margin:0;font-size:22px;font-weight:800;letter-spacing:-.02em}
-  .task .count{color:rgba(255,255,255,.5);font-size:14px}
-  .task .count b{color:rgba(255,255,255,.9);font-weight:700}
-  .task .foot{margin-top:auto;display:flex;justify-content:space-between;align-items:center;padding-top:6px}
-  .task .cta{color:rgba(255,255,255,.6);font-size:14px;font-weight:600;display:inline-flex;align-items:center;gap:4px;transition:color .2s}
-  .task:hover .cta{color:#fff}
-  .task .arr{width:32px;height:32px;border-radius:999px;background:var(--grad);color:#0b0b12;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .3s}
-  .task:hover .arr{opacity:1}
+/* ---------- buttons ---------- */
+.btn{
+  display:inline-flex;
+  align-items:center;
+  justify-content:center;
+  gap:8px;
+  font-weight:600;
+  font-size:15px;
+  padding:14px 28px;
+  border-radius:999px;
+  border:1px solid transparent;
+  white-space:nowrap;
+}
+.btn-grad{
+  background:var(--grad-main);
+  color:#04050a;
+  box-shadow:0 0 0 1px rgba(255,255,255,.08) inset, 0 18px 45px -14px rgba(99,102,241,.65);
+  transition:transform .3s cubic-bezier(.2,.8,.2,1), box-shadow .3s ease;
+  animation:glowPulse 3.2s ease-in-out infinite;
+}
+.btn-grad:hover{transform:scale(1.05); box-shadow:0 0 0 1px rgba(255,255,255,.12) inset, 0 22px 55px -12px rgba(34,211,238,.6);}
+.btn-outline{
+  background:transparent;
+  color:var(--ink);
+  border-color:var(--line);
+  transition:border-color .3s ease, background .3s ease, transform .3s ease;
+}
+.btn-outline:hover{border-color:rgba(99,102,241,.5); background:rgba(99,102,241,.08); transform:translateY(-2px);}
 
-  .t-3l{--ta:#7c8cff;--tb:#56d4ff}
-  .t-3r{--ta:#6cf0e0;--tb:#56d4ff}
-  .t-2w{--ta:#a78bfa;--tb:#7c8cff}
-  .t-1t{--ta:#fbbf24;--tb:#f472b6}
+@keyframes glowPulse{
+  0%,100%{box-shadow:0 0 0 1px rgba(255,255,255,.08) inset, 0 18px 45px -14px rgba(99,102,241,.55);}
+  50%{box-shadow:0 0 0 1px rgba(255,255,255,.1) inset, 0 18px 55px -10px rgba(34,211,238,.65);}
+}
 
-  /* Analytics + Leaderboard grid */
-  .grid{display:grid;grid-template-columns:2fr 1fr;gap:18px}
-  @media(max-width:1000px){.grid{grid-template-columns:1fr}}
-  .an{display:grid;grid-template-columns:1fr 1fr;gap:18px}
-  @media(max-width:640px){.an{grid-template-columns:1fr}}
-  .an .full{grid-column:1/-1}
+/* ---------- floating dashboard mock ---------- */
+.float{animation:floaty 6.5s ease-in-out infinite;}
+@keyframes floaty{
+  0%,100%{transform:translateY(0);}
+  50%{transform:translateY(-14px);}
+}
 
-  .stat{padding:22px;display:flex;flex-direction:column;gap:14px;min-height:200px}
-  .stat h4{margin:0;font-size:14px;font-weight:700}
-  .stat .sub-l{font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);margin-top:4px}
-  .stat .row{display:flex;align-items:baseline;gap:10px}
-  .num-58{color:rgba(255,255,255,.75);font-size:36px;font-weight:800}
-  .num-76{font-size:36px;font-weight:800;background:linear-gradient(90deg,#a5b4fc,#67e8f9,#6ee7b7);-webkit-background-clip:text;background-clip:text;color:transparent}
+.dot-live{
+  width:7px; height:7px; border-radius:50%; background:var(--emerald);
+  box-shadow:0 0 0 0 rgba(52,211,153,.6);
+  animation:pulseDot 2s infinite;
+}
+@keyframes pulseDot{
+  0%{box-shadow:0 0 0 0 rgba(52,211,153,.55);}
+  70%{box-shadow:0 0 0 8px rgba(52,211,153,0);}
+  100%{box-shadow:0 0 0 0 rgba(52,211,153,0);}
+}
 
-  /* Bars */
-  .bars{display:flex;align-items:flex-end;gap:6px;height:64px;margin-top:2px}
-  .bars b{flex:1;background:linear-gradient(180deg,#6cf0e0,#7c8cff);border-radius:6px 6px 2px 2px;display:block}
+.pulse-amber{animation:pulseAmber 1.8s ease-in-out infinite;}
+@keyframes pulseAmber{
+  0%,100%{opacity:1;}
+  50%{opacity:.45;}
+}
 
-  /* Gauge */
-  .gauge{display:flex;align-items:center;justify-content:center;position:relative;height:170px}
-  .gauge svg{transform:rotate(-90deg)}
-  .gauge .val{position:absolute;font-size:30px;font-weight:800}
+/* progress bars */
+.pbar{position:relative; height:8px; border-radius:999px; background:rgba(255,255,255,.08); overflow:hidden;}
+.pbar > span{
+  position:absolute; inset:0 auto 0 0; width:0%;
+  border-radius:999px;
+  background:var(--grad-main);
+  transition:width 1.1s cubic-bezier(.16,.85,.24,1);
+}
+.pbar.thin{height:6px;}
 
-  /* Line chart svg */
-  .line-wrap{height:170px;position:relative}
-  .line-wrap svg{width:100%;height:100%;overflow:visible}
-  .lbl{fill:rgba(255,255,255,.4);font-size:11px;font-family:inherit}
+/* mini barchart */
+.mini-bars{display:flex; align-items:flex-end; gap:6px; height:56px;}
+.mini-bars i{
+  flex:1; display:block; border-radius:5px 5px 2px 2px;
+  background:linear-gradient(180deg, var(--cyan), var(--indigo));
+  height:20%;
+  transition:height 1s cubic-bezier(.16,.85,.24,1);
+  opacity:.9;
+}
 
-  /* Leaderboard */
-  .lb{padding:22px;display:flex;flex-direction:column;gap:14px;min-height:520px}
-  .lb-hd{display:flex;justify-content:space-between;align-items:flex-start;gap:10px;flex-wrap:wrap}
-  .lb-title{display:flex;align-items:center;gap:8px;font-weight:700;font-size:14px}
-  .lb-hero{padding:16px;border-radius:16px;background:linear-gradient(135deg,rgba(124,140,255,.12),rgba(108,240,224,.06));border:1px solid rgba(124,140,255,.25);display:flex;justify-content:space-between;align-items:center;gap:12px}
-  .lb-hero .l small{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:rgba(255,255,255,.5)}
-  .lb-hero .l b{display:block;font-size:30px;font-weight:800;margin-top:4px}
-  .lb-hero .l span{color:rgba(255,255,255,.5);font-size:14px;margin-left:6px;font-weight:500}
-  .lb-hero .r small{display:block;font-size:11px;letter-spacing:.16em;text-transform:uppercase;color:rgba(255,255,255,.4);text-align:right}
-  .lb-hero .r b{display:block;font-size:24px;font-weight:800;color:var(--cyan);text-align:right}
+/* gauge (conic-gradient speedometer) */
+.gauge{
+  --deg: 302deg;
+  position:relative;
+  width:172px; height:172px;
+  border-radius:50%;
+  margin:0 auto;
+  background:conic-gradient(var(--indigo) 0deg, var(--cyan) var(--deg), rgba(255,255,255,.08) var(--deg) 360deg);
+  transition:background 1.2s cubic-bezier(.16,.85,.24,1);
+  display:flex; align-items:center; justify-content:center;
+}
+.gauge::before{
+  content:''; position:absolute; inset:14px; border-radius:50%;
+  background:radial-gradient(circle at 30% 20%, #10131a, #08090b 70%);
+}
+.gauge-value{position:relative; z-index:1; font-family:'Space Grotesk',sans-serif; font-size:32px; font-weight:700;}
 
-  .lb-list{display:flex;flex-direction:column;gap:6px;flex:1}
-  .lb-row{display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:12px}
-  .lb-row.me{background:rgba(255,255,255,.04);border:1px solid rgba(255,255,255,.08)}
-  .lb-row .rank{width:28px;height:28px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:12px;background:rgba(255,255,255,.04);color:rgba(255,255,255,.7)}
-  .lb-row.i0 .rank{background:linear-gradient(135deg,#fcd34d,#f59e0b);color:#0b0b12}
-  .lb-row.i1 .rank{background:linear-gradient(135deg,#e2e8f0,#94a3b8);color:#0b0b12}
-  .lb-row.i2 .rank{background:linear-gradient(135deg,#fdba74,#f97316);color:#0b0b12}
-  .lb-row .who{flex:1;min-width:0}
-  .lb-row .who b{display:block;font-size:13.5px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-  .lb-row .who small{color:rgba(255,255,255,.45);font-size:11px}
-  .lb-row .val{font-size:14px;font-weight:700}
-  .lb-row .val small{color:rgba(255,255,255,.4);font-size:11px;margin-left:4px;font-weight:500}
+/* hero steps (how it works) */
+.step-item{display:flex; gap:16px; align-items:flex-start; position:relative;}
+.step-num{
+  width:38px; height:38px; border-radius:11px; flex:none;
+  background:var(--grad-main); color:#04050a;
+  display:flex; align-items:center; justify-content:center;
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;
+  box-shadow:0 6px 18px -6px rgba(99,102,241,.55);
+  position:relative; z-index:1;
+}
+.step-connector{
+  position:absolute; left:19px; top:38px; width:2px; height:calc(100% - 22px);
+  background:linear-gradient(180deg, var(--indigo2), var(--cyan));
+  opacity:.35;
+}
+.step-body{padding-top:6px;}
+.step-title{font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:15.5px; line-height:1.3;}
+.step-desc{color:var(--ink-dim); font-size:13.5px; line-height:1.5; margin-top:4px;}
 
-  .btn-ghost{background:rgba(255,255,255,.03);border:1px solid var(--bd);border-radius:999px;padding:10px 16px;font-weight:600;font-size:14px;color:var(--t);display:inline-flex;align-items:center;justify-content:center;gap:8px;transition:background .2s,border-color .2s}
-  .btn-ghost:hover{background:rgba(255,255,255,.06);border-color:var(--bdh)}
+/* highlight classes for before/after */
+.hl-err{background:rgba(251,113,133,.16); border-bottom:2px solid var(--rose); border-radius:3px; padding:0 2px;}
+.hl-fix{background:rgba(52,211,153,.16); border-bottom:2px solid var(--emerald); border-radius:3px; padding:0 2px;}
 
-  /* Footer */
-  footer{margin-top:56px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:rgba(255,255,255,.4)}
+/* reveal on scroll */
+.reveal{opacity:0; transform:translateY(28px); transition:opacity .8s cubic-bezier(.16,.85,.24,1), transform .8s cubic-bezier(.16,.85,.24,1);}
+.reveal.in{opacity:1; transform:translateY(0);}
+.reveal-delay-1{transition-delay:.08s;}
+.reveal-delay-2{transition-delay:.16s;}
+.reveal-delay-3{transition-delay:.24s;}
+.reveal-delay-4{transition-delay:.32s;}
 
-  /* Modal */
-  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
-  .backdrop.open{display:flex;animation:fade .2s}
-  @keyframes fade{from{opacity:0}to{opacity:1}}
-  .modal{background:#0d0d13;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:24px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;animation:pop .25s cubic-bezier(.2,.7,.2,1)}
-  @keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
-  .modal h3{margin:0 0 16px;font-size:17px;display:flex;align-items:center;gap:8px;font-weight:700}
-  .modal .close{position:absolute;top:16px;right:16px;width:30px;height:30px;border-radius:999px;background:rgba(255,255,255,.05);display:flex;align-items:center;justify-content:center;color:rgba(255,255,255,.7)}
-  .modal-wrap{position:relative}
+/* comparison table */
+.cmp-row{transition:background .25s ease;}
+.cmp-row:hover{background:rgba(99,102,241,.08);}
+.cmp-col-hero{background:linear-gradient(180deg, rgba(99,102,241,.12), rgba(34,211,238,.04));}
 
-  .hr{height:1px;background:linear-gradient(90deg,transparent,rgba(255,255,255,.08),transparent);border:0;margin:10px 0}
+/* faq accordion */
+.faq-item{border-bottom:1px solid var(--line);}
+.faq-btn{
+  width:100%; display:flex; align-items:center; justify-content:space-between;
+  background:none; border:none; color:var(--ink); text-align:left;
+  padding:22px 4px; font-size:16px; font-weight:600;
+}
+.faq-panel{
+  display:grid; grid-template-rows:minmax(0,0fr); overflow:hidden; min-height:0;
+  transition:grid-template-rows .35s cubic-bezier(.2,.8,.2,1);
+}
+.faq-panel > div{overflow:hidden; min-height:0;}
+.faq-item.open .faq-panel{grid-template-rows:minmax(0,1fr);}
+.faq-icon{position:relative; width:18px; height:18px; flex:none;}
+.faq-icon::before,.faq-icon::after{
+  content:''; position:absolute; background:var(--indigo2); border-radius:2px;
+}
+.faq-icon::before{left:0; top:8px; width:18px; height:2px;}
+.faq-icon::after{left:8px; top:0; width:2px; height:18px; transition:transform .3s ease;}
+.faq-item.open .faq-icon::after{transform:rotate(90deg) scaleY(0);}
 
-  .prof{display:flex;align-items:center;gap:14px;margin-top:8px}
-  .prof .a{width:56px;height:56px;border-radius:999px;background:var(--grad);color:#0b0b12;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center}
-  .prof .n{font-weight:700}
-  .prof .m{color:rgba(255,255,255,.5);font-size:12px;margin-top:2px}
-  .badge{display:inline-block;margin-top:10px;font-size:10px;letter-spacing:.2em;text-transform:uppercase;color:rgba(108,240,224,.85);border:1px solid rgba(108,240,224,.25);border-radius:999px;padding:4px 10px}
-  .hint{color:rgba(255,255,255,.6);font-size:13.5px;margin:12px 0 0}
+/* option buttons in demo widget */
+.opt-btn{
+  border:1px solid var(--line); background:rgba(255,255,255,.03); color:var(--ink);
+  border-radius:12px; padding:14px 16px; text-align:left; font-size:15px;
+  display:flex; gap:10px; transition:border-color .25s ease, background .25s ease;
+}
+.opt-btn:hover{border-color:rgba(99,102,241,.4);}
+.opt-btn.sel{border-color:var(--cyan); background:rgba(34,211,238,.08); box-shadow:0 0 0 1px rgba(34,211,238,.25) inset;}
+.opt-btn.right{border-color:var(--emerald); background:rgba(52,211,153,.1); box-shadow:0 0 0 1px rgba(52,211,153,.3) inset;}
+.opt-btn.right .opt-letter{background:rgba(52,211,153,.2); color:var(--emerald);}
+.opt-btn.wrong{border-color:var(--rose); background:rgba(251,113,133,.1); box-shadow:0 0 0 1px rgba(251,113,133,.3) inset;}
+.opt-btn.wrong .opt-letter{background:rgba(251,113,133,.2); color:var(--rose);}
+.opt-letter{
+  width:22px; height:22px; border-radius:6px; background:rgba(255,255,255,.06);
+  display:flex; align-items:center; justify-content:center; font-size:12px; font-weight:700; flex:none;
+  color:var(--ink-dim);
+}
 
-  ::selection{background:rgba(108,240,224,.35);color:#fff}
-  ::-webkit-scrollbar{width:10px;height:10px}
-  ::-webkit-scrollbar-thumb{background:rgba(255,255,255,.08);border-radius:10px}
-  ::-webkit-scrollbar-thumb:hover{background:rgba(255,255,255,.16)}
+/* toggle (before/after, lang) */
+.seg{display:inline-flex; background:rgba(255,255,255,.04); border:1px solid var(--line); border-radius:999px; padding:4px;}
+.seg button{
+  border:none; background:none; color:var(--ink-dim); padding:9px 18px; border-radius:999px; font-size:14px; font-weight:600;
+  transition:color .25s ease, background .25s ease;
+}
+.seg button.active{background:rgba(52,211,153,.14); color:var(--emerald);}
+.seg.lang button.active{background:rgba(99,102,241,.18); color:var(--indigo2);}
+.seg.before-after button.active.is-before{background:rgba(251,113,133,.14); color:var(--rose);}
 
-  /* Utility icons — SVG size */
-  .i{width:16px;height:16px;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
-  .i-lg{width:20px;height:20px}
-  .i-md{width:14px;height:14px}
-  .i-sm{width:12px;height:12px}
+/* header */
+.nav{
+  position:sticky; top:0; z-index:50;
+  background:rgba(8,9,11,.72);
+  backdrop-filter:blur(16px); -webkit-backdrop-filter:blur(16px);
+  border-bottom:1px solid var(--line-soft);
+}
+.nav-links a{
+  color:var(--ink-dim); font-size:14.5px; font-weight:500; padding:8px 4px; position:relative;
+}
+.nav-links a::after{
+  content:''; position:absolute; left:0; right:0; bottom:-2px; height:1px; background:var(--grad-main);
+  transform:scaleX(0); transform-origin:left; transition:transform .3s ease;
+}
+.nav-links a:hover{color:var(--ink);}
+.nav-links a:hover::after{transform:scaleX(1);}
+
+.logo-mark{
+  width:34px; height:34px; border-radius:10px;
+  background:var(--grad-main);
+  display:flex; align-items:center; justify-content:center;
+  box-shadow:0 6px 20px -6px rgba(99,102,241,.6);
+}
+
+/* stat number */
+.stat-num{
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(38px,5vw,52px);
+  background:var(--grad-text); -webkit-background-clip:text; background-clip:text; color:transparent;
+}
+
+/* icon square */
+.icon-sq{
+  width:46px; height:46px; border-radius:12px;
+  background:linear-gradient(135deg, rgba(99,102,241,.28), rgba(34,211,238,.2));
+  border:1px solid rgba(99,102,241,.3);
+  display:flex; align-items:center; justify-content:center; color:var(--indigo2);
+}
+
+/* footer */
+footer{border-top:1px solid var(--line-soft);}
+
+/* mobile menu */
+.mmenu{
+  max-height:0; overflow:hidden; transition:max-height .35s cubic-bezier(.2,.8,.2,1);
+}
+.mmenu.open{max-height:340px;}
+
+@media (max-width:860px){
+  .grid-2{grid-template-columns:1fr !important;}
+  .hero-grid{grid-template-columns:1fr !important;}
+  .survey-grid{grid-template-columns:1fr 1fr !important; gap:14px !important;}
+}
+@media (max-width:520px){
+  .survey-grid{grid-template-columns:1fr !important;}
+}
+@media (max-width:400px){
+  #loginBtn{padding:8px 14px !important; font-size:13px !important;}
+  .seg.lang button{padding:7px 12px !important; font-size:13px !important;}
+}
+
+.avatar{
+  width:44px; height:44px; border-radius:50%;
+  background:var(--grad-main);
+  display:flex; align-items:center; justify-content:center;
+  font-weight:700; color:#04050a; font-family:'Space Grotesk',sans-serif;
+}
+
+.blob{
+  position:absolute; border-radius:50%; filter:blur(90px); opacity:.35; pointer-events:none;
+}
+
+/* ================= AUTH MODAL ================= */
+.modal-ov{
+  position:fixed; inset:0; z-index:999; display:none;
+  background:rgba(5,6,9,.72); backdrop-filter:blur(6px);
+  align-items:center; justify-content:center; padding:20px;
+}
+.modal-ov.open{display:flex;}
+.modal-card{
+  position:relative; width:100%; max-width:400px;
+  background:var(--bg-soft); border:1px solid var(--line);
+  border-radius:20px; padding:32px 28px 28px;
+  box-shadow:0 30px 80px -20px rgba(0,0,0,.6), var(--shadow-glow);
+  animation:modalIn .35s cubic-bezier(.16,.85,.24,1);
+}
+@keyframes modalIn{from{opacity:0; transform:translateY(16px) scale(.97);} to{opacity:1; transform:translateY(0) scale(1);}}
+.modal-close{
+  position:absolute; top:16px; right:16px; width:32px; height:32px;
+  border-radius:10px; background:var(--line-soft); border:1px solid var(--line);
+  color:var(--ink-dim); font-size:15px; display:flex; align-items:center; justify-content:center;
+}
+.modal-close:hover{color:var(--ink); background:var(--line);}
+.modal-logo{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:19px; margin-bottom:22px;}
+.modal-tabs{display:flex; gap:6px; background:var(--line-soft); border-radius:12px; padding:4px; margin-bottom:22px;}
+.mtab{flex:1; padding:9px 0; border-radius:9px; font-size:14px; font-weight:600; color:var(--ink-mute); text-align:center;}
+.mtab.active{background:#14151b; color:var(--ink); box-shadow:0 1px 0 rgba(255,255,255,.04) inset;}
+.mform{display:none; flex-direction:column; gap:14px;}
+.mform.on{display:flex;}
+.mfield label{display:block; font-size:12.5px; color:var(--ink-dim); margin-bottom:6px; font-weight:600;}
+.mfield input{
+  width:100%; padding:11px 13px; border-radius:11px; border:1px solid var(--line);
+  background:rgba(255,255,255,.03); color:var(--ink); font-size:14.5px; font-family:inherit;
+  transition:border-color .2s;
+}
+.mfield input:focus{outline:none; border-color:var(--indigo2);}
+.mbtn{
+  width:100%; padding:12px 0; border-radius:11px; font-size:14.5px; font-weight:700;
+  background:var(--grad-main); color:#04050a; margin-top:4px; display:flex; align-items:center; justify-content:center; gap:8px;
+}
+.mbtn:hover{filter:brightness(1.08);}
+.mbtn:disabled{opacity:.65;}
+.merr{display:none; color:var(--rose); font-size:13px; background:rgba(251,113,133,.1); border:1px solid rgba(251,113,133,.25); border-radius:10px; padding:9px 12px;}
+.mok{display:none; color:var(--emerald); font-size:13px; background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.25); border-radius:10px; padding:9px 12px;}
+.mreg-note{font-size:12.5px; color:var(--ink-mute); line-height:1.5;}
+.mspinner{
+  display:inline-block; width:14px; height:14px; border-radius:50%;
+  border:2px solid rgba(4,5,10,.3); border-top-color:#04050a; animation:mspin .7s linear infinite;
+}
+@keyframes mspin{to{transform:rotate(360deg);}}
+
 </style>
 </head>
 <body>
 
-<div class="ambient"></div>
-<div class="grain"></div>
+<!-- ════ AUTH CHECK ════ -->
+<script>
+  /* Если уже авторизован — сразу в меню, ничего не меняем в логике */
+  if (localStorage.getItem("session_token")) {
+    window.location.href = "/l/menu.html";
+  }
+</script>
 
-<!-- ================ HEADER ================ -->
-<header>
-  <div class="wrap hd">
-    <div class="logo">
-      <div class="logo-b">
-        <svg class="i i-lg" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg>
+<!-- ================= NAV ================= -->
+<header class="nav">
+  <div class="wrap" style="display:flex; align-items:center; justify-content:space-between; height:72px;">
+    <div style="display:flex; align-items:center; gap:11px;">
+      <div class="logo-mark">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none"><path d="M4 19V6.5C4 5.67 4.67 5 5.5 5H18a1 1 0 0 1 1 1v13" stroke="#04050a" stroke-width="2" stroke-linecap="round"/><path d="M4 19a2 2 0 0 0 2 2h13" stroke="#04050a" stroke-width="2" stroke-linecap="round"/><path d="M8 9h8M8 12.5h8" stroke="#04050a" stroke-width="1.6" stroke-linecap="round"/></svg>
       </div>
-      <div>
-        <div class="logo-t">English <span>OL</span></div>
-        <div class="logo-s">Dashboard</div>
-      </div>
+      <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:18px;">English <span class="grad-text">OL</span></span>
     </div>
 
-    <div class="cluster">
-      <div class="chip">
-        <svg class="i i-md flame" viewBox="0 0 24 24" style="color:#fbbf24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg>
-        <span class="mono">5</span>
-        <span style="color:rgba(255,255,255,.6)" data-i="streak">dienu straiks</span>
-      </div>
-      <div class="chip">
-        <svg class="i i-md" viewBox="0 0 24 24" style="color:#6cf0e0"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
-        <span class="mono" id="timer">04:13</span>
-      </div>
+    <nav class="nav-links" style="display:flex; gap:32px;" id="navLinksDesktop">
+      <a href="#features" data-nav="features"></a>
+      <a href="#how" data-nav="how"></a>
+      <a href="#pricing" data-nav="pricing"></a>
+      <a href="#reviews" data-nav="reviews"></a>
+    </nav>
 
-      <div class="seg" role="tablist">
-        <div class="seg-item active" data-lang="lv">LV</div>
-        <div class="seg-item" data-lang="ru">RU</div>
+    <div style="display:flex; align-items:center; gap:14px;">
+      <div class="seg lang" id="langSwitch">
+        <button data-lang="lv" class="active">LV</button>
+        <button data-lang="ru">RU</button>
       </div>
-
-      <button class="avatar" id="profileBtn" aria-label="Profile"><span id="avatarInitial">R</span></button>
-      <button class="ghost" id="logoutBtn" aria-label="Logout">
-        <svg class="i" viewBox="0 0 24 24"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+      <button class="btn btn-outline" style="padding:10px 20px; font-size:14px;" data-nav="login" id="loginBtn"></button>
+      <button id="burger" style="display:none; background:none; border:none; color:var(--ink); padding:6px;" aria-label="menu">
+        <svg width="24" height="24" viewBox="0 0 24 24" fill="none"><path d="M4 7h16M4 12h16M4 17h16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
       </button>
+    </div>
+  </div>
+  <div class="mmenu wrap" id="mmenu">
+    <div style="display:flex; flex-direction:column; gap:4px; padding:8px 0 20px;">
+      <a href="#features" style="padding:12px 0; border-bottom:1px solid var(--line-soft);" data-nav="features"></a>
+      <a href="#how" style="padding:12px 0; border-bottom:1px solid var(--line-soft);" data-nav="how"></a>
+      <a href="#pricing" style="padding:12px 0; border-bottom:1px solid var(--line-soft);" data-nav="pricing"></a>
+      <a href="#reviews" style="padding:12px 0;" data-nav="reviews"></a>
     </div>
   </div>
 </header>
 
-<!-- ================ MAIN ================ -->
-<main>
-  <div class="wrap">
-    <!-- Greeting -->
-    <section class="rise">
-      <div class="eyebrow" id="today"></div>
-      <h1 data-i="greeting">Sveiks, Rihards!</h1>
-      <p class="sub" data-i="subGreeting">Kuru uzdevumu izvēlēsimies šodien?</p>
-    </section>
+<!-- ================= HERO ================= -->
+<section style="position:relative; padding:76px 0 40px; overflow:hidden;">
+  <div class="blob" style="width:520px; height:520px; background:var(--indigo); top:-160px; right:-120px;"></div>
+  <div class="blob" style="width:420px; height:420px; background:var(--cyan); bottom:-180px; left:-140px; opacity:.2;"></div>
 
-    <!-- Task cards -->
-    <section class="tasks rise" style="animation-delay:60ms">
-      <button class="card glow task t-3l">
-        <div class="icon-b"><svg class="i i-lg" viewBox="0 0 24 24"><path d="M3 12a9 9 0 0 1 18 0v6a2 2 0 0 1-2 2h-2v-8h4"/><path d="M3 18v-6h4v8H5a2 2 0 0 1-2-2z"/></svg></div>
-        <div>
-          <h3 data-i="t3l">Klausīšanās</h3>
-          <div class="count"><b class="mono" data-i="t3lc">3</b> <span data-i="t3lu">uzdevumi</span></div>
-        </div>
-        <div class="foot">
-          <span class="cta"><span data-i="start">Sākt</span>
-            <svg class="i i-md" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          </span>
-          <span class="arr"><svg class="i i-md" viewBox="0 0 24 24" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></span>
-        </div>
-      </button>
+  <div class="wrap hero-grid" style="position:relative; display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;">
+    <div>
+      <span class="eyebrow" id="heroEyebrow" style="margin-bottom:22px; display:inline-flex;"></span>
+      <h1 class="disp" style="font-size:clamp(34px,4.6vw,54px); margin-top:18px;">
+        <span id="heroT1"></span><span class="grad-text" id="heroT2"></span><span id="heroT3"></span>
+      </h1>
+      <p style="color:var(--ink-dim); font-size:17px; line-height:1.65; max-width:560px; margin-top:22px;" id="heroSub"></p>
 
-      <button class="card glow task t-3r">
-        <div class="icon-b"><svg class="i i-lg" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
-        <div>
-          <h3 data-i="t3r">Lasīšana</h3>
-          <div class="count"><b class="mono" data-i="t3rc">3</b> <span data-i="t3ru">uzdevumi</span></div>
-        </div>
-        <div class="foot">
-          <span class="cta"><span data-i="start">Sākt</span>
-            <svg class="i i-md" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          </span>
-          <span class="arr"><svg class="i i-md" viewBox="0 0 24 24" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></span>
-        </div>
-      </button>
-
-      <button class="card glow task t-2w">
-        <div class="icon-b"><svg class="i i-lg" viewBox="0 0 24 24"><path d="M12 20h9"/><path d="M16.5 3.5a2.121 2.121 0 0 1 3 3L7 19l-4 1 1-4z"/></svg></div>
-        <div>
-          <h3 data-i="t2w">Rakstīšana</h3>
-          <div class="count"><b class="mono" data-i="t2wc">2</b> <span data-i="t2wu">uzdevumi</span></div>
-        </div>
-        <div class="foot">
-          <span class="cta"><span data-i="start">Sākt</span>
-            <svg class="i i-md" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          </span>
-          <span class="arr"><svg class="i i-md" viewBox="0 0 24 24" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></span>
-        </div>
-      </button>
-
-      <button class="card glow task t-1t">
-        <div class="icon-b"><svg class="i i-lg" viewBox="0 0 24 24"><rect x="9" y="2" width="6" height="12" rx="3"/><path d="M19 10a7 7 0 0 1-14 0"/><line x1="12" y1="19" x2="12" y2="22"/></svg></div>
-        <div>
-          <h3 data-i="t1t">Runāšana</h3>
-          <div class="count"><b class="mono" data-i="t1tc">1</b> <span data-i="t1tu">uzdevums</span></div>
-        </div>
-        <div class="foot">
-          <span class="cta"><span data-i="start">Sākt</span>
-            <svg class="i i-md" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
-          </span>
-          <span class="arr"><svg class="i i-md" viewBox="0 0 24 24" stroke-width="3"><polyline points="9 18 15 12 9 6"/></svg></span>
-        </div>
-      </button>
-    </section>
-
-    <!-- Analytics + Leaderboard -->
-    <section class="grid rise" style="animation-delay:140ms">
-      <div class="an">
-        <!-- Forecast -->
-        <div class="card stat">
-          <div>
-            <h4 data-i="forecast">Vērtējuma prognoze</h4>
-            <div class="sub-l" data-i="forecastSub">6 nedēļu prognoze</div>
+      <div class="glass" style="margin-top:32px; padding:22px 24px; display:flex; flex-wrap:wrap; gap:22px; align-items:center; justify-content:space-between;">
+        <div style="flex:1; min-width:240px;">
+          <div style="display:flex; justify-content:space-between; font-size:13.5px; color:var(--ink-dim); margin-bottom:10px;">
+            <span id="seatsLabel"></span><span class="mono" id="seatsVal" style="color:var(--ink); font-weight:600;"></span>
           </div>
-          <div class="row">
-            <span class="mono num-58">58</span>
-            <svg class="i i-md" viewBox="0 0 24 24" style="color:#6cf0e0"><polyline points="23 6 13.5 15.5 8.5 10.5 1 18"/><polyline points="17 6 23 6 23 12"/></svg>
-            <span class="mono num-76">76</span>
-          </div>
-          <div class="bars">
-            <b style="height:34%"></b><b style="height:42%"></b><b style="height:52%"></b>
-            <b style="height:64%"></b><b style="height:78%"></b><b style="height:88%"></b><b style="height:100%"></b>
-          </div>
+          <div class="pbar"><span id="seatsBar"></span></div>
         </div>
-
-        <!-- Gauge -->
-        <div class="card stat">
-          <div>
-            <h4 data-i="acc">Precizitāte</h4>
-            <div class="sub-l" data-i="accSub">vidējais uzdevumu rādītājs</div>
-          </div>
-          <div class="gauge">
-            <svg width="150" height="150" viewBox="0 0 150 150">
-              <defs>
-                <linearGradient id="gGrad" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stop-color="#7c8cff"/>
-                  <stop offset="60%" stop-color="#56d4ff"/>
-                  <stop offset="100%" stop-color="#6cf0e0"/>
-                </linearGradient>
-              </defs>
-              <circle cx="75" cy="75" r="60" stroke="rgba(255,255,255,.06)" stroke-width="12" fill="none"/>
-              <!-- 2πr = 376.99; 84% => offset = 60.32 -->
-              <circle cx="75" cy="75" r="60" stroke="url(#gGrad)" stroke-width="12" stroke-linecap="round" fill="none" stroke-dasharray="376.99" stroke-dashoffset="60.32"/>
-            </svg>
-            <span class="mono val">84%</span>
-          </div>
+        <div style="display:flex; align-items:baseline; gap:6px; white-space:nowrap;">
+          <span style="font-size:13px; color:var(--ink-dim);" id="priceFrom"></span>
+          <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:26px;" id="priceVal"></span>
+          <span style="font-size:13px; color:var(--ink-dim);" id="priceUnit"></span>
         </div>
-
-        <!-- Weekly line -->
-        <div class="card stat full">
-          <div>
-            <h4 data-i="weekly">Nedēļas aktivitāte</h4>
-            <div class="sub-l" data-i="weeklySub">punkti pa dienām</div>
-          </div>
-          <div class="line-wrap">
-            <svg viewBox="0 0 700 170" preserveAspectRatio="none">
-              <defs>
-                <linearGradient id="lGrad" x1="0" y1="0" x2="1" y2="0">
-                  <stop offset="0%" stop-color="#7c8cff"/>
-                  <stop offset="60%" stop-color="#56d4ff"/>
-                  <stop offset="100%" stop-color="#6cf0e0"/>
-                </linearGradient>
-              </defs>
-              <!-- Grid -->
-              <line x1="0" y1="30" x2="700" y2="30" stroke="rgba(255,255,255,.05)"/>
-              <line x1="0" y1="70" x2="700" y2="70" stroke="rgba(255,255,255,.05)"/>
-              <line x1="0" y1="110" x2="700" y2="110" stroke="rgba(255,255,255,.05)"/>
-              <!-- Polyline. 7 points at x=50,150,250,350,450,550,650  -->
-              <!-- values 32,48,41,62,55,78,86 => y = 130 - (v-30)*1.4 clipped -->
-              <polyline points="50,120 150,100 250,110 350,80 450,90 550,55 650,40"
-                        fill="none" stroke="url(#lGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
-              <!-- Dots -->
-              <g fill="#56d4ff">
-                <circle cx="50" cy="120" r="4"/>
-                <circle cx="150" cy="100" r="4"/>
-                <circle cx="250" cy="110" r="4"/>
-                <circle cx="350" cy="80" r="4"/>
-                <circle cx="450" cy="90" r="4"/>
-                <circle cx="550" cy="55" r="4"/>
-                <circle cx="650" cy="40" r="5" fill="#6cf0e0"/>
-              </g>
-              <!-- Labels -->
-              <g class="lbl" text-anchor="middle">
-                <text x="50" y="160" data-d="0">Pr</text>
-                <text x="150" y="160" data-d="1">Ot</text>
-                <text x="250" y="160" data-d="2">Tr</text>
-                <text x="350" y="160" data-d="3">Ce</text>
-                <text x="450" y="160" data-d="4">Pk</text>
-                <text x="550" y="160" data-d="5">Se</text>
-                <text x="650" y="160" data-d="6">Sv</text>
-              </g>
-            </svg>
-          </div>
-        </div>
+        <span class="pulse-amber mono" style="font-size:13px; color:var(--amber); white-space:nowrap;" id="urgency"></span>
       </div>
 
-      <!-- Leaderboard -->
-      <div class="card lb">
-        <div class="lb-hd">
-          <div>
-            <div class="lb-title">
-              <svg class="i i-md" viewBox="0 0 24 24" style="color:#fcd34d"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M17 4h4v3a4 4 0 0 1-4 4"/><path d="M7 4H3v3a4 4 0 0 0 4 4"/></svg>
-              <span data-i="lbTitle">Nedēļas līderu tabula</span>
-            </div>
-            <div class="sub-l" data-i="lbSub">Top skolēni pēc XP šonedēļ</div>
-          </div>
-          <div class="seg">
-            <div class="seg-item active" data-lb="xp"><svg class="i i-sm" viewBox="0 0 24 24"><polygon points="12 2 15 8.5 22 9.3 17 14.1 18.2 21 12 17.8 5.8 21 7 14.1 2 9.3 9 8.5"/></svg><span data-i="lbXp">Nedēļas XP</span></div>
-            <div class="seg-item" data-lb="global"><svg class="i i-sm" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><line x1="2" y1="12" x2="22" y2="12"/><path d="M12 2a15 15 0 0 1 0 20 15 15 0 0 1 0-20z"/></svg><span data-i="lbGlobal">Prognozes rangs</span></div>
-          </div>
-        </div>
-
-        <div class="lb-hero">
-          <div class="l">
-            <small data-i="yourPlace">Tava vieta</small>
-            <b class="mono">#<span id="myRank">23</span><span data-i="of">no</span> 1,240</b>
-          </div>
-          <div class="r">
-            <small id="lbUnitHead">XP</small>
-            <b class="mono" id="myVal">1980</b>
-          </div>
-        </div>
-
-        <div class="lb-list" id="lbList"></div>
-
-        <button class="btn-ghost" id="viewAll">
-          <span data-i="viewAll">Skatīt visu</span>
-          <svg class="i i-md" viewBox="0 0 24 24"><line x1="7" y1="17" x2="17" y2="7"/><polyline points="7 7 17 7 17 17"/></svg>
+      <div style="margin-top:30px; display:flex; align-items:center; gap:18px; flex-wrap:wrap;">
+        <button class="btn btn-grad" id="heroCta">
+          <span id="heroCtaTxt"></span>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M5 12h14M13 6l6 6-6 6" stroke="#04050a" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/></svg>
         </button>
-      </div>
-    </section>
-
-    <footer>
-      <div style="display:flex;align-items:center;gap:6px">
-        <svg class="i i-sm" viewBox="0 0 24 24"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <span><span class="mono">1,240</span> <span data-i="active">aktīvi skolēni</span></span>
-      </div>
-      <div>© 2026 English OL</div>
-    </footer>
-  </div>
-</main>
-
-<!-- ================ MODALS ================ -->
-<div class="backdrop" id="lbModal">
-  <div class="modal modal-wrap">
-    <button class="close" data-close><svg class="i i-md" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    <h3><svg class="i i-md" viewBox="0 0 24 24" style="color:#fcd34d"><path d="M8 21h8"/><path d="M12 17v4"/><path d="M7 4h10v5a5 5 0 0 1-10 0z"/></svg><span data-i="fullLb">Pilna līderu tabula</span></h3>
-    <div id="lbFull"></div>
-  </div>
-</div>
-
-<div class="backdrop" id="profileModal">
-  <div class="modal modal-wrap">
-    <button class="close" data-close><svg class="i i-md" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
-    <h3><svg class="i i-md" viewBox="0 0 24 24" style="color:#6cf0e0"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i="profileTitle">Personīgais profils</span></h3>
-    <div class="prof">
-      <div class="a">R</div>
-      <div>
-        <div class="n">Rihards Bērziņš</div>
-        <div class="m">11. klase · Rīga</div>
+        <span style="color:var(--ink-mute); font-size:13.5px;" id="heroCtaSub"></span>
       </div>
     </div>
-    <p class="hint" data-i="profileHint">Šeit drīz parādīsies tavu iepriekšējo uzdevumu vēsture, saglabātās esejas un iestatījumi.</p>
-    <span class="badge" data-i="upcoming">Drīzumā</span>
+
+    <!-- how-it-works steps -->
+    <div class="glass-strong float" style="padding:30px 28px;">
+      <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
+        <div>
+          <div style="font-size:12px; color:var(--ink-mute);" id="dashTitle"></div>
+          <div style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:19px; margin-top:2px;" id="dashSub"></div>
+        </div>
+        <span style="display:flex; align-items:center; gap:7px; font-size:12.5px; color:var(--emerald); background:rgba(52,211,153,.1); padding:6px 12px; border-radius:999px;">
+          <i class="dot-live"></i><span id="dashLive"></span>
+        </span>
+      </div>
+
+      <div id="stepsList" style="display:flex; flex-direction:column;"></div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= FEATURES ================= -->
+<section id="features" style="padding:100px 0;">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:640px; margin:0 auto 56px;">
+      <span class="eyebrow" id="featEyebrow"></span>
+      <h2 class="disp" style="font-size:clamp(28px,3.4vw,40px); margin-top:16px;" id="featTitle"></h2>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:22px;" class="grid-2" id="featGrid"></div>
+  </div>
+</section>
+
+<!-- ================= SURVEY STATS ================= -->
+<section style="padding:0 0 100px;">
+  <div class="wrap">
+    <div class="glass-strong reveal" style="padding:48px 40px;">
+      <div style="text-align:center; max-width:600px; margin:0 auto 40px;">
+        <span class="eyebrow" id="survEyebrow"></span>
+        <h2 class="disp" style="font-size:clamp(26px,3.2vw,36px); margin-top:14px;" id="survTitle"></h2>
+        <p style="color:var(--ink-dim); margin-top:12px; font-size:15.5px;" id="survSub"></p>
+      </div>
+      <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:18px;" class="survey-grid" id="survGrid"></div>
+      <div class="glass reveal reveal-delay-3" style="margin-top:22px; padding:26px 30px; display:flex; align-items:center; justify-content:space-between; gap:24px; flex-wrap:wrap; border:1px solid rgba(99,102,241,.35); background:rgba(99,102,241,.06);">
+        <div style="display:flex; align-items:center; gap:16px; flex:1; min-width:240px;">
+          <span style="color:var(--cyan); font-size:20px; flex:none;">✧</span>
+          <p style="color:var(--ink); font-size:15.5px; line-height:1.5; margin:0;" id="survOutro"></p>
+        </div>
+        <a href="#pricing" class="btn btn-grad" id="survCta" style="flex:none;"></a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= BEFORE / AFTER ================= -->
+<section id="how" style="padding:0 0 100px;">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto 40px;">
+      <span class="eyebrow" id="baEyebrow"></span>
+      <h2 class="disp" style="font-size:clamp(28px,3.4vw,40px); margin-top:16px;" id="baTitle"></h2>
+      <p style="color:var(--ink-dim); margin-top:12px; font-size:15.5px;" id="baSub"></p>
+    </div>
+
+    <div class="glass-strong reveal" style="max-width:820px; margin:0 auto; padding:36px;">
+      <div style="display:flex; justify-content:center; margin-bottom:26px;">
+        <div class="seg before-after" id="baToggle">
+          <button data-state="before" class="is-before"></button>
+          <button data-state="after" class="active"></button>
+        </div>
+      </div>
+
+      <div class="glass" style="padding:24px; font-size:18px; line-height:1.8;" id="baText"></div>
+
+      <div style="margin-top:16px; display:flex; align-items:center; gap:8px; font-size:14px;" id="baStatus"></div>
+
+      <div id="baExplain" style="display:none; margin-top:20px;" class="glass">
+        <div style="padding:20px 22px; border-bottom:1px solid var(--line-soft); font-weight:600; font-size:14.5px; color:var(--indigo2);" id="baWhy"></div>
+        <div style="padding:6px 22px 20px;">
+          <div style="display:flex; gap:14px; padding:14px 0; border-bottom:1px solid var(--line-soft);">
+            <span class="mono" style="width:26px; height:26px; border-radius:50%; background:var(--grad-main); color:#04050a; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex:none;">1</span>
+            <div>
+              <div style="font-size:15px; margin-bottom:5px;"><span class="hl-err" id="r1a"></span> <span style="color:var(--ink-mute);">→</span> <span class="hl-fix" id="r1b"></span></div>
+              <div style="color:var(--ink-dim); font-size:14px; line-height:1.55;" id="r1d"></div>
+            </div>
+          </div>
+          <div style="display:flex; gap:14px; padding:14px 0;">
+            <span class="mono" style="width:26px; height:26px; border-radius:50%; background:var(--grad-main); color:#04050a; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex:none;">2</span>
+            <div>
+              <div style="font-size:15px; margin-bottom:5px;"><span class="hl-err" id="r2a"></span> <span style="color:var(--ink-mute);">→</span> <span class="hl-fix" id="r2b"></span></div>
+              <div style="color:var(--ink-dim); font-size:14px; line-height:1.55;" id="r2d"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= ANALYTICS ================= -->
+<section style="padding:0 0 100px;">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto 44px;">
+      <span class="eyebrow" id="anEyebrow"></span>
+      <h2 class="disp" style="font-size:clamp(28px,3.4vw,40px); margin-top:16px;" id="anTitle"></h2>
+      <p style="color:var(--ink-dim); margin-top:12px; font-size:15.5px;" id="anSub"></p>
+    </div>
+
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:22px;" class="grid-2">
+      <div class="glass card-hover reveal" style="padding:28px;">
+        <div style="display:flex; align-items:center; gap:8px; color:var(--ink-dim); font-size:13.5px; margin-bottom:20px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2"><path d="M3 17l6-6 4 4 7-8"/><path d="M15 7h6v6"/></svg>
+          <span id="anC1"></span>
+        </div>
+        <div style="display:flex; align-items:baseline; gap:12px;">
+          <span style="font-family:'Space Grotesk',sans-serif; font-size:36px; font-weight:700; color:var(--ink-mute);">58</span>
+          <svg width="20" height="14" viewBox="0 0 24 16" fill="none" stroke="var(--ink-mute)" stroke-width="2"><path d="M2 8h18M14 2l6 6-6 6"/></svg>
+          <span class="stat-num" style="font-size:36px;">76</span>
+        </div>
+        <div class="mini-bars" style="margin-top:22px;" id="anBars">
+          <i data-h="35"></i><i data-h="48"></i><i data-h="55"></i><i data-h="64"></i><i data-h="78"></i><i data-h="92"></i>
+        </div>
+        <p style="color:var(--ink-mute); font-size:13px; margin-top:16px;" id="anC1sub"></p>
+      </div>
+
+      <div class="glass card-hover reveal reveal-delay-1" style="padding:28px; text-align:center;">
+        <div style="display:flex; align-items:center; justify-content:center; gap:8px; color:var(--ink-dim); font-size:13.5px; margin-bottom:20px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--cyan)" stroke-width="2"><path d="M22 12h-4l-3 9L9 3l-3 9H2"/></svg>
+          <span id="anC2"></span>
+        </div>
+        <div class="gauge" id="gauge"><span class="gauge-value" id="gaugeVal">84%</span></div>
+        <p style="color:var(--ink-mute); font-size:13px; margin-top:20px;" id="anC2sub"></p>
+      </div>
+
+      <div class="glass card-hover reveal reveal-delay-2" style="padding:28px;">
+        <div style="display:flex; align-items:center; gap:8px; color:var(--ink-dim); font-size:13.5px; margin-bottom:20px;">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--amber)" stroke-width="2"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+          <span id="anC3"></span>
+        </div>
+        <svg viewBox="0 0 240 100" width="100%" height="90">
+          <defs>
+            <linearGradient id="lineGrad" x1="0" y1="0" x2="1" y2="0">
+              <stop offset="0%" stop-color="var(--indigo)"/>
+              <stop offset="100%" stop-color="var(--cyan)"/>
+            </linearGradient>
+          </defs>
+          <polyline points="10,80 50,68 90,72 130,52 170,34 230,12" fill="none" stroke="url(#lineGrad)" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"/>
+          <circle cx="10" cy="80" r="4" fill="var(--indigo)"/>
+          <circle cx="50" cy="68" r="4" fill="#8b8ff0"/>
+          <circle cx="90" cy="72" r="4" fill="#7fa8f0"/>
+          <circle cx="130" cy="52" r="4" fill="#6cc3ec"/>
+          <circle cx="170" cy="34" r="4" fill="#45d3e8"/>
+          <circle cx="230" cy="12" r="5" fill="var(--cyan)"/>
+        </svg>
+        <p style="color:var(--ink-mute); font-size:13px; margin-top:16px;" id="anC3sub"></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ================= DEMO TASK ================= -->
+<section style="padding:0 0 100px;">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto 36px;">
+      <h2 class="disp" style="font-size:clamp(28px,3.4vw,40px);" id="demoTitle"></h2>
+      <p style="color:var(--ink-dim); margin-top:12px; font-size:15.5px;" id="demoSub"></p>
+    </div>
+
+    <div class="glass-strong reveal" style="max-width:760px; margin:0 auto; padding:32px;">
+      <span class="eyebrow" id="demoEyebrow" style="margin-bottom:18px; display:inline-flex;"></span>
+      <p style="font-size:18px; font-weight:500; margin:18px 0 22px; line-height:1.6;" id="demoQ"></p>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:12px;" id="demoOpts"></div>
+
+      <div id="demoResult" style="display:none; margin-top:20px;">
+        <div style="display:flex; align-items:center; gap:8px; font-size:14px;" id="demoStatus"></div>
+        <div class="glass" style="margin-top:16px;">
+          <div style="padding:18px 20px; border-bottom:1px solid var(--line-soft); font-weight:600; font-size:14.5px; color:var(--indigo2);" id="demoWhyLbl"></div>
+          <div style="padding:6px 20px 18px; display:flex; gap:14px;">
+            <span class="mono" style="width:26px; height:26px; border-radius:50%; background:var(--grad-main); color:#04050a; display:flex; align-items:center; justify-content:center; font-weight:700; font-size:13px; flex:none;">1</span>
+            <div>
+              <div style="font-size:15px; margin-bottom:5px;" id="demoRule"></div>
+              <div style="color:var(--ink-dim); font-size:14px; line-height:1.55;" id="demoExplain"></div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <p style="color:var(--ink-mute); font-size:13px; margin-top:18px; display:flex; align-items:center; gap:6px;" id="demoHint"></p>
+    </div>
+  </div>
+</section>
+
+<!-- ================= COMPARISON TABLE ================= -->
+<section style="padding:0 0 100px;">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:640px; margin:0 auto 40px;">
+      <span class="eyebrow" id="cmpEyebrow"></span>
+      <h2 class="disp" style="font-size:clamp(26px,3.2vw,38px); margin-top:16px;" id="cmpTitle"></h2>
+      <p style="color:var(--ink-dim); margin-top:12px; font-size:15.5px;" id="cmpSub"></p>
+    </div>
+    <div class="glass reveal" style="overflow-x:auto; padding:6px;">
+      <table style="width:100%; border-collapse:collapse; min-width:640px;">
+        <thead>
+          <tr>
+            <td style="padding:18px 20px;"></td>
+            <td class="cmp-col-hero" style="padding:18px 20px; text-align:center; border-radius:12px 12px 0 0;">
+              <span style="display:inline-flex; align-items:center; gap:6px; font-weight:700; color:var(--ink);">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="var(--cyan)"><path d="M13 2L3 14h8l-1 8 10-12h-8l1-8z"/></svg>
+                <span id="cmpColA"></span>
+              </span>
+            </td>
+            <td style="padding:18px 20px; text-align:center; color:var(--ink-dim); font-weight:600;" id="cmpColB"></td>
+            <td style="padding:18px 20px; text-align:center; color:var(--ink-dim); font-weight:600;" id="cmpColC"></td>
+          </tr>
+        </thead>
+        <tbody id="cmpBody"></tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<!-- ================= REVIEWS ================= -->
+<section id="reviews" style="padding:0 0 100px;">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto 44px;">
+      <span class="eyebrow" id="revEyebrow"></span>
+      <h2 class="disp" style="font-size:clamp(28px,3.4vw,40px); margin-top:16px;" id="revTitle"></h2>
+    </div>
+    <div style="display:grid; grid-template-columns:repeat(3,1fr); gap:22px;" class="grid-2" id="revGrid"></div>
+  </div>
+</section>
+
+<!-- ================= PRICING ================= -->
+<section id="pricing" style="padding:0 0 100px;">
+  <div class="wrap">
+    <div class="reveal" style="text-align:center; max-width:600px; margin:0 auto 44px;">
+      <span class="eyebrow" id="prEyebrow"></span>
+      <h2 class="disp" style="font-size:clamp(28px,3.4vw,40px); margin-top:16px;" id="prTitle"></h2>
+      <p style="color:var(--ink-dim); margin-top:12px; font-size:15.5px;" id="prSub"></p>
+    </div>
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:24px; max-width:900px; margin:0 auto;" class="grid-2" id="prGrid"></div>
+  </div>
+</section>
+
+<!-- ================= FAQ ================= -->
+<section style="padding:0 0 110px;">
+  <div class="wrap" style="max-width:800px;">
+    <h2 class="disp reveal" style="font-size:clamp(26px,3.2vw,36px); text-align:center; margin-bottom:36px;" id="faqTitle"></h2>
+    <div id="faqList" class="reveal"></div>
+  </div>
+</section>
+
+<!-- ================= FOOTER ================= -->
+<footer style="padding:32px 0;">
+  <div class="wrap" style="display:flex; flex-wrap:wrap; gap:18px; align-items:center; justify-content:space-between;">
+    <div style="display:flex; align-items:center; gap:10px;">
+      <div class="logo-mark" style="width:28px; height:28px; border-radius:8px;">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none"><path d="M4 19V6.5C4 5.67 4.67 5 5.5 5H18a1 1 0 0 1 1 1v13" stroke="#04050a" stroke-width="2" stroke-linecap="round"/><path d="M4 19a2 2 0 0 0 2 2h13" stroke="#04050a" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:15px;">English OL</span>
+    </div>
+    <div style="display:flex; gap:26px; flex-wrap:wrap;">
+      <a href="#" style="color:var(--ink-dim); font-size:13.5px;" id="ftSupport"></a>
+      <a href="#" style="color:var(--ink-dim); font-size:13.5px;" id="ftPrivacy"></a>
+      <a href="#" style="color:var(--ink-dim); font-size:13.5px;" id="ftTerms"></a>
+    </div>
+    <span style="color:var(--ink-mute); font-size:13px;" id="ftRights"></span>
+  </div>
+</footer>
+
+<script>
+const T = {
+lv: {
+  nav: { features: "Iespējas", how: "Kā strādā", pricing: "Cenas", reviews: "Atsauksmes", login: "Ienākt" },
+  hero: {
+    eyebrow: "Trenažieris jaunai paaudzei · 11.–12. klasei",
+    title1: "Neierobežots ",
+    title2: "angļu valodas",
+    title3: " CE OL/AL trenažieris",
+    sub: "Sagatavojies centralizētajam eksāmenam angļu valodā, saņem augstu vērtējumu un iestājies ārzemju augstskolā — bez IELTS/TOEFL kārtošanas un dārgiem privātskolotājiem. Der gandrīz jebkurai Eiropas augstskolai.",
+    seatsLabel: "Aizņemtas vietas",
+    seats: "83 / 100",
+    priceFrom: "sākot no",
+    priceVal: "6.99 €",
+    priceUnit: "/ mēnesī",
+    urgency: "Atlikušas tikai 17 vietas",
+    cta: "Reģistrēties",
+    ctaSub: "Pieejams no jebkuras ierīces",
+  },
+  dash: {
+    title: "English OL · Kā tas strādā",
+    subtitle: "Tavs ceļš līdz augstam vērtējumam",
+    live: "4 soļi",
+    steps: [
+      { t: "Izpildi līmeņa testu", d: "5 minūtēs noskaidro savu pašreizējo līmeni — bez reģistrācijas." },
+      { t: "Saņem personīgu plānu", d: "Sistēma izveido sagatavošanās plānu tieši tavām vājajām vietām." },
+      { t: "Pildi ikdienas uzdevumus", d: "Reading, Listening, Speaking un esejas — īsās, fokusētās sesijās." },
+      { t: "Nokārto eksāmenu ar augstu balli", d: "Ej uz CE OL/AL pārliecināts — jau esi trenējies pēc reāla formāta." },
+    ]
+  },
+  features: {
+    eyebrow: "Kā strādā English OL",
+    title: "Trīs rīki, kas aizvieto privātskolotāju",
+    items: [
+      { t: "Momentāna esejas pārbaude", d: "Saņem detalizētu analīzi un ieteikumus dažās sekundēs — ar precīzu kļūdu skaidrojumu." },
+      { t: "Klausīšanās trenažieris", d: "Trenējies ar reāliem eksāmena uzdevumiem un uzlabo Listening rezultātu." },
+      { t: "Speaking novērtējums", d: "Sistēma novērtē izrunu un palīdz izlabot kļūdas soli pa solim." },
+    ]
+  },
+  survey: {
+    eyebrow: "Balstīts uz aptauju",
+    title: "Zinām, kas skolēniem visvairāk traucē",
+    sub: "Reālas skolēnu aptaujas secinājumi",
+    items: [
+      { t:"Sagatavošanās skolā vien nepietiek", d:"Lielākajai daļai skolēnu trūkst papildu prakses ārpus stundām — tāpēc rezultāts stagnē." },
+      { t:"Kļūdas paliek nesaprastas", d:"Bez skaidrojuma, kāpēc atbilde nepareiza, tā pati kļūda atkārtojas eksāmenā." },
+      { t:"Sausa teorija nogurdina", d:"Bezgalīgas teksta sienas liek pamest mācīšanos pusceļā — vajag īsu un konkrētu formātu." },
+    ],
+    outro: "English OL izceļ katru kļūdu un paskaidro to vienkāršā valodā — tieši tā, kā trūkst vairumam skolēnu.",
+    cta: "Sākt bez maksas"
+  },
+  beforeafter: {
+    eyebrow: "Esejas pārbaude dzīvē",
+    title: "Redzi, kā tiek pārbaudīts darbs",
+    sub: "Salīdzini “pirms” un “pēc”",
+    before: "Pirms pārbaudes",
+    after: "Pēc pārbaudes",
+    textBefore: "I |have went| to London last year and it was |more better| than I expected.",
+    textAfter: "I |went| to London last year and it was |much better| than I expected.",
+    statusBefore: "2 kļūdas atrastas",
+    statusAfter: "Viss izlabots",
+    why: "Kāpēc tā? — paskaidrojums",
+    rule1a: "have went", rule1b: "went",
+    rule1d: "Vienkāršajā pagātnē (Past Simple) lieto darbības vārda 2. formu bez “have”. “have + 3. forma” ir Present Perfect.",
+    rule2a: "more better", rule2b: "much better",
+    rule2d: "“better” jau ir salīdzināmā pakāpe, tāpēc “more” nav vajadzīgs. Pastiprināšanai lieto “much better”.",
+  },
+  analytics: {
+    eyebrow: "Skaitļi runā",
+    title: "Objektīva analītika par tavu progresu",
+    sub: "Skaitļi, kas parāda rezultātu",
+    c1: "Vērtējuma prognoze", c1sub: "gaidāmais pieaugums 6 nedēļās",
+    c2: "Progresa spidometrs", c2sub: "vidējais uzdevumu precizitātes rādītājs",
+    c3: "Mācīšanās ātrums", c3sub: "punktu pieaugums pa nedēļām",
+  },
+  demo: {
+    eyebrow: "READING · Uzdevums 1/∞",
+    title: "Izmēģini uzdevumu",
+    sub: "Reāls CE OL formāta jautājums",
+    q: "Choose the correct word: “She has lived here ___ 2019.”",
+    opts: ["since","for","from","during"],
+    correct: 0,
+    statusRight: "Pareizi!",
+    statusWrong: "Nepareizi — pareizā atbilde ir “since”",
+    whyLbl: "Kāpēc tā? — paskaidrojums",
+    ruleD: "“Since” lieto, ja norāda konkrētu sākuma punktu laikā (piem., “since 2019”). “For” lieto ar laika periodu (piem., “for 5 years”).",
+    hint: "Izvēlies vienu no variantiem, lai redzētu rezultātu",
+  },
+  compare: {
+    eyebrow: "Salīdzinājums",
+    title: "Kāpēc mēs esam efektīvāki par privātskolotāju",
+    sub: "Salīdzini objektīvi — skaitļi runā paši par sevi",
+    colA: "English OL", colB: "Privātskolotājs", colC: "PDF pašmācība",
+    rows: [
+      ["Cena","6.99 € / mēn.","20–30 € / stunda","Bezmaksas"],
+      ["Pieejamība 24/7","1","0","1"],
+      ["Esejas pārbaude","1","half","0"],
+      ["Speaking","1","1","0"],
+      ["Analītika","1","half","0"],
+      ["Personīgais plāns","1","1","0"],
+      ["Atgriezeniskās saites ātrums","Uzreiz","1–3 dienas","—"],
+    ]
+  },
+  reviews: {
+    eyebrow: "Atsauksmes",
+    title: "Ko saka tie, kas jau izmēģināja",
+    items: [
+      { n:"Marta K.", meta:"12. klase · Rīga", t:"Uzlaboju rezultātu no 54% līdz 78% divos mēnešos. Kļūdu skaidrojumi ir daudz labāki nekā jebkurš video." },
+      { n:"Dāvis L.", meta:"11. klase · Liepāja", t:"Vairs netērēju naudu privātskolotājiem. Viss ir vienuviet un pieejams jebkurā laikā." },
+      { n:"Anna B.", meta:"12. klase · Valmiera", t:"Ļoti palīdzēja Speaking novērtējums — beidzot saprotu, kur ir manas kļūdas izrunā." },
+    ]
+  },
+  pricing: {
+    eyebrow: "Cenas",
+    title: "Izvēlies savu sagatavošanās formātu",
+    sub: "Bez slēptiem maksājumiem",
+    p1: { name:"Mēneša sprints", price:"6.99 €", unit:"abonements / mēnesī",
+      feats:["Pilna piekļuve visām OL/AL tēmām","Esejas un Speaking pārbaude","Progresa analītika","Atceļams jebkurā laikā"], cta:"Izvēlēties" },
+    p2: { badge:"Labākā izvēle", name:"Absolvents 11./12.", price:"36.99 €", unit:"vienreizējs maksājums · uz visiem laikiem",
+      feats:["Viss no Mēneša sprinta","Piekļuve uz visiem laikiem","Prioritārs atbalsts","Personīgais sagatavošanās plāns"], cta:"Izvēlēties" },
+  },
+  faq: {
+    title: "Biežāk uzdotie jautājumi",
+    items: [
+      { q:"Vai nepieciešama reģistrācija?", a:"Vari sākt uzreiz un iepazīties ar uzdevumiem. Reģistrācija nepieciešama tikai progresa saglabāšanai." },
+      { q:"Vai der CE OL līmenim?", a:"Jā, viss saturs ir veidots pēc CE OL (optimālā līmeņa) formāta un tēmām." },
+      { q:"Vai der CE AL līmenim?", a:"Jā, platforma iekļauj arī AL (augstākā līmeņa) uzdevumus un vārdu krājumu." },
+      { q:"Vai ir Speaking?", a:"Jā — sistēma novērtē izrunu, plūdumu un vārdu krājumu, un dod konkrētas uzlabošanas rekomendācijas." },
+      { q:"Kā notiek esejas pārbaude?", a:"Augšupielādē vai uzraksti eseju, un dažu sekunžu laikā saņem izcelt kļūdas ar skaidrojumu vienkāršā valodā." },
+    ]
+  },
+  footer: { support:"Atbalsts", privacy:"Privātuma politika", terms:"Lietošanas noteikumi", rights:"© 2026 English OL" }
+},
+
+ru: {
+  nav: { features: "Возможности", how: "Как работает", pricing: "Тарифы", reviews: "Отзывы", login: "Войти" },
+  hero: {
+    eyebrow: "Тренажёр нового поколения · для 11–12 класса",
+    title1: "Безлимитный тренажёр ",
+    title2: "английского",
+    title3: " CE OL/AL",
+    sub: "Подготовься к централизованному экзамену по английскому, набери высокий балл и поступай в зарубежный вуз — без сдачи IELTS/TOEFL и дорогих репетиторов. Подходит почти для любого университета Европы.",
+    seatsLabel: "Занято мест",
+    seats: "83 / 100",
+    priceFrom: "от",
+    priceVal: "6.99 €",
+    priceUnit: "/ месяц",
+    urgency: "Осталось только 17 мест",
+    cta: "Регистрация",
+    ctaSub: "Доступно с любого устройства",
+  },
+  dash: {
+    title: "English OL · Как это работает",
+    subtitle: "Твой путь к высокому баллу",
+    live: "4 шага",
+    steps: [
+      { t: "Пройди тест уровня", d: "За 5 минут узнай свой текущий уровень — без регистрации." },
+      { t: "Получи персональный план", d: "Система строит план подготовки именно под твои слабые места." },
+      { t: "Выполняй ежедневные задания", d: "Reading, Listening, Speaking и эссе — в коротких, сфокусированных сессиях." },
+      { t: "Сдай экзамен на высокий балл", d: "Иди на CE OL/AL уверенно — ты уже тренировался по реальному формату." },
+    ]
+  },
+  features: {
+    eyebrow: "Как работает English OL",
+    title: "Три инструмента, заменяющие репетитора",
+    items: [
+      { t: "Мгновенная проверка эссе", d: "Получай подробный разбор и рекомендации за секунды — с точным объяснением ошибок." },
+      { t: "Тренажёр аудирования", d: "Практикуй реальные экзаменационные задания и улучшай результат Listening." },
+      { t: "Оценка Speaking", d: "Система оценивает произношение и помогает исправлять ошибки шаг за шагом." },
+    ]
+  },
+  survey: {
+    eyebrow: "Основано на опросе",
+    title: "Мы знаем, что мешает ученикам больше всего",
+    sub: "Выводы из реального опроса учеников",
+    items: [
+      { t:"Подготовки в школе недостаточно", d:"Большинству учеников не хватает дополнительной практики вне уроков — поэтому результат стоит на месте." },
+      { t:"Ошибки остаются непонятыми", d:"Без объяснения, почему ответ неверный, та же ошибка повторяется на экзамене." },
+      { t:"Сухая теория утомляет", d:"Бесконечные стены текста заставляют бросать учёбу на полпути — нужен короткий и конкретный формат." },
+    ],
+    outro: "English OL выделяет каждую ошибку и объясняет её простым языком — именно того, чего не хватает большинству учеников.",
+    cta: "Начать бесплатно"
+  },
+  beforeafter: {
+    eyebrow: "Проверка эссе в деле",
+    title: "Посмотри, как проверяется работа",
+    sub: "Сравни «до» и «после»",
+    before: "До проверки",
+    after: "После проверки",
+    textBefore: "I |have went| to London last year and it was |more better| than I expected.",
+    textAfter: "I |went| to London last year and it was |much better| than I expected.",
+    statusBefore: "2 ошибки найдены",
+    statusAfter: "Всё исправлено",
+    why: "Почему так? — объяснение",
+    rule1a: "have went", rule1b: "went",
+    rule1d: "В простом прошедшем (Past Simple) используется 2-я форма глагола без “have”. “have + 3-я форма” — это Present Perfect.",
+    rule2a: "more better", rule2b: "much better",
+    rule2d: "“better” уже сравнительная степень, поэтому “more” не нужно. Для усиления используется “much better”.",
+  },
+  analytics: {
+    eyebrow: "Цифры говорят",
+    title: "Объективная аналитика твоего прогресса",
+    sub: "Цифры, которые показывают результат",
+    c1: "Прогноз балла", c1sub: "ожидаемый рост за 6 недель",
+    c2: "Спидометр прогресса", c2sub: "средняя точность выполнения заданий",
+    c3: "Скорость обучения", c3sub: "рост баллов по неделям",
+  },
+  demo: {
+    eyebrow: "READING · Задание 1/∞",
+    title: "Попробуй задание",
+    sub: "Реальный вопрос формата CE OL",
+    q: "Choose the correct word: “She has lived here ___ 2019.”",
+    opts: ["since","for","from","during"],
+    correct: 0,
+    statusRight: "Верно!",
+    statusWrong: "Неверно — правильный ответ “since”",
+    whyLbl: "Почему так? — объяснение",
+    ruleD: "“Since” используется для конкретной точки отсчёта во времени (напр., “since 2019”). “For” используется с периодом времени (напр., “for 5 years”).",
+    hint: "Выбери один из вариантов, чтобы увидеть результат",
+  },
+  compare: {
+    eyebrow: "Сравнение",
+    title: "Почему мы эффективнее репетитора",
+    sub: "Сравни объективно — цифры говорят сами за себя",
+    colA: "English OL", colB: "Репетитор", colC: "PDF самоучитель",
+    rows: [
+      ["Цена","6.99 € / мес.","20–30 € / час","Бесплатно"],
+      ["Доступность 24/7","1","0","1"],
+      ["Проверка эссе","1","half","0"],
+      ["Speaking","1","1","0"],
+      ["Аналитика","1","half","0"],
+      ["Персональный план","1","1","0"],
+      ["Скорость обратной связи","Сразу","1–3 дня","—"],
+    ]
+  },
+  reviews: {
+    eyebrow: "Отзывы",
+    title: "Что говорят те, кто уже попробовал",
+    items: [
+      { n:"Марта К.", meta:"12 класс · Рига", t:"Подняла результат с 54% до 78% за два месяца. Объяснения ошибок гораздо лучше, чем любое видео." },
+      { n:"Давис Л.", meta:"11 класс · Лиепая", t:"Больше не трачу деньги на репетиторов. Всё в одном месте и доступно в любое время." },
+      { n:"Анна Б.", meta:"12 класс · Валмиера", t:"Очень помогла оценка Speaking — наконец понимаю, где мои ошибки в произношении." },
+    ]
+  },
+  pricing: {
+    eyebrow: "Тарифы",
+    title: "Выбери свой формат подготовки",
+    sub: "Без скрытых платежей",
+    p1: { name:"Месячный спринт", price:"6.99 €", unit:"подписка / в месяц",
+      feats:["Полный доступ ко всем темам OL/AL","Проверка эссе и Speaking","Аналитика прогресса","Отмена в любой момент"], cta:"Выбрать" },
+    p2: { badge:"Лучший выбор", name:"Выпускник 11/12", price:"36.99 €", unit:"разовый платёж · навсегда",
+      feats:["Всё из Месячного спринта","Доступ навсегда","Приоритетная поддержка","Персональный план подготовки"], cta:"Выбрать" },
+  },
+  faq: {
+    title: "Часто задаваемые вопросы",
+    items: [
+      { q:"Нужна ли регистрация?", a:"Можешь начать сразу и ознакомиться с заданиями. Регистрация нужна только для сохранения прогресса." },
+      { q:"Подходит ли для CE OL?", a:"Да, весь контент построен по формату и темам CE OL (базовый уровень)." },
+      { q:"Подходит ли для CE AL?", a:"Да, платформа включает и задания уровня AL (повышенный уровень), а также соответствующую лексику." },
+      { q:"Есть ли Speaking?", a:"Да — система оценивает произношение, беглость и лексику, и даёт конкретные рекомендации по улучшению." },
+      { q:"Как проходит проверка эссе?", a:"Загрузи или напиши эссе, и за несколько секунд получи разбор ошибок с объяснением простым языком." },
+    ]
+  },
+  footer: { support:"Поддержка", privacy:"Политика конфиденциальности", terms:"Условия использования", rights:"© 2026 English OL" }
+}
+};
+
+</script>
+<script>
+(() => {
+  let lang = 'lv';
+  let showAfter = true;
+  let selOpt = null;
+
+  const $ = (id) => document.getElementById(id);
+  const txt = (id, val) => { const el = $(id); if (el) el.textContent = val; };
+
+  // ---------- render everything for current lang ----------
+  function render(){
+    const t = T[lang];
+    document.documentElement.lang = lang;
+
+    // nav
+    document.querySelectorAll('[data-nav]').forEach(el=>{
+      const key = el.getAttribute('data-nav');
+      el.textContent = t.nav[key];
+    });
+
+    // hero
+    txt('heroEyebrow', t.hero.eyebrow);
+    txt('heroT1', t.hero.title1);
+    txt('heroT2', t.hero.title2);
+    txt('heroT3', t.hero.title3);
+    txt('heroSub', t.hero.sub);
+    txt('seatsLabel', t.hero.seatsLabel);
+    txt('seatsVal', t.hero.seats);
+    txt('priceFrom', t.hero.priceFrom);
+    txt('priceVal', t.hero.priceVal);
+    txt('priceUnit', t.hero.priceUnit);
+    txt('urgency', '⚡ ' + t.hero.urgency);
+    txt('heroCtaTxt', t.hero.cta);
+    txt('heroCtaSub', t.hero.ctaSub);
+
+    // hero steps
+    txt('dashTitle', t.dash.title);
+    txt('dashSub', t.dash.subtitle);
+    txt('dashLive', t.dash.live);
+    $('stepsList').innerHTML = t.dash.steps.map((s,i)=>`
+      <div class="step-item" style="padding-bottom:${i<t.dash.steps.length-1?'22px':'0'};">
+        ${i<t.dash.steps.length-1?'<span class="step-connector"></span>':''}
+        <span class="step-num">${i+1}</span>
+        <div class="step-body">
+          <div class="step-title">${s.t}</div>
+          <div class="step-desc">${s.d}</div>
+        </div>
+      </div>
+    `).join('');
+
+    // features
+    txt('featEyebrow', t.features.eyebrow);
+    txt('featTitle', t.features.title);
+    const featIcons = [
+      '<path d="M9 12l2 2 4-4"/><path d="M5 4h9l5 5v11a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V5a1 1 0 0 1 1-1z"/>',
+      '<path d="M3 14v-3a9 9 0 0 1 18 0v3"/><path d="M21 19a2 2 0 0 1-2 2h-1a2 2 0 0 1-2-2v-3a2 2 0 0 1 2-2h3zM3 19a2 2 0 0 0 2 2h1a2 2 0 0 0 2-2v-3a2 2 0 0 0-2-2H3z"/>',
+      '<path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z"/><path d="M19 10v2a7 7 0 0 1-14 0v-2M12 19v3"/>'
+    ];
+    $('featGrid').innerHTML = t.features.items.map((f,i)=>`
+      <div class="glass card-hover reveal reveal-delay-${i+1}" style="padding:30px;">
+        <div class="icon-sq" style="margin-bottom:20px;"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${featIcons[i]}</svg></div>
+        <h3 style="font-size:18px; margin-bottom:10px;">${f.t}</h3>
+        <p style="color:var(--ink-dim); font-size:14.5px; line-height:1.6;">${f.d}</p>
+      </div>
+    `).join('');
+
+    // survey
+    txt('survEyebrow', t.survey.eyebrow);
+    txt('survTitle', t.survey.title);
+    txt('survSub', t.survey.sub);
+    txt('survOutro', t.survey.outro);
+    txt('survCta', t.survey.cta);
+    const survIcons = [
+      '<path d="M12 20v-6M6 20V10M18 20V4"/>',
+      '<circle cx="12" cy="12" r="9"/><path d="M12 8v4l3 3"/>',
+      '<path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/>'
+    ];
+    $('survGrid').innerHTML = t.survey.items.map((s,i)=>`
+      <div class="glass card-hover reveal reveal-delay-${i+1}" style="padding:28px;">
+        <div class="icon-sq" style="margin-bottom:18px;"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">${survIcons[i]}</svg></div>
+        <h3 style="font-size:15.5px; margin-bottom:8px;">${s.t}</h3>
+        <p style="color:var(--ink-dim); font-size:13.5px; line-height:1.55;">${s.d}</p>
+      </div>
+    `).join('');
+
+    // before/after
+    txt('baEyebrow', t.beforeafter.eyebrow);
+    txt('baTitle', t.beforeafter.title);
+    txt('baSub', t.beforeafter.sub);
+    document.querySelector('#baToggle button[data-state="before"]').textContent = t.beforeafter.before;
+    document.querySelector('#baToggle button[data-state="after"]').textContent = t.beforeafter.after;
+    txt('baWhy', t.beforeafter.why);
+    txt('r1a', t.beforeafter.rule1a); txt('r1b', t.beforeafter.rule1b); txt('r1d', t.beforeafter.rule1d);
+    txt('r2a', t.beforeafter.rule2a); txt('r2b', t.beforeafter.rule2b); txt('r2d', t.beforeafter.rule2d);
+    renderBeforeAfter();
+
+    // analytics
+    txt('anEyebrow', t.analytics.eyebrow);
+    txt('anTitle', t.analytics.title);
+    txt('anSub', t.analytics.sub);
+    txt('anC1', t.analytics.c1); txt('anC1sub', t.analytics.c1sub);
+    txt('anC2', t.analytics.c2); txt('anC2sub', t.analytics.c2sub);
+    txt('anC3', t.analytics.c3); txt('anC3sub', t.analytics.c3sub);
+
+    // demo
+    txt('demoEyebrow', t.demo.eyebrow);
+    txt('demoTitle', t.demo.title);
+    txt('demoSub', t.demo.sub);
+    txt('demoQ', t.demo.q);
+    txt('demoWhyLbl', t.demo.whyLbl);
+    txt('demoHint', t.demo.hint);
+    $('demoOpts').innerHTML = t.demo.opts.map((o,i)=>{
+      const letter = String.fromCharCode(65+i);
+      return `<button class="opt-btn" data-i="${i}"><span class="opt-letter">${letter}</span>${o}</button>`;
+    }).join('');
+    document.querySelectorAll('.opt-btn').forEach(b=>{
+      b.onclick = ()=>{ selOpt = parseInt(b.getAttribute('data-i')); renderDemoResult(); };
+    });
+    renderDemoResult();
+
+    // compare table
+    txt('cmpEyebrow', t.compare.eyebrow);
+    txt('cmpTitle', t.compare.title);
+    txt('cmpSub', t.compare.sub);
+    txt('cmpColA', t.compare.colA);
+    txt('cmpColB', t.compare.colB);
+    txt('cmpColC', t.compare.colC);
+    const statusCell = (v)=>{
+      if(v==='1') return `<span style="color:var(--emerald); font-size:17px;">✓</span>`;
+      if(v==='0') return `<span style="color:var(--rose); font-size:17px;">✕</span>`;
+      if(v==='half') return `<span style="color:var(--amber); font-size:17px;">–</span>`;
+      return `<span style="color:var(--ink);">${v}</span>`;
+    };
+    $('cmpBody').innerHTML = t.compare.rows.map((r,i)=>`
+      <tr class="cmp-row" style="border-top:1px solid var(--line-soft);">
+        <td style="padding:16px 20px; color:var(--ink-dim); font-size:14.5px;">${r[0]}</td>
+        <td class="cmp-col-hero" style="padding:16px 20px; text-align:center; font-weight:600; ${i===t.compare.rows.length-1?'border-radius:0 0 12px 12px;':''}">${statusCell(r[1])}</td>
+        <td style="padding:16px 20px; text-align:center; color:var(--ink-dim);">${statusCell(r[2])}</td>
+        <td style="padding:16px 20px; text-align:center; color:var(--ink-dim);">${statusCell(r[3])}</td>
+      </tr>
+    `).join('');
+
+    // reviews
+    txt('revEyebrow', t.reviews.eyebrow);
+    txt('revTitle', t.reviews.title);
+    $('revGrid').innerHTML = t.reviews.items.map((r,i)=>`
+      <div class="glass card-hover reveal reveal-delay-${i+1}" style="padding:28px;">
+        <div style="display:flex; align-items:center; gap:12px; margin-bottom:16px;">
+          <div class="avatar">${r.n[0]}</div>
+          <div>
+            <div style="font-weight:600; font-size:15px;">${r.n}</div>
+            <div style="color:var(--ink-mute); font-size:12.5px;">${r.meta}</div>
+          </div>
+        </div>
+        <div style="color:var(--amber); margin-bottom:12px; letter-spacing:2px;">★★★★★</div>
+        <p style="color:var(--ink-dim); font-size:14.5px; line-height:1.6;">${r.t}</p>
+      </div>
+    `).join('');
+
+    // pricing
+    txt('prEyebrow', t.pricing.eyebrow);
+    txt('prTitle', t.pricing.title);
+    txt('prSub', t.pricing.sub);
+    const p1 = t.pricing.p1, p2 = t.pricing.p2;
+    $('prGrid').innerHTML = `
+      <div class="glass card-hover reveal" style="padding:34px;">
+        <div style="color:var(--ink-dim); font-size:14.5px; margin-bottom:14px;">${p1.name}</div>
+        <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:22px;">
+          <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:38px;">${p1.price}</span>
+          <span style="color:var(--ink-mute); font-size:13px;">${p1.unit}</span>
+        </div>
+        <ul style="list-style:none; padding:0; margin:0 0 28px; display:flex; flex-direction:column; gap:13px;">
+          ${p1.feats.map(f=>`<li style="display:flex; gap:10px; font-size:14.5px; color:var(--ink-dim);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.4" style="flex:none; margin-top:2px;"><path d="M20 6L9 17l-5-5"/></svg>${f}</li>`).join('')}
+        </ul>
+        <button class="btn btn-outline" style="width:100%;">${p1.cta}</button>
+      </div>
+      <div class="glass-strong reveal reveal-delay-1" style="padding:34px; position:relative; border:1px solid rgba(99,102,241,.4); animation:glowPulse 3.5s ease-in-out infinite;">
+        <span style="position:absolute; top:-13px; left:34px; background:var(--grad-main); color:#04050a; font-size:12px; font-weight:700; padding:6px 14px; border-radius:999px;">${p2.badge}</span>
+        <div style="color:var(--ink-dim); font-size:14.5px; margin-bottom:14px;">${p2.name}</div>
+        <div style="display:flex; align-items:baseline; gap:8px; margin-bottom:6px;">
+          <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:38px;">${p2.price}</span>
+        </div>
+        <div style="color:var(--ink-mute); font-size:13px; margin-bottom:22px;">${p2.unit}</div>
+        <ul style="list-style:none; padding:0; margin:0 0 28px; display:flex; flex-direction:column; gap:13px;">
+          ${p2.feats.map(f=>`<li style="display:flex; gap:10px; font-size:14.5px; color:var(--ink-dim);"><svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="var(--emerald)" stroke-width="2.4" style="flex:none; margin-top:2px;"><path d="M20 6L9 17l-5-5"/></svg>${f}</li>`).join('')}
+        </ul>
+        <button class="btn btn-grad" style="width:100%;">${p2.cta}</button>
+      </div>
+    `;
+
+    // faq
+    txt('faqTitle', t.faq.title);
+    $('faqList').innerHTML = t.faq.items.map((f,i)=>`
+      <div class="faq-item" data-idx="${i}">
+        <button class="faq-btn"><span>${f.q}</span><span class="faq-icon"></span></button>
+        <div class="faq-panel"><div style="padding:0 4px 22px; color:var(--ink-dim); font-size:14.5px; line-height:1.6;">${f.a}</div></div>
+      </div>
+    `).join('');
+    document.querySelectorAll('.faq-btn').forEach(btn=>{
+      btn.onclick = ()=>{
+        const item = btn.parentElement;
+        const wasOpen = item.classList.contains('open');
+        document.querySelectorAll('.faq-item').forEach(el=>el.classList.remove('open'));
+        if(!wasOpen) item.classList.add('open');
+      };
+    });
+    // keep first faq open by default
+    const first = document.querySelector('.faq-item[data-idx="0"]');
+    if(first) first.classList.add('open');
+
+    // footer
+    txt('ftSupport', t.footer.support);
+    txt('ftPrivacy', t.footer.privacy);
+    txt('ftTerms', t.footer.terms);
+    txt('ftRights', t.footer.rights);
+
+    // login button + lang switch labels
+    txt('loginBtn', t.nav.login);
+
+    observeReveals();
+  }
+
+  function renderBeforeAfter(){
+    const t = T[lang].beforeafter;
+    const src = showAfter ? t.textAfter : t.textBefore;
+    const cls = showAfter ? 'hl-fix' : 'hl-err';
+    const html = src.replace(/\|(.+?)\|/g, (m,p1)=>`<span class="${cls}">${p1}</span>`);
+    $('baText').innerHTML = html;
+
+    const statusColor = showAfter ? 'var(--emerald)' : 'var(--rose)';
+    const statusIcon = showAfter ? '✓' : '✗';
+    $('baStatus').innerHTML = `<span style="color:${statusColor}; font-weight:700;">${statusIcon}</span> <span style="color:${statusColor};">${showAfter ? t.statusAfter : t.statusBefore}</span>`;
+
+    $('baExplain').style.display = showAfter ? 'block' : 'none';
+
+    document.querySelectorAll('#baToggle button').forEach(b=>{
+      b.classList.toggle('active', (b.getAttribute('data-state')==='after')===showAfter);
+    });
+  }
+
+  function renderDemoResult(){
+    const t = T[lang].demo;
+    const answered = selOpt !== null;
+
+    document.querySelectorAll('.opt-btn').forEach(b=>{
+      const i = parseInt(b.getAttribute('data-i'));
+      b.classList.remove('sel','right','wrong');
+      if(!answered) return;
+      if(i === t.correct) b.classList.add('right');
+      else if(i === selOpt) b.classList.add('wrong');
+    });
+
+    $('demoResult').style.display = answered ? 'block' : 'none';
+    $('demoHint').style.display = answered ? 'none' : 'flex';
+    if(!answered) return;
+
+    const isRight = selOpt === t.correct;
+    const statusColor = isRight ? 'var(--emerald)' : 'var(--rose)';
+    const statusIcon = isRight ? '✓' : '✗';
+    $('demoStatus').innerHTML = `<span style="color:${statusColor}; font-weight:700;">${statusIcon}</span> <span style="color:${statusColor};">${isRight ? t.statusRight : t.statusWrong}</span>`;
+
+    if(isRight){
+      $('demoRule').innerHTML = `<span class="hl-fix">${t.opts[t.correct]}</span>`;
+    } else {
+      $('demoRule').innerHTML = `<span class="hl-err">${t.opts[selOpt]}</span> <span style="color:var(--ink-mute);">→</span> <span class="hl-fix">${t.opts[t.correct]}</span>`;
+    }
+    txt('demoExplain', t.ruleD);
+  }
+
+  // ---------- reveal on scroll ----------
+  let revealObserver;
+  function observeReveals(){
+    if(revealObserver) revealObserver.disconnect();
+    revealObserver = new IntersectionObserver((entries)=>{
+      entries.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('in'); revealObserver.unobserve(e.target); } });
+    }, { threshold:.12 });
+    document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
+  }
+
+  // ---------- animated bars / seats / gauge on load ----------
+  function animateOnLoad(){
+    setTimeout(()=>{
+      $('seatsBar').style.width = '83%';
+      document.querySelectorAll('#anBars i').forEach(i=>{ i.style.height = i.getAttribute('data-h')+'%'; });
+    }, 400);
+  }
+
+  // ---------- nav interactions ----------
+  function bindNav(){
+    document.querySelectorAll('#langSwitch button').forEach(b=>{
+      b.onclick = ()=>{
+        lang = b.getAttribute('data-lang');
+        document.querySelectorAll('#langSwitch button').forEach(x=>x.classList.toggle('active', x===b));
+        selOpt = null;
+        render();
+      };
+    });
+
+    $('burger').onclick = ()=> $('mmenu').classList.toggle('open');
+    document.querySelectorAll('#mmenu a').forEach(a=> a.onclick = ()=> $('mmenu').classList.remove('open'));
+
+    document.querySelectorAll('#baToggle button').forEach(b=>{
+      b.onclick = ()=>{ showAfter = b.getAttribute('data-state')==='after'; renderBeforeAfter(); };
+    });
+
+    function checkBurgerVisibility(){
+      const isMobile = window.innerWidth <= 860;
+      $('burger').style.display = isMobile ? 'flex' : 'none';
+      $('navLinksDesktop').style.display = isMobile ? 'none' : 'flex';
+    }
+    checkBurgerVisibility();
+    window.addEventListener('resize', checkBurgerVisibility);
+  }
+
+  document.addEventListener('DOMContentLoaded', ()=>{
+    bindNav();
+    render();
+    animateOnLoad();
+    bindAuthModal();
+  });
+})();
+
+</script>
+
+<!-- ════ AUTH MODAL ════ -->
+<div class="modal-ov" id="authModal" onclick="modalOverlayClick(event)">
+  <div class="modal-card">
+    <button class="modal-close" onclick="closeModal()" aria-label="Close">✕</button>
+    <div class="modal-logo">English OL</div>
+
+    <div class="modal-tabs">
+      <button class="mtab active" id="tabLogin" onclick="switchTab('login')">
+        <span data-i18n="m.login">Ienākt</span>
+      </button>
+      <button class="mtab" id="tabReg" onclick="switchTab('register')">
+        <span data-i18n="m.register">Reģistrēties</span>
+      </button>
+    </div>
+
+    <!-- LOGIN FORM -->
+    <div class="mform on" id="mfLogin">
+      <div class="mfield">
+        <label data-i18n="m.user">Lietotājvārds</label>
+        <input type="text" id="mUser" autocomplete="username" autocapitalize="none" />
+      </div>
+      <div class="mfield">
+        <label data-i18n="m.pass">Parole</label>
+        <input type="password" id="mPass" autocomplete="current-password" />
+      </div>
+      <button class="mbtn" id="mLoginBtn" onclick="doLogin()">
+        <span data-i18n="m.login.btn">Ieiet</span>
+      </button>
+      <div class="merr" id="mLoginErr"></div>
+      <div class="mok" id="mLoginOk"></div>
+    </div>
+
+    <!-- REGISTER FORM -->
+    <div class="mform" id="mfReg">
+      <div class="mfield">
+        <label data-i18n="m.reg.name">Vārds</label>
+        <input type="text" id="mRegName" autocomplete="name" maxlength="60" />
+      </div>
+      <div class="mfield">
+        <label data-i18n="m.reg.username">Vēlamais lietotājvārds</label>
+        <input type="text" id="mRegUser" autocomplete="username" autocapitalize="none" maxlength="20" placeholder="piem. janis123" />
+      </div>
+      <div class="mreg-note" data-i18n="m.reg.note">Pēc pārbaudes tiksi novirzīts uz Telegram, lai pabeigtu reģistrāciju un saņemtu pieejas datus.</div>
+      <button class="mbtn" id="mRegBtn" onclick="doRegister()">
+        <span data-i18n="m.reg.btn">Turpināt →</span>
+      </button>
+      <div class="merr" id="mRegErr"></div>
+      <div class="mok" id="mRegOk"></div>
+    </div>
   </div>
 </div>
 
 <script>
-/* ============ i18n ============ */
-const dict = {
-  lv:{
-    streak:"dienu straiks", greeting:"Sveiks, {name}!", subGreeting:"Kuru uzdevumu izvēlēsimies šodien?",
-    t3l:"Klausīšanās", t3lc:"3", t3lu:"uzdevumi",
-    t3r:"Lasīšana",    t3rc:"3", t3ru:"uzdevumi",
-    t2w:"Rakstīšana",  t2wc:"2", t2wu:"uzdevumi",
-    t1t:"Runāšana",    t1tc:"1", t1tu:"uzdevums",
-    start:"Sākt",
-    forecast:"Vērtējuma prognoze", forecastSub:"6 nedēļu prognoze",
-    acc:"Precizitāte", accSub:"vidējais uzdevumu rādītājs",
-    weekly:"Nedēļas aktivitāte", weeklySub:"punkti pa dienām",
-    lbTitle:"Nedēļas līderu tabula", lbSub:"Top skolēni pēc XP šonedēļ",
-    lbXp:"Nedēļas XP", lbGlobal:"Prognozes rangs",
-    yourPlace:"Tava vieta", of:"no", viewAll:"Skatīt visu", fullLb:"Pilna līderu tabula",
-    xp:"XP", score:"Balles", active:"aktīvi skolēni",
-    profileTitle:"Personīgais profils",
-    profileHint:"Šeit drīz parādīsies tavu iepriekšējo uzdevumu vēsture, saglabātās esejas un iestatījumi.",
-    upcoming:"Drīzumā",
-    days:["Pr","Ot","Tr","Ce","Pk","Se","Sv"], locale:"lv-LV"
+/* ── AUTH: логин / регистрация ─────────────────────────────
+   Отдельный WORKER_URL от нейросети — этот модуль бьёт ТОЛЬКО
+   в auth-worker (безопасность/логин/регистрация), никогда в ai-worker.
+   ЗАМЕНИ на свой URL после деплоя auth-worker.
+   ─────────────────────────────────────────────────────────── */
+var AUTH_WORKER_URL = "https://auth-worker.gegeodin.workers.dev/";
+var TELEGRAM_BOT_USERNAME = "mismisimsbot"; // без @ и без t.me/
+
+// i18n для модалки — берёт текущий язык из внешнего замыкания через atrribute lang на <html>
+var MODAL_T = {
+  lv: {
+    "m.login": "Ienākt", "m.register": "Reģistrēties",
+    "m.user": "Lietotājvārds", "m.pass": "Parole", "m.login.btn": "Ieiet",
+    "m.reg.name": "Vārds", "m.reg.username": "Vēlamais lietotājvārds",
+    "m.reg.note": "Pēc pārbaudes tiksi novirzīts uz Telegram, lai pabeigtu reģistrāciju un saņemtu pieejas datus.",
+    "m.reg.btn": "Turpināt →", "m.reg.redirecting": "Novirzām uz Telegram...",
+    "m.fill": "Lūdzu, aizpildi visus laukus.", "m.ok": "Veiksmīgi! Novirzām...",
+    "m.err.net": "Savienojuma kļūda.",
+    "err.missing_fields": "Nav aizpildīti visi lauki", "err.invalid_credentials": "Nepareizs lietotājvārds vai parole",
+    "err.rate_limited": "Pārāk daudz mēģinājumu. Mēģini vēlāk.", "err.subscription_inactive": "Abonements nav aktīvs",
+    "err.subscription_expired": "Abonements beidzies", "err.device_limit": "Pārsniegts ierīču limits (maks. 3). Raksti Telegram, lai saņemtu palīdzību.",
+    "err.name_too_long": "Vārds pārāk garš", "err.username_invalid_format": "Lietotājvārdā drīkst būt tikai latīņu burti, cipari un _ (3-20 simboli).",
+    "err.username_taken": "Šis lietotājvārds jau aizņemts", "err.content_rejected": "Lūdzu, izmanto atbilstošu vārdu un lietotājvārdu",
+    "err.server_error": "Servera kļūda", "err.unknown": "Kļūda. Mēģini vēlreiz."
   },
-  ru:{
-    streak:"дней подряд", greeting:"Привет, {name}!", subGreeting:"Какое задание выберем на сегодня?",
-    t3l:"Аудирование", t3lc:"3", t3lu:"задания",
-    t3r:"Чтение",      t3rc:"3", t3ru:"задания",
-    t2w:"Письмо",      t2wc:"2", t2wu:"задания",
-    t1t:"Говорение",   t1tc:"1", t1tu:"задание",
-    start:"Начать",
-    forecast:"Прогноз оценки", forecastSub:"прогноз на 6 недель",
-    acc:"Точность", accSub:"среднее по заданиям",
-    weekly:"Активность за неделю", weeklySub:"очки по дням",
-    lbTitle:"Лидерборд недели", lbSub:"Топ учеников по XP за неделю",
-    lbXp:"XP за неделю", lbGlobal:"Прогноз-ранг",
-    yourPlace:"Твоё место", of:"из", viewAll:"Смотреть весь топ", fullLb:"Полный лидерборд",
-    xp:"XP", score:"балла", active:"активных учеников",
-    profileTitle:"Личный профиль",
-    profileHint:"Здесь скоро появится история твоих прошлых заданий, сохранённые эссе и настройки.",
-    upcoming:"Скоро",
-    days:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"], locale:"ru-RU"
+  ru: {
+    "m.login": "Войти", "m.register": "Регистрация",
+    "m.user": "Имя пользователя", "m.pass": "Пароль", "m.login.btn": "Войти",
+    "m.reg.name": "Имя", "m.reg.username": "Желаемое имя пользователя",
+    "m.reg.note": "После проверки ты будешь перенаправлен в Telegram, чтобы завершить регистрацию и получить данные для входа.",
+    "m.reg.btn": "Продолжить →", "m.reg.redirecting": "Перенаправляем в Telegram...",
+    "m.fill": "Пожалуйста, заполни все поля.", "m.ok": "Успешно! Перенаправляем...",
+    "m.err.net": "Ошибка соединения.",
+    "err.missing_fields": "Заполнены не все поля", "err.invalid_credentials": "Неверное имя пользователя или пароль",
+    "err.rate_limited": "Слишком много попыток. Попробуй позже.", "err.subscription_inactive": "Подписка не активна",
+    "err.subscription_expired": "Подписка истекла", "err.device_limit": "Превышен лимит устройств (макс. 3). Напиши в Telegram для помощи.",
+    "err.name_too_long": "Имя слишком длинное", "err.username_invalid_format": "В имени пользователя допустимы только латинские буквы, цифры и _ (3-20 символов).",
+    "err.username_taken": "Это имя пользователя уже занято", "err.content_rejected": "Пожалуйста, используй подходящее имя и имя пользователя",
+    "err.server_error": "Ошибка сервера", "err.unknown": "Ошибка. Попробуй снова."
   }
 };
 
-/* ============ Data ============ */
-const lbXP = [
-  {name:"Elīna V.", city:"Rīga",       val:4820},
-  {name:"Dāvis L.", city:"Liepāja",    val:4610},
-  {name:"Marta K.", city:"Rīga",       val:4380},
-  {name:"Anna B.",  city:"Valmiera",   val:4120},
-  {name:"Roberts P.",city:"Jelgava",   val:3980},
-  {name:"Kate S.",  city:"Cēsis",      val:3720},
-  {name:"Ilja N.",  city:"Daugavpils", val:3510},
-  {name:"Sofija M.",city:"Rīga",       val:3390},
-  {name:"Kārlis Z.",city:"Rēzekne",    val:3240},
-  {name:"Laima R.", city:"Ventspils",  val:3110}
-];
-const lbGL = [
-  {name:"Sofija M.",city:"Rīga",       val:82},
-  {name:"Elīna V.", city:"Rīga",       val:81},
-  {name:"Anna B.",  city:"Valmiera",   val:79},
-  {name:"Dāvis L.", city:"Liepāja",    val:78},
-  {name:"Marta K.", city:"Rīga",       val:76},
-  {name:"Kate S.",  city:"Cēsis",      val:74},
-  {name:"Roberts P.",city:"Jelgava",   val:73},
-  {name:"Kārlis Z.",city:"Rēzekne",    val:71},
-  {name:"Ilja N.",  city:"Daugavpils", val:70},
-  {name:"Laima R.", city:"Ventspils",  val:69}
-];
-const MY = {xp:{rank:23,val:1980}, global:{rank:41,val:68}};
-const TOTAL = 1240;
-
-/* ============ State ============ */
-let lang = "lv";
-let lbMode = "xp";
-
-/* ============ Utils ============ */
-const $ = s => document.querySelector(s);
-const $$ = s => document.querySelectorAll(s);
-
-function applyLang(){
-  const t = dict[lang];
-  $$('[data-i]').forEach(el=>{
-    const k = el.dataset.i;
-    if(t[k] !== undefined) el.textContent = t[k];
-  });
-  // Days on chart
-  $$('text[data-d]').forEach(el=>{
-    el.textContent = t.days[+el.dataset.d];
-  });
-  // Today eyebrow
-  $('#today').textContent = new Date().toLocaleDateString(t.locale,{weekday:"long",day:"numeric",month:"long"});
-  // Реальное имя пользователя — auth.js сохраняет его в localStorage при
-  // проверке токена (/check у auth-worker). Плейсхолдер {name} подставлен
-  // в greeting внутри словаря dict, а не хардкожен в HTML.
-  // Обрезаем до 24 символов на всякий случай — auth-worker разрешает имена
-  // до 60 символов при регистрации, но такая длина сломает вёрстку заголовка.
-  let realName = localStorage.getItem("display_name") || (lang==="lv" ? "Skolēns" : "Ученик");
-  if (realName.length > 24) realName = realName.slice(0, 24) + "…";
-  const greetingEl = document.querySelector('[data-i="greeting"]');
-  if (greetingEl) greetingEl.textContent = t.greeting.replace("{name}", realName);
-  const avatarEl = document.getElementById("avatarInitial");
-  if (avatarEl) avatarEl.textContent = realName.charAt(0).toUpperCase();
-  document.documentElement.lang = lang;
-  renderLb();
+function currentModalLang() {
+  var l = document.documentElement.lang;
+  return (l === "ru") ? "ru" : "lv";
 }
 
-function renderLb(){
-  const t = dict[lang];
-  const list = lbMode === "xp" ? lbXP : lbGL;
-  const unit = lbMode === "xp" ? t.xp : t.score;
-  const my   = MY[lbMode];
-
-  // Preview top-5
-  const preview = list.slice(0,5).map((it,i)=>rowHTML(i,it,unit,false)).join("");
-  $('#lbList').innerHTML = preview;
-
-  // Hero
-  $('#myRank').textContent = my.rank;
-  $('#myVal').textContent  = my.val.toLocaleString();
-  $('#lbUnitHead').textContent = unit;
-  const totalNow = window.TOTAL_OVERRIDE || TOTAL;
-  $('.lb-hero .l b').innerHTML = `#<span id="myRank">${my.rank}</span><span style="color:rgba(255,255,255,.5);font-size:14px;margin-left:6px;font-weight:500">${t.of} ${totalNow.toLocaleString()}</span>`;
-
-  // Full modal
-  let realNameLb = localStorage.getItem("display_name") || (lang==="lv" ? "Skolēns" : "Ученик");
-  if (realNameLb.length > 20) realNameLb = realNameLb.slice(0, 20) + "…";
-  const meName = lang==="lv" ? ("Tu (" + realNameLb + ")") : ("Ты (" + realNameLb + ")");
-  const full = list.map((it,i)=>rowHTML(i,it,unit,false)).join("")
-             + '<div class="hr"></div>'
-             + rowHTML(my.rank-1,{name:meName,city:"Rīga",val:my.val},unit,true);
-  $('#lbFull').innerHTML = full;
-}
-function rowHTML(i,it,unit,me){
-  const cls = me ? "me" : (i<3 ? "i"+i : "");
-  return `<div class="lb-row ${cls}">
-    <div class="rank">${i+1}</div>
-    <div class="who"><b>${it.name}</b><small>${it.city}</small></div>
-    <div class="val mono">${it.val.toLocaleString()}<small>${unit}</small></div>
-  </div>`;
+function openModal(tab) {
+  document.getElementById("authModal").classList.add("open");
+  document.body.style.overflow = "hidden";
+  switchTab(tab || "login");
+  applyModalLang();
+  setTimeout(function() {
+    var first = document.querySelector(".mform.on input");
+    if (first) first.focus();
+  }, 120);
 }
 
-/* ============ Session timer ============ */
-let sec = 4*60 + 13;
-setInterval(()=>{
-  sec++;
-  const m = String(Math.floor(sec/60)).padStart(2,"0");
-  const s = String(sec%60).padStart(2,"0");
-  $('#timer').textContent = `${m}:${s}`;
-},1000);
+function closeModal() {
+  document.getElementById("authModal").classList.remove("open");
+  document.body.style.overflow = "";
+  clearModalErrors();
+}
 
-/* ============ Events ============ */
-$$('.seg-item[data-lang]').forEach(el=>{
-  el.addEventListener('click',()=>{
-    $$('.seg-item[data-lang]').forEach(x=>x.classList.remove('active'));
-    el.classList.add('active');
-    lang = el.dataset.lang;
-    applyLang();
+function modalOverlayClick(e) {
+  if (e.target === document.getElementById("authModal")) closeModal();
+}
+
+function switchTab(tab) {
+  var isLogin = tab === "login";
+  document.getElementById("tabLogin").classList.toggle("active", isLogin);
+  document.getElementById("tabReg").classList.toggle("active", !isLogin);
+  document.getElementById("mfLogin").classList.toggle("on", isLogin);
+  document.getElementById("mfReg").classList.toggle("on", !isLogin);
+  clearModalErrors();
+}
+
+function applyModalLang() {
+  var dict = MODAL_T[currentModalLang()];
+  document.querySelectorAll("#authModal [data-i18n]").forEach(function(el) {
+    var k = el.getAttribute("data-i18n");
+    if (dict[k] !== undefined) el.textContent = dict[k];
   });
-});
+}
 
-$$('.seg-item[data-lb]').forEach(el=>{
-  el.addEventListener('click',()=>{
-    $$('.seg-item[data-lb]').forEach(x=>x.classList.remove('active'));
-    el.classList.add('active');
-    lbMode = el.dataset.lb;
-    renderLb();
+function clearModalErrors() {
+  ["mLoginErr","mLoginOk","mRegErr","mRegOk"].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) { el.style.display="none"; el.textContent=""; }
   });
-});
+  var dict = MODAL_T[currentModalLang()];
+  var lb = document.getElementById("mLoginBtn");
+  if (lb) { lb.disabled = false; lb.innerHTML = "<span>" + dict["m.login.btn"] + "</span>"; }
+  var rb = document.getElementById("mRegBtn");
+  if (rb) { rb.disabled = false; rb.innerHTML = "<span>" + dict["m.reg.btn"] + "</span>"; }
+}
 
-$('#viewAll').addEventListener('click',()=>$('#lbModal').classList.add('open'));
-$('#profileBtn').addEventListener('click',()=>$('#profileModal').classList.add('open'));
+function setBtnLoading(btnId) {
+  var btn = document.getElementById(btnId);
+  var label = btn.querySelector("span") ? btn.querySelector("span").textContent : btn.textContent;
+  btn.disabled = true;
+  btn.innerHTML = "<span>" + label + "</span><span class='mspinner'></span>";
+}
 
-$$('[data-close]').forEach(b=>b.addEventListener('click',e=>{
-  e.target.closest('.backdrop').classList.remove('open');
-}));
-$$('.backdrop').forEach(bd=>bd.addEventListener('click',e=>{
-  if(e.target===bd) bd.classList.remove('open');
-}));
-document.addEventListener('keydown',e=>{
-  if(e.key==='Escape') $$('.backdrop').forEach(b=>b.classList.remove('open'));
-});
+function showErr(errId, msg) {
+  var el = document.getElementById(errId);
+  el.textContent = msg; el.style.display = "block";
+}
+function showOk(okId, msg) {
+  var el = document.getElementById(okId);
+  el.textContent = msg; el.style.display = "block";
+}
 
-/* ============ Logout ============ */
-// window.logout() определена в auth.js (уже подключён первой строкой в <head>).
-// Она сама шлёт запрос на auth-worker /logout и чистит localStorage.
-$('#logoutBtn').addEventListener('click', () => {
-  if (typeof window.logout === 'function') window.logout();
-  else { localStorage.removeItem('session_token'); window.location.href = '/l/'; }
-});
+function translateError(data) {
+  var dict = MODAL_T[currentModalLang()];
+  if (data && data.errorCode && dict["err." + data.errorCode]) {
+    return dict["err." + data.errorCode];
+  }
+  if (data && data.error) return data.error;
+  return dict["err.unknown"];
+}
 
-/* ============ Реальный лидерборд с auth-worker ============
-   auth.js уже подключён (первая строка в <head>) и объявляет глобальную
-   переменную AUTH_WORKER_URL — используем её напрямую, чтобы URL воркера
-   настраивался в ОДНОМ месте (auth.js), а не дублировался по файлам. */
-
-async function loadRealLeaderboard() {
-  var token = localStorage.getItem("session_token");
-  if (!token) return; // auth.js уже должен был увести на /login.html, но на всякий случай
-
+async function doLogin() {
+  var dict = MODAL_T[currentModalLang()];
+  var user = document.getElementById("mUser").value.trim();
+  var pass = document.getElementById("mPass").value.trim();
+  if (!user || !pass) { showErr("mLoginErr", dict["m.fill"]); return; }
+  setBtnLoading("mLoginBtn");
+  document.getElementById("mLoginErr").style.display = "none";
   try {
-    var res = await fetch(AUTH_WORKER_URL + "leaderboard", {
+    var res = await fetch(AUTH_WORKER_URL + "login", {
       method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        "Authorization": "Bearer " + token
-      },
-      body: JSON.stringify({})
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ username: user, password: pass })
     });
-    if (!res.ok) return; // тихо остаёмся на demo-данных при ошибке
     var data = await res.json();
-
-    // Перегоняем реальный ответ auth-worker в формат, который понимает
-    // rowHTML()/renderLb(): { name, city, val }. city у реальных юзеров
-    // не хранится — оставляем пустым, вёрстка это переживает нормально.
-    var real = (data.top || []).map(function(u) {
-      return { name: u.displayName || u.username, city: "", val: u.solvedCount || 0 };
-    });
-    if (real.length === 0) return; // пока никто не решал задания — оставляем demo
-
-    lbXP.length = 0;
-    Array.prototype.push.apply(lbXP, real);
-    lbGL.length = 0;
-    Array.prototype.push.apply(lbGL, real);
-
-    if (data.myRank && data.myRank > 0) {
-      MY.xp.rank = data.myRank;
-      MY.global.rank = data.myRank;
+    if (!res.ok) {
+      showErr("mLoginErr", translateError(data));
+      document.getElementById("mLoginBtn").disabled = false;
+      document.getElementById("mLoginBtn").innerHTML = "<span>" + dict["m.login.btn"] + "</span>";
+      return;
     }
-    if (typeof data.totalUsers === "number" && data.totalUsers > 0) {
-      window.TOTAL_OVERRIDE = data.totalUsers;
-    }
-
-    renderLb();
-  } catch (e) {
-    console.warn("Leaderboard load failed, showing demo data:", e.message);
+    localStorage.setItem("session_token", data.token);
+    showOk("mLoginOk", dict["m.ok"]);
+    setTimeout(function() { window.location.href = "/l/menu.html"; }, 900);
+  } catch(e) {
+    showErr("mLoginErr", dict["m.err.net"]);
+    document.getElementById("mLoginBtn").disabled = false;
+    document.getElementById("mLoginBtn").innerHTML = "<span>" + dict["m.login.btn"] + "</span>";
   }
 }
 
-/* ============ Init ============ */
-// auth.js — асинхронный и не блокирует остальную загрузку страницы, поэтому
-// display_name/username могут ещё не быть в localStorage в момент, когда
-// этот код выполняется. Ждём window.authReady (флаг на случай, если auth.js
-// уже закончил раньше) либо событие auth-ready (на случай, если ещё нет).
-function initMenu() {
-  applyLang();
-  loadRealLeaderboard();
+async function doRegister() {
+  var dict = MODAL_T[currentModalLang()];
+  var name = document.getElementById("mRegName").value.trim();
+  var user = document.getElementById("mRegUser").value.trim().toLowerCase();
+
+  if (!name || !user) { showErr("mRegErr", dict["m.fill"]); return; }
+
+  if (!/^[a-z0-9_]{3,20}$/.test(user)) {
+    showErr("mRegErr", dict["err.username_invalid_format"]);
+    return;
+  }
+
+  setBtnLoading("mRegBtn");
+  document.getElementById("mRegErr").style.display = "none";
+  try {
+    var res = await fetch(AUTH_WORKER_URL + "register-check", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name: name, username: user })
+    });
+    var data = await res.json();
+    if (!res.ok) {
+      showErr("mRegErr", translateError(data));
+      document.getElementById("mRegBtn").disabled = false;
+      document.getElementById("mRegBtn").innerHTML = "<span>" + dict["m.reg.btn"] + "</span>";
+      return;
+    }
+    showOk("mRegOk", dict["m.reg.redirecting"]);
+    setTimeout(function() {
+      window.location.href = "https://t.me/" + TELEGRAM_BOT_USERNAME + "?start=" + data.code;
+    }, 600);
+  } catch(e) {
+    showErr("mRegErr", dict["m.err.net"]);
+    document.getElementById("mRegBtn").disabled = false;
+    document.getElementById("mRegBtn").innerHTML = "<span>" + dict["m.reg.btn"] + "</span>";
+  }
 }
-if (window.authReady) {
-  initMenu();
-} else {
-  document.addEventListener("auth-ready", initMenu, { once: true });
+
+function bindAuthModal() {
+  // Кнопка "Ienākt/Войти" в шапке
+  var loginBtn = document.getElementById("loginBtn");
+  if (loginBtn) loginBtn.onclick = function() { openModal("login"); };
+
+  // heroCta ("Reģistrēties") ведёт сразу на регистрацию.
+  // survCta ("Sākt bez maksas") — это <a href="#pricing">, просто скроллит к тарифам,
+  // модалку открывать не нужно — сначала человек должен увидеть цены.
+  var heroCta = document.getElementById("heroCta");
+  if (heroCta) heroCta.addEventListener("click", function() { openModal("register"); });
+
+  // Кнопки внутри тарифных карточек (рендерятся динамически в prGrid)
+  var prGrid = document.getElementById("prGrid");
+  if (prGrid) {
+    prGrid.addEventListener("click", function(e) {
+      var btn = e.target.closest("button");
+      if (btn) openModal("register");
+    });
+  }
+
+  ["mUser","mPass"].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener("keydown", function(e) { if (e.key === "Enter") doLogin(); });
+  });
+  ["mRegName","mRegUser"].forEach(function(id) {
+    var el = document.getElementById(id);
+    if (el) el.addEventListener("keydown", function(e) { if (e.key === "Enter") doRegister(); });
+  });
+
+  document.addEventListener("keydown", function(e) { if (e.key === "Escape") closeModal(); });
+
+  // Модалка должна переводиться при смене языка через основной переключатель
+  document.querySelectorAll('#langSwitch button').forEach(function(b) {
+    b.addEventListener('click', function() {
+      if (document.getElementById("authModal").classList.contains("open")) applyModalLang();
+    });
+  });
 }
 </script>
 </body>
