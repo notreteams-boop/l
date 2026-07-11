@@ -49,6 +49,16 @@ var AI_WORKER_URL = "https://ai-worker.gegeodin.workers.dev/";
 
   // Показываем страницу только после успешной проверки
   document.documentElement.style.visibility = "visible";
+
+  // Сигнал для остальных скриптов на странице: проверка токена завершена,
+  // display_name/username (если были) уже лежат в localStorage. Два способа
+  // сразу — флаг для скриптов, которые проверяют ПОСЛЕ того, как auth.js уже
+  // закончил, и событие для скриптов, которые начали слушать ДО этого. Без
+  // этого скрипты, подключённые ниже auth.js, могут прочитать localStorage
+  // раньше, чем asynchronous-проверка здесь успеет её записать — auth.js
+  // не блокирует остальную загрузку страницы, пока идёт await fetch(...).
+  window.authReady = true;
+  document.dispatchEvent(new CustomEvent("auth-ready"));
 })();
 
 // Функция для вызова Gemini через ai-worker — используй вместо прямого fetch.
