@@ -1606,18 +1606,25 @@ async function doRegister() {
   document.getElementById("mRegErr").style.display = "none";
   try {
     // Если человек пришёл с test-result.html — там уже посчитанная сводка
-    // результата теста лежит в sessionStorage. Передаём её вместе с формой
-    // регистрации, auth-worker сам валидирует форму заново на сервере.
+    // результата теста и список ошибок лежат в sessionStorage. Передаём их
+    // вместе с формой регистрации, auth-worker сам валидирует всё заново
+    // на сервере.
     var testResultRaw = sessionStorage.getItem("quiz_result_summary");
     var testResult = null;
     if (testResultRaw) {
       try { testResult = JSON.parse(testResultRaw); } catch (e) { testResult = null; }
     }
 
+    var mistakesRaw = sessionStorage.getItem("quiz_result_mistakes");
+    var mistakes = null;
+    if (mistakesRaw) {
+      try { mistakes = JSON.parse(mistakesRaw); } catch (e) { mistakes = null; }
+    }
+
     var res = await fetch(AUTH_WORKER_URL + "register-check", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name, username: user, testResult: testResult })
+      body: JSON.stringify({ name: name, username: user, testResult: testResult, mistakes: mistakes })
     });
     var data = await res.json();
     if (!res.ok) {
@@ -1628,6 +1635,7 @@ async function doRegister() {
     }
     showOk("mRegOk", dict["m.reg.redirecting"]);
     sessionStorage.removeItem("quiz_result_summary");
+    sessionStorage.removeItem("quiz_result_mistakes");
     setTimeout(function() {
       window.location.href = "https://t.me/" + TELEGRAM_BOT_USERNAME + "?start=" + data.code;
     }, 600);
@@ -1685,4 +1693,4 @@ function bindAuthModal() {
 }
 </script>
 </body>
-        </html>
+</html>
