@@ -508,6 +508,22 @@ footer{border-top:1px solid var(--line-soft);}
   </div>
 </section>
 
+<!-- ================= LEVEL TEST CTA ================= -->
+<section style="padding:0 0 100px;">
+  <div class="wrap">
+    <div class="glass reveal" style="padding:40px 36px; text-align:center; max-width:680px; margin:0 auto; border-radius:22px;">
+      <span class="eyebrow" id="ltEyebrow"></span>
+      <h2 class="disp" style="font-size:clamp(24px,2.8vw,32px); margin:16px 0 12px;" id="ltTitle"></h2>
+      <p style="color:var(--ink-dim); font-size:14.5px; line-height:1.6; max-width:480px; margin:0 auto 24px;" id="ltSub"></p>
+      <a href="/l/test.html" class="btn btn-grad" style="display:inline-flex;" id="ltCta"></a>
+      <div style="display:flex; justify-content:center; gap:20px; margin-top:20px; flex-wrap:wrap;">
+        <span style="font-size:12.5px; color:var(--ink-mute);" id="ltMetaQ"></span>
+        <span style="font-size:12.5px; color:var(--ink-mute);" id="ltMetaT"></span>
+      </div>
+    </div>
+  </div>
+</section>
+
 <!-- ================= FEATURES ================= -->
 <section id="features" style="padding:100px 0;">
   <div class="wrap">
@@ -886,6 +902,13 @@ lv: {
       { q:"Kā notiek esejas pārbaude?", a:"Augšupielādē vai uzraksti eseju, un dažu sekunžu laikā saņem izcelt kļūdas ar skaidrojumu vienkāršā valodā." },
     ]
   },
+  levelTest: {
+    eyebrow: "Bez maksas · 5 minūtes",
+    title: "Nezini, kāds ir tavs līmenis?",
+    sub: "Izpildi īsu 15 jautājumu testu un uzzini savu aptuveno CEFR līmeni un iespējamo procentuālo rezultātu eksāmenā — pilnīgi bez maksas.",
+    cta: "Pārbaudi savu līmeni →",
+    metaQ: "15 jautājumi", metaT: "~5 minūtes"
+  },
   footer: { support:"Atbalsts", privacy:"Privātuma politika", terms:"Lietošanas noteikumi", rights:"© 2026 English OL" }
 },
 
@@ -1018,6 +1041,13 @@ ru: {
       { q:"Как проходит проверка эссе?", a:"Загрузи или напиши эссе, и за несколько секунд получи разбор ошибок с объяснением простым языком." },
     ]
   },
+  levelTest: {
+    eyebrow: "Бесплатно · 5 минут",
+    title: "Не знаешь свой уровень?",
+    sub: "Пройди короткий тест из 15 вопросов и узнай свой примерный уровень CEFR и предполагаемый процент на экзамене — совершенно бесплатно.",
+    cta: "Проверить свой уровень →",
+    metaQ: "15 вопросов", metaT: "~5 минут"
+  },
   footer: { support:"Поддержка", privacy:"Политика конфиденциальности", terms:"Условия использования", rights:"© 2026 English OL" }
 }
 };
@@ -1072,6 +1102,14 @@ ru: {
         </div>
       </div>
     `).join('');
+
+    // level test CTA
+    txt('ltEyebrow', t.levelTest.eyebrow);
+    txt('ltTitle', t.levelTest.title);
+    txt('ltSub', t.levelTest.sub);
+    txt('ltCta', t.levelTest.cta);
+    txt('ltMetaQ', '📝 ' + t.levelTest.metaQ);
+    txt('ltMetaT', '⏱ ' + t.levelTest.metaT);
 
     // features
     txt('featEyebrow', t.features.eyebrow);
@@ -1627,6 +1665,13 @@ function bindAuthModal() {
       if (document.getElementById("authModal").classList.contains("open")) applyModalLang();
     });
   });
+
+  // Авто-открытие модалки регистрации при заходе с #register — используется
+  // кнопкой "Открыть полный результат" на test-result.html (soft-wall после
+  // бесплатного теста уровня).
+  if (window.location.hash === "#register") {
+    openModal("register");
+  }
 }
 </script>
 </body>
