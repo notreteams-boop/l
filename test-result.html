@@ -157,6 +157,7 @@ var T = {
   }
 };
 var lang = "lv";
+var computedResultSummary = null; // заполняется в render(), читается в goToRegister()
 
 document.querySelectorAll("#langSwitch button").forEach(function(b) {
   b.addEventListener("click", function() {
@@ -210,6 +211,11 @@ function render() {
 
   var readingCorrect = readingQs.filter(function(q) { return q.userAnswer === q.correct; }).length;
   var readingPct = readingQs.length ? Math.round((readingCorrect / readingQs.length) * 100) : 0;
+
+  // Сохраняем сводку в глобальную переменную — используется в goToRegister()
+  // при переходе на регистрацию, чтобы не пересчитывать заново и не
+  // дублировать логику подсчёта.
+  computedResultSummary = { overallPct: overallPct, level: level, grammarPct: grammarPct, readingPct: readingPct };
 
   var tier = motivationTier(overallPct);
 
@@ -267,8 +273,14 @@ function render() {
 
 function goToRegister(e) {
   e.preventDefault();
-  // Результат теста уже сгенерирован для просмотра, но нигде не отправляется
-  // на сервер — soft-wall чисто визуальный (блюр), не блокирует переход.
+  // Передаём сводку результата теста дальше в index.html через тот же
+  // sessionStorage (общий на домен) — там register-check отправит её на
+  // auth-worker вместе с формой регистрации. Чисто сводка (4 числа/строка),
+  // не весь массив вопросов — этого достаточно для показа в welcome-модалке
+  // после первого логина.
+  if (computedResultSummary) {
+    sessionStorage.setItem("quiz_result_summary", JSON.stringify(computedResultSummary));
+  }
   window.location.href = "/l/#register";
 }
 
