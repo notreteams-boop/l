@@ -1,0 +1,278 @@
+<!doctype html>
+<html lang="lv">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>English OL — Tavs rezultāts</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600&display=swap" rel="stylesheet" />
+<style>
+  :root{
+    --bg:#08090b; --bg-soft:#0d0f13; --ink:#eef0f4; --ink-dim:#9aa2b1; --ink-mute:#5f6675;
+    --line:rgba(255,255,255,.08); --line-soft:rgba(255,255,255,.05);
+    --indigo:#6366f1; --indigo2:#818cf8; --cyan:#22d3ee; --emerald:#34d399; --rose:#fb7185; --amber:#fbbf24;
+    --grad-main: linear-gradient(120deg, var(--indigo) 0%, var(--cyan) 100%);
+    --grad-text: linear-gradient(120deg, #a5b4fc 0%, #67e8f9 100%);
+    --shadow-glow: 0 0 0 1px rgba(99,102,241,.15), 0 20px 60px -20px rgba(99,102,241,.35);
+  }
+  *,*::before,*::after{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--bg);color:var(--ink);min-height:100%}
+  body{font-family:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased;
+    min-height:100vh; display:flex; flex-direction:column; align-items:center; padding:20px 20px 60px;}
+  button{font-family:inherit; cursor:pointer; border:0; background:transparent; color:inherit;}
+  a{color:inherit;text-decoration:none;}
+
+  .ambient{position:fixed;inset:0;z-index:0;pointer-events:none;
+    background:
+      radial-gradient(600px 400px at 12% -5%,rgba(99,102,241,.14),transparent 60%),
+      radial-gradient(500px 380px at 100% 10%,rgba(34,211,238,.10),transparent 60%);
+  }
+
+  .wrap{width:100%; max-width:640px; position:relative; z-index:1;}
+
+  .lang-sw{position:fixed; top:20px; right:20px; display:flex; gap:4px; background:rgba(255,255,255,.04); border-radius:10px; padding:3px; z-index:2;}
+  .lang-sw button{padding:5px 10px; border-radius:7px; font-size:12px; font-weight:700; color:var(--ink-mute);}
+  .lang-sw button.active{background:var(--bg-soft); color:var(--ink);}
+
+  /* Hero result card — открыто, без блюра, цепляет любопытство */
+  .hero-card{
+    background:var(--bg-soft); border:1px solid var(--line); border-radius:22px;
+    padding:36px 28px; text-align:center; margin-bottom:20px;
+    box-shadow:0 30px 80px -20px rgba(0,0,0,.5);
+    animation:cardIn .5s cubic-bezier(.16,.85,.24,1);
+  }
+  @keyframes cardIn{from{opacity:0; transform:translateY(14px);} to{opacity:1; transform:translateY(0);}}
+
+  .level-badge{
+    display:inline-flex; align-items:center; justify-content:center; width:88px; height:88px; border-radius:50%;
+    background:var(--grad-main); font-size:30px; font-weight:800; color:#04050a; margin-bottom:18px;
+    box-shadow:0 0 0 6px rgba(99,102,241,.1), 0 0 0 12px rgba(99,102,241,.05);
+  }
+  .hero-pct{font-size:38px; font-weight:800; margin:0 0 4px; background:var(--grad-text); -webkit-background-clip:text; background-clip:text; color:transparent;}
+  .hero-sub{color:var(--ink-dim); font-size:14.5px; margin:0 0 4px;}
+  .hero-motivation{font-size:14px; color:var(--ink-dim); line-height:1.6; max-width:440px; margin:14px auto 0; padding-top:14px; border-top:1px solid var(--line-soft);}
+
+  /* Block breakdown — открыто */
+  .blocks-row{display:flex; gap:12px; margin-bottom:20px;}
+  .block-card{
+    flex:1; background:var(--bg-soft); border:1px solid var(--line); border-radius:16px; padding:18px 16px;
+  }
+  .block-card-label{font-size:12px; font-weight:700; color:var(--ink-mute); text-transform:uppercase; letter-spacing:.03em; margin-bottom:8px;}
+  .block-card-pct{font-size:24px; font-weight:800; margin-bottom:6px;}
+  .block-bar{height:5px; border-radius:99px; background:var(--line-soft); overflow:hidden;}
+  .block-bar-fill{height:100%; border-radius:99px; background:var(--grad-main);}
+
+  /* Blurred breakdown section */
+  .breakdown-wrap{position:relative; margin-bottom:20px;}
+  .breakdown-title{font-size:15px; font-weight:700; margin:0 0 14px; padding-left:2px;}
+  .breakdown-list{display:flex; flex-direction:column; gap:10px;}
+  .review-item{
+    background:var(--bg-soft); border:1px solid var(--line); border-radius:14px; padding:14px 16px;
+    display:flex; align-items:flex-start; gap:12px;
+  }
+  .review-icon{
+    width:26px; height:26px; border-radius:8px; display:flex; align-items:center; justify-content:center; flex:none; margin-top:1px;
+  }
+  .review-icon.correct{background:rgba(52,211,153,.15); color:var(--emerald);}
+  .review-icon.wrong{background:rgba(251,113,133,.15); color:var(--rose);}
+  .review-body{flex:1; min-width:0;}
+  .review-q{font-size:13.5px; font-weight:600; margin:0 0 4px; line-height:1.4;}
+  .review-answers{font-size:12.5px; color:var(--ink-mute); line-height:1.5;}
+  .review-answers .wrong-ans{color:var(--rose);}
+  .review-answers .right-ans{color:var(--emerald);}
+
+  .blur-layer{
+    filter:blur(7px); user-select:none; pointer-events:none;
+  }
+  .unlock-overlay{
+    position:absolute; inset:0; display:flex; flex-direction:column; align-items:center; justify-content:center;
+    text-align:center; padding:20px; z-index:2;
+    background:linear-gradient(180deg, rgba(8,9,11,0) 0%, rgba(8,9,11,.75) 22%, rgba(8,9,11,.96) 55%);
+  }
+  .unlock-icon{
+    width:52px; height:52px; border-radius:15px; background:var(--grad-main); margin-bottom:16px;
+    display:flex; align-items:center; justify-content:center;
+  }
+  .unlock-title{font-size:18px; font-weight:800; margin:0 0 8px;}
+  .unlock-sub{font-size:13.5px; color:var(--ink-dim); line-height:1.5; margin:0 0 20px; max-width:340px;}
+  .unlock-btn{
+    padding:14px 30px; border-radius:13px; font-size:14.5px; font-weight:700;
+    background:var(--grad-main); color:#04050a; box-shadow:var(--shadow-glow);
+  }
+  .unlock-btn:hover{filter:brightness(1.08);}
+  .unlock-note{font-size:12px; color:var(--ink-mute); margin-top:12px;}
+
+  .retry-link{display:block; text-align:center; font-size:13px; color:var(--ink-mute); margin-top:8px;}
+  .retry-link:hover{color:var(--ink-dim);}
+</style>
+</head>
+<body>
+
+<div class="ambient"></div>
+<div class="lang-sw" id="langSwitch">
+  <button data-lang="lv" class="active">LV</button>
+  <button data-lang="ru">RU</button>
+</div>
+
+<div class="wrap" id="root"></div>
+
+<script>
+var T = {
+  lv: {
+    noResult: "Rezultāts nav atrasts. Lūdzu, izpildi testu vēlreiz.",
+    retryBtn: "Sākt testu",
+    yourLevel: "Tavs aptuvenais līmenis", overallResult: "no pareizajām atbildēm",
+    grammarLabel: "Gramatika", readingLabel: "Lasītprasme",
+    breakdownTitle: "Detalizēts atbilžu sadalījums",
+    unlockTitle: "Atklāj pilnu rezultātu",
+    unlockSub: "Reģistrējies bez maksas, lai redzētu, kuros jautājumos kļūdījies, pareizās atbildes un personalizētu treniņu plānu.",
+    unlockBtn: "Reģistrēties bezmaksas →",
+    unlockNote: "Aizņem mazāk par minūti · nav nepieciešama kredītkarte",
+    retryLink: "Vēlies izpildīt testu vēlreiz?",
+    yourAns: "Tava atbilde:", correctAns: "Pareizā atbilde:",
+    motivation: {
+      low: "Tas ir lielisks starta punkts! Katrs, kurš sasniedz augstu līmeni, kādreiz sāka tieši šeit. Ar regulāru praksi tavs rezultāts var uzlaboties ļoti ātri.",
+      mid: "Labs pamats! Tu jau pārvaldi lielu daļu no nepieciešamā — vēl mazliet fokusēta prakse, un B2/C1 līmenis ir pilnīgi sasniedzams.",
+      high: "Iespaidīgi! Tu esi ļoti tuvu augstākajam līmenim. Ar mērķtiecīgu treniņu tu vari nostiprināt šo rezultātu pirms eksāmena."
+    }
+  },
+  ru: {
+    noResult: "Результат не найден. Пожалуйста, пройди тест заново.",
+    retryBtn: "Начать тест",
+    yourLevel: "Твой примерный уровень", overallResult: "правильных ответов",
+    grammarLabel: "Грамматика", readingLabel: "Чтение",
+    breakdownTitle: "Подробный разбор ответов",
+    unlockTitle: "Открой полный результат",
+    unlockSub: "Зарегистрируйся бесплатно, чтобы увидеть, в чём ошибся, правильные ответы и персональный план тренировок.",
+    unlockBtn: "Зарегистрироваться бесплатно →",
+    unlockNote: "Займёт меньше минуты · банковская карта не нужна",
+    retryLink: "Хочешь пройти тест ещё раз?",
+    yourAns: "Твой ответ:", correctAns: "Правильный ответ:",
+    motivation: {
+      low: "Это отличная стартовая точка! Каждый, кто достиг высокого уровня, когда-то начинал именно отсюда. С регулярной практикой результат может вырасти очень быстро.",
+      mid: "Хорошая база! Ты уже владеешь значительной частью материала — ещё немного целенаправленной практики, и уровень B2/C1 вполне достижим.",
+      high: "Впечатляюще! Ты очень близко к высшему уровню. С прицельной тренировкой можно закрепить этот результат перед экзаменом."
+    }
+  }
+};
+var lang = "lv";
+
+document.querySelectorAll("#langSwitch button").forEach(function(b) {
+  b.addEventListener("click", function() {
+    lang = b.getAttribute("data-lang");
+    document.querySelectorAll("#langSwitch button").forEach(function(x) { x.classList.toggle("active", x === b); });
+    render();
+  });
+});
+
+// === CEFR-уровень по проценту правильных ответов ===
+function levelFromPct(pct) {
+  if (pct < 40) return "A2";
+  if (pct < 60) return "B1";
+  if (pct < 80) return "B2";
+  return "C1";
+}
+
+function motivationTier(pct) {
+  if (pct < 50) return "low";
+  if (pct < 80) return "mid";
+  return "high";
+}
+
+function render() {
+  var root = document.getElementById("root");
+  var t = T[lang];
+  document.documentElement.lang = lang;
+
+  var raw = sessionStorage.getItem("quiz_result");
+  if (!raw) {
+    root.innerHTML =
+      '<div class="hero-card">' +
+        '<p class="hero-sub">' + t.noResult + '</p>' +
+        '<a href="/l/test.html" class="unlock-btn" style="display:inline-block; margin-top:14px;">' + t.retryBtn + '</a>' +
+      '</div>';
+    return;
+  }
+
+  var data = JSON.parse(raw);
+  var questions = data.questions;
+
+  var grammarQs = questions.filter(function(q) { return q.block === "grammar"; });
+  var readingQs = questions.filter(function(q) { return q.block === "reading"; });
+
+  var correctCount = questions.filter(function(q) { return q.userAnswer === q.correct; }).length;
+  var overallPct = Math.round((correctCount / questions.length) * 100);
+  var level = levelFromPct(overallPct);
+
+  var grammarCorrect = grammarQs.filter(function(q) { return q.userAnswer === q.correct; }).length;
+  var grammarPct = grammarQs.length ? Math.round((grammarCorrect / grammarQs.length) * 100) : 0;
+
+  var readingCorrect = readingQs.filter(function(q) { return q.userAnswer === q.correct; }).length;
+  var readingPct = readingQs.length ? Math.round((readingCorrect / readingQs.length) * 100) : 0;
+
+  var tier = motivationTier(overallPct);
+
+  var html = '';
+
+  // Hero — открыто
+  html += '<div class="hero-card">';
+  html += '<div class="level-badge">' + level + '</div>';
+  html += '<p class="hero-pct">' + overallPct + '%</p>';
+  html += '<p class="hero-sub">' + correctCount + ' / ' + questions.length + ' ' + t.overallResult + '</p>';
+  html += '<p class="hero-motivation">' + t.motivation[tier] + '</p>';
+  html += '</div>';
+
+  // Block breakdown — открыто
+  html += '<div class="blocks-row">';
+  html += '<div class="block-card"><div class="block-card-label">' + t.grammarLabel + '</div><div class="block-card-pct">' + grammarPct + '%</div><div class="block-bar"><div class="block-bar-fill" style="width:' + grammarPct + '%"></div></div></div>';
+  html += '<div class="block-card"><div class="block-card-label">' + t.readingLabel + '</div><div class="block-card-pct">' + readingPct + '%</div><div class="block-bar"><div class="block-bar-fill" style="width:' + readingPct + '%"></div></div></div>';
+  html += '</div>';
+
+  // Breakdown — заблюрено, с overlay
+  html += '<div class="breakdown-wrap">';
+  html += '<p class="breakdown-title">' + t.breakdownTitle + '</p>';
+  html += '<div class="breakdown-list blur-layer">';
+  questions.forEach(function(q) {
+    var isCorrect = q.userAnswer === q.correct;
+    var letters = ["A", "B", "C", "D"];
+    html += '<div class="review-item">';
+    html += '<div class="review-icon ' + (isCorrect ? 'correct' : 'wrong') + '">' + (isCorrect ? '✓' : '✕') + '</div>';
+    html += '<div class="review-body">';
+    html += '<p class="review-q">' + q.question + '</p>';
+    if (!isCorrect) {
+      var userAnsText = q.userAnswer !== null ? letters[q.userAnswer] + ' — ' + q.options[q.userAnswer] : '—';
+      html += '<p class="review-answers"><span class="wrong-ans">' + t.yourAns + ' ' + userAnsText + '</span><br>' +
+              '<span class="right-ans">' + t.correctAns + ' ' + letters[q.correct] + ' — ' + q.options[q.correct] + '</span></p>';
+    }
+    html += '</div></div>';
+  });
+  html += '</div>';
+
+  // Unlock overlay
+  html += '<div class="unlock-overlay">';
+  html += '<div class="unlock-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#04050a" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg></div>';
+  html += '<p class="unlock-title">' + t.unlockTitle + '</p>';
+  html += '<p class="unlock-sub">' + t.unlockSub + '</p>';
+  html += '<a href="/l/#register" class="unlock-btn" onclick="goToRegister(event)">' + t.unlockBtn + '</a>';
+  html += '<p class="unlock-note">' + t.unlockNote + '</p>';
+  html += '</div>';
+
+  html += '</div>'; // breakdown-wrap
+
+  html += '<a href="/l/test.html" class="retry-link">' + t.retryLink + '</a>';
+
+  root.innerHTML = html;
+}
+
+function goToRegister(e) {
+  e.preventDefault();
+  // Результат теста уже сгенерирован для просмотра, но нигде не отправляется
+  // на сервер — soft-wall чисто визуальный (блюр), не блокирует переход.
+  window.location.href = "/l/#register";
+}
+
+render();
+</script>
+</body>
+</html>
