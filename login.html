@@ -81,11 +81,22 @@
   .lang-sw{position:absolute; top:22px; right:22px; display:flex; gap:4px; background:rgba(255,255,255,.04); border-radius:10px; padding:3px; z-index:2;}
   .lang-sw button{padding:5px 10px; border-radius:7px; font-size:12px; font-weight:700; color:var(--tm);}
   .lang-sw button.active{background:var(--card2); color:var(--t);}
+
+  .back-btn{
+    position:absolute; top:22px; left:22px; width:36px; height:36px; border-radius:10px;
+    background:var(--card2); border:1px solid var(--bd); color:var(--td);
+    display:flex; align-items:center; justify-content:center; z-index:2;
+  }
+  .back-btn:hover{color:var(--t); background:rgba(255,255,255,.06);}
 </style>
 </head>
 <body>
 
 <div class="ambient"></div>
+
+<button class="back-btn" onclick="window.location.href='/l/'" aria-label="Back">
+  <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 12H5M12 19l-7-7 7-7"/></svg>
+</button>
 
 <div class="lang-sw" id="langSwitch">
   <button data-lang="lv" class="active">LV</button>
