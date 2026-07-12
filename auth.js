@@ -49,6 +49,11 @@ var AI_WORKER_URL = "https://ai-worker.gegeodin.workers.dev/";
       } else {
         localStorage.removeItem("test_result");
       }
+      if (checkData.mistakes) {
+        localStorage.setItem("test_mistakes", JSON.stringify(checkData.mistakes));
+      } else {
+        localStorage.removeItem("test_mistakes");
+      }
     }
   } catch(e) {
     // Если сеть недоступна — пускаем, токен есть локально
@@ -152,5 +157,6 @@ window.logout = async function() {
   localStorage.removeItem("username");
   localStorage.removeItem("welcome_seen");
   localStorage.removeItem("test_result");
+  localStorage.removeItem("test_mistakes");
   window.location.href = "/l/";
 };
