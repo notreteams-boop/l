@@ -81,6 +81,10 @@
   .review-answers{font-size:12.5px; color:var(--ink-mute); line-height:1.5;}
   .review-answers .wrong-ans{color:var(--rose);}
   .review-answers .right-ans{color:var(--emerald);}
+  .review-explanation{
+    margin-top:8px; padding-top:8px; border-top:1px solid var(--line-soft);
+    font-size:12.5px; color:var(--ink-dim); line-height:1.5;
+  }
 
   .blur-layer{
     filter:blur(7px); user-select:none; pointer-events:none;
@@ -158,6 +162,7 @@ var T = {
 };
 var lang = "lv";
 var computedResultSummary = null; // заполняется в render(), читается в goToRegister()
+var computedMistakes = null; // массив только неправильных ответов — тоже читается в goToRegister()
 
 document.querySelectorAll("#langSwitch button").forEach(function(b) {
   b.addEventListener("click", function() {
@@ -217,6 +222,23 @@ function render() {
   // дублировать логику подсчёта.
   computedResultSummary = { overallPct: overallPct, level: level, grammarPct: grammarPct, readingPct: readingPct };
 
+  // Только неправильные ответы — это то, что реально стоит хранить навсегда
+  // в профиле (правильные ответы объяснять не нужно, экономим место в KV).
+  // Минимальный набор полей: без passage (текст для reading не нужен для
+  // повторения объяснения, экономит место), без block (не используется в
+  // отображении списка ошибок).
+  computedMistakes = questions
+    .filter(function(q) { return q.userAnswer !== q.correct; })
+    .map(function(q) {
+      return {
+        question: q.question,
+        options: q.options,
+        userAnswer: q.userAnswer,
+        correct: q.correct,
+        explanation: q.explanation
+      };
+    });
+
   var tier = motivationTier(overallPct);
 
   var html = '';
@@ -250,6 +272,9 @@ function render() {
       var userAnsText = q.userAnswer !== null ? letters[q.userAnswer] + ' — ' + q.options[q.userAnswer] : '—';
       html += '<p class="review-answers"><span class="wrong-ans">' + t.yourAns + ' ' + userAnsText + '</span><br>' +
               '<span class="right-ans">' + t.correctAns + ' ' + letters[q.correct] + ' — ' + q.options[q.correct] + '</span></p>';
+      if (q.explanation) {
+        html += '<p class="review-explanation">💡 ' + q.explanation + '</p>';
+      }
     }
     html += '</div></div>';
   });
@@ -273,13 +298,15 @@ function render() {
 
 function goToRegister(e) {
   e.preventDefault();
-  // Передаём сводку результата теста дальше в index.html через тот же
-  // sessionStorage (общий на домен) — там register-check отправит её на
-  // auth-worker вместе с формой регистрации. Чисто сводка (4 числа/строка),
-  // не весь массив вопросов — этого достаточно для показа в welcome-модалке
-  // после первого логина.
+  // Передаём сводку результата + список ошибок дальше в index.html через
+  // тот же sessionStorage (общий на домен) — там register-check отправит их
+  // на auth-worker вместе с формой регистрации. Только неправильные ответы —
+  // это то, что реально стоит хранить навсегда в профиле.
   if (computedResultSummary) {
     sessionStorage.setItem("quiz_result_summary", JSON.stringify(computedResultSummary));
+  }
+  if (computedMistakes) {
+    sessionStorage.setItem("quiz_result_mistakes", JSON.stringify(computedMistakes));
   }
   window.location.href = "/l/#register";
 }
