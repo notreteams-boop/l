@@ -452,14 +452,35 @@
     <button class="close" data-close><svg class="i i-md" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
     <h3><svg class="i i-md" viewBox="0 0 24 24" style="color:#6cf0e0"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 0 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 0 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 0 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 0 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg><span data-i="profileTitle">Personīgais profils</span></h3>
     <div class="prof">
-      <div class="a">R</div>
+      <div class="a" id="profModalAvatar">R</div>
       <div>
-        <div class="n">Rihards Bērziņš</div>
-        <div class="m">11. klase · Rīga</div>
+        <div class="n" id="profModalName">Rihards Bērziņš</div>
+        <div class="m" data-i="profileNoData">Vēl nav pievienota papildu informācija</div>
       </div>
     </div>
     <p class="hint" data-i="profileHint">Šeit drīz parādīsies tavu iepriekšējo uzdevumu vēsture, saglabātās esejas un iestatījumi.</p>
     <span class="badge" data-i="upcoming">Drīzumā</span>
+  </div>
+</div>
+
+<div class="backdrop" id="welcomeModal">
+  <div class="modal modal-wrap">
+    <button class="close" onclick="closeWelcomeModal()" aria-label="Close"><svg class="i i-md" viewBox="0 0 24 24"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></button>
+    <h3><svg class="i i-md" viewBox="0 0 24 24" style="color:#6cf0e0"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"/><polyline points="22 4 12 14.01 9 11.01"/></svg><span id="welcomeTitle">Laipni lūdzam!</span></h3>
+    <p class="hint" id="welcomeBody" style="margin-top:0;"></p>
+    <div id="welcomeTestResult" style="display:none; margin-top:16px;">
+      <div class="hr"></div>
+      <div style="display:flex; align-items:center; gap:16px; margin-top:14px;">
+        <div style="width:56px;height:56px;border-radius:16px;background:var(--grad);color:#0b0b12;font-weight:800;font-size:20px;display:flex;align-items:center;justify-content:center;flex:none;" id="welcomeLevelBadge"></div>
+        <div>
+          <div style="font-weight:700; font-size:15px;" id="welcomePctLine"></div>
+          <div style="color:rgba(255,255,255,.5); font-size:12.5px; margin-top:2px;" id="welcomeBlocksLine"></div>
+        </div>
+      </div>
+    </div>
+    <button style="width:100%; margin-top:20px; padding:12px 0; border-radius:11px; font-weight:700; background:var(--grad); color:#0b0b12; border:0; cursor:pointer; font-family:inherit; font-size:14.5px;" onclick="closeWelcomeModal()">
+      <span id="welcomeCta">Sākt mācīties</span>
+    </button>
   </div>
 </div>
 
@@ -482,7 +503,14 @@ const dict = {
     xp:"XP", score:"Balles", active:"aktīvi skolēni",
     profileTitle:"Personīgais profils",
     profileHint:"Šeit drīz parādīsies tavu iepriekšējo uzdevumu vēsture, saglabātās esejas un iestatījumi.",
+    profileNoData:"Vēl nav pievienota papildu informācija",
     upcoming:"Drīzumā",
+    welcomeTitleNoTest:"Laipni lūdzam!",
+    welcomeBodyNoTest:"Tavs konts ir gatavs. Sāc ar pirmo uzdevumu zemāk — vai vienmēr vari atgriezties šeit vēlāk.",
+    welcomeTitleWithTest:"Laipni lūdzam! 🎉",
+    welcomeBodyWithTest:"Tavs konts ir gatavs. Šeit ir tavs rezultāts no ievada testa:",
+    welcomePctOf:"pareizu atbilžu",
+    welcomeCta:"Sākt mācīties",
     days:["Pr","Ot","Tr","Ce","Pk","Se","Sv"], locale:"lv-LV"
   },
   ru:{
@@ -501,7 +529,14 @@ const dict = {
     xp:"XP", score:"балла", active:"активных учеников",
     profileTitle:"Личный профиль",
     profileHint:"Здесь скоро появится история твоих прошлых заданий, сохранённые эссе и настройки.",
+    profileNoData:"Пока нет дополнительной информации",
     upcoming:"Скоро",
+    welcomeTitleNoTest:"Добро пожаловать!",
+    welcomeBodyNoTest:"Твой аккаунт готов. Начни с первого задания ниже — сюда всегда можно будет вернуться позже.",
+    welcomeTitleWithTest:"Добро пожаловать! 🎉",
+    welcomeBodyWithTest:"Твой аккаунт готов. Вот твой результат вступительного теста:",
+    welcomePctOf:"правильных ответов",
+    welcomeCta:"Начать учиться",
     days:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"], locale:"ru-RU"
   }
 };
@@ -565,6 +600,11 @@ function applyLang(){
   if (greetingEl) greetingEl.textContent = t.greeting.replace("{name}", realName);
   const avatarEl = document.getElementById("avatarInitial");
   if (avatarEl) avatarEl.textContent = realName.charAt(0).toUpperCase();
+  // То же самое — в профильной модалке (аватар + имя рядом с "Skoren nav pievienota...")
+  const profNameEl = document.getElementById("profModalName");
+  if (profNameEl) profNameEl.textContent = realName;
+  const profAvatarEl = document.getElementById("profModalAvatar");
+  if (profAvatarEl) profAvatarEl.textContent = realName.charAt(0).toUpperCase();
   document.documentElement.lang = lang;
   renderLb();
 }
@@ -620,6 +660,12 @@ $$('.seg-item[data-lang]').forEach(el=>{
     el.classList.add('active');
     lang = el.dataset.lang;
     applyLang();
+    // Если welcome-модалка открыта на экране в момент смены языка —
+    // перерисовываем её текст тоже (showWelcomeIfNeeded безопасно вызывать
+    // повторно: она читает те же localStorage-значения и не шлёт запросов).
+    if (document.getElementById("welcomeModal").classList.contains("open")) {
+      showWelcomeIfNeeded();
+    }
   });
 });
 
@@ -701,6 +747,67 @@ async function loadRealLeaderboard() {
   }
 }
 
+/* ============ Welcome modal (одноразовая, после первого логина) ============
+   auth.js сохраняет welcome_seen/test_result в localStorage при каждой
+   проверке токена (/check). Если welcome_seen === "0" — показываем модалку
+   один раз, затем шлём /mark-welcome-seen, чтобы welcomeSeen на сервере
+   стал true и модалка больше никогда не появилась (даже на другом
+   устройстве этого же аккаунта). */
+function showWelcomeIfNeeded() {
+  var seen = localStorage.getItem("welcome_seen");
+  if (seen !== "0") return; // "1" или null (старая сессия до этой фичи) — не показываем
+
+  var t = dict[lang];
+  var testResultRaw = localStorage.getItem("test_result");
+  var testResult = null;
+  if (testResultRaw) {
+    try { testResult = JSON.parse(testResultRaw); } catch (e) { testResult = null; }
+  }
+
+  document.getElementById("welcomeTitle").textContent = testResult ? t.welcomeTitleWithTest : t.welcomeTitleNoTest;
+  document.getElementById("welcomeBody").textContent = testResult ? t.welcomeBodyWithTest : t.welcomeBodyNoTest;
+  document.getElementById("welcomeCta").textContent = t.welcomeCta;
+
+  var resultBox = document.getElementById("welcomeTestResult");
+  if (testResult) {
+    resultBox.style.display = "block";
+    document.getElementById("welcomeLevelBadge").textContent = testResult.level;
+    document.getElementById("welcomePctLine").textContent = testResult.overallPct + "% " + t.welcomePctOf;
+    var gLabel = lang === "lv" ? "Gramatika" : "Грамматика";
+    var rLabel = lang === "lv" ? "Lasītprasme" : "Чтение";
+    document.getElementById("welcomeBlocksLine").textContent =
+      gLabel + " " + testResult.grammarPct + "% · " + rLabel + " " + testResult.readingPct + "%";
+  } else {
+    resultBox.style.display = "none";
+  }
+
+  document.getElementById("welcomeModal").classList.add("open");
+}
+
+async function closeWelcomeModal() {
+  document.getElementById("welcomeModal").classList.remove("open");
+
+  // Отмечаем как показанное сразу — и локально (чтобы не мигало при
+  // повторном рендере на этой же странице), и на сервере (чтобы не
+  // показалось снова при следующем логине/на другом устройстве).
+  localStorage.setItem("welcome_seen", "1");
+
+  var token = localStorage.getItem("session_token");
+  if (!token) return;
+  try {
+    await fetch(AUTH_WORKER_URL + "mark-welcome-seen", {
+      method: "POST",
+      headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+      body: JSON.stringify({})
+    });
+  } catch (e) {
+    // Если запрос не прошёл — welcome_seen всё равно "1" локально на этом
+    // устройстве, худший случай: модалка теоретически может показаться
+    // ещё раз на другом устройстве этого аккаунта. Не критично.
+    console.warn("mark-welcome-seen failed:", e.message);
+  }
+}
+
 /* ============ Init ============ */
 // auth.js — асинхронный и не блокирует остальную загрузку страницы, поэтому
 // display_name/username могут ещё не быть в localStorage в момент, когда
@@ -709,6 +816,7 @@ async function loadRealLeaderboard() {
 function initMenu() {
   applyLang();
   loadRealLeaderboard();
+  showWelcomeIfNeeded();
 }
 if (window.authReady) {
   initMenu();
