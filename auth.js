@@ -76,7 +76,7 @@ var AI_WORKER_URL = "https://ai-worker.gegeodin.workers.dev/";
 // см. AI_WORKER_URL + "generate-task" и т.п. в menu.html.
 window.callGemini = async function(prompt, generationConfig) {
   var token = localStorage.getItem("session_token");
-  var GEMINI_MODEL = "gemini-2.5-flash";
+  var GEMINI_MODEL = "gemini-3.1-flash-lite";
 
   if (!token) {
     window.location.href = "/l/login.html";
