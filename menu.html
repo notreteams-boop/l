@@ -467,6 +467,7 @@
           <div style="color:rgba(255,255,255,.5); font-size:12px; margin-top:2px;" id="profTestBlocksLine"></div>
         </div>
       </div>
+      <div id="profMistakesList" style="margin-top:14px; display:flex; flex-direction:column; gap:9px;"></div>
     </div>
     <p class="hint" data-i="profileHint">Šeit drīz parādīsies tavu iepriekšējo uzdevumu vēsture, saglabātās esejas un iestatījumi.</p>
     <span class="badge" data-i="upcoming">Drīzumā</span>
@@ -487,6 +488,7 @@
           <div style="color:rgba(255,255,255,.5); font-size:12.5px; margin-top:2px;" id="welcomeBlocksLine"></div>
         </div>
       </div>
+      <div id="welcomeMistakesList" style="margin-top:16px; display:flex; flex-direction:column; gap:10px;"></div>
     </div>
     <button style="width:100%; margin-top:20px; padding:12px 0; border-radius:11px; font-weight:700; background:var(--grad); color:#0b0b12; border:0; cursor:pointer; font-family:inherit; font-size:14.5px;" onclick="closeWelcomeModal()">
       <span id="welcomeCta">Sākt mācīties</span>
@@ -633,6 +635,7 @@ function applyLang(){
       var rL = lang === "lv" ? "Lasītprasme" : "Чтение";
       document.getElementById("profTestBlocksLine").textContent =
         gL + " " + tr.grammarPct + "% · " + rL + " " + tr.readingPct + "%";
+      renderMistakesList("profMistakesList", lang);
     } catch (e) {
       profTestBox.style.display = "none";
     }
@@ -788,6 +791,44 @@ async function loadRealLeaderboard() {
    один раз, затем шлём /mark-welcome-seen, чтобы welcomeSeen на сервере
    стал true и модалка больше никогда не появилась (даже на другом
    устройстве этого же аккаунта). */
+// Общий рендер списка ошибок теста — используется и в welcome-модалке
+// (одноразовой), и в постоянном блоке профиля. mistakes хранится в
+// localStorage как test_mistakes (сохраняется в auth.js при каждой /check).
+function renderMistakesList(containerId, lang) {
+  var container = document.getElementById(containerId);
+  if (!container) return;
+
+  var mistakesRaw = localStorage.getItem("test_mistakes");
+  var mistakes = null;
+  if (mistakesRaw) {
+    try { mistakes = JSON.parse(mistakesRaw); } catch (e) { mistakes = null; }
+  }
+
+  if (!mistakes || mistakes.length === 0) {
+    container.innerHTML = "";
+    return;
+  }
+
+  var letters = ["A", "B", "C", "D"];
+  var yourAnsLabel = lang === "lv" ? "Tava atbilde:" : "Твой ответ:";
+  var correctAnsLabel = lang === "lv" ? "Pareizā atbilde:" : "Правильный ответ:";
+
+  var html = "";
+  mistakes.forEach(function(m) {
+    var userAnsText = m.userAnswer !== null && m.userAnswer !== undefined
+      ? letters[m.userAnswer] + " — " + m.options[m.userAnswer] : "—";
+    html += '<div style="background:rgba(255,255,255,.025); border:1px solid var(--bd); border-radius:12px; padding:12px 14px;">';
+    html += '<p style="font-size:13px; font-weight:600; margin:0 0 6px; line-height:1.4;">' + m.question + '</p>';
+    html += '<p style="font-size:12px; color:#f87171; margin:0;">' + yourAnsLabel + ' ' + userAnsText + '</p>';
+    html += '<p style="font-size:12px; color:#34d399; margin:2px 0 0;">' + correctAnsLabel + ' ' + letters[m.correct] + ' — ' + m.options[m.correct] + '</p>';
+    if (m.explanation) {
+      html += '<p style="font-size:11.5px; color:rgba(255,255,255,.5); margin:6px 0 0; padding-top:6px; border-top:1px solid rgba(255,255,255,.06); line-height:1.5;">💡 ' + m.explanation + '</p>';
+    }
+    html += '</div>';
+  });
+  container.innerHTML = html;
+}
+
 function showWelcomeIfNeeded() {
   var seen = localStorage.getItem("welcome_seen");
   if (seen !== "0") return; // "1" или null (старая сессия до этой фичи) — не показываем
@@ -812,6 +853,7 @@ function showWelcomeIfNeeded() {
     var rLabel = lang === "lv" ? "Lasītprasme" : "Чтение";
     document.getElementById("welcomeBlocksLine").textContent =
       gLabel + " " + testResult.grammarPct + "% · " + rLabel + " " + testResult.readingPct + "%";
+    renderMistakesList("welcomeMistakesList", lang);
   } else {
     resultBox.style.display = "none";
   }
