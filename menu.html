@@ -160,9 +160,8 @@
   footer{margin-top:56px;display:flex;justify-content:space-between;align-items:center;font-size:11px;color:rgba(255,255,255,.4)}
 
   /* Modal */
-  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(6px);z-index:50;display:none;align-items:center;justify-content:center;padding:20px}
-  .backdrop.open{display:flex;animation:fade .2s}
-  @keyframes fade{from{opacity:0}to{opacity:1}}
+  .backdrop{position:fixed;inset:0;background:rgba(0,0,0,.6);backdrop-filter:blur(0px);z-index:50;visibility:hidden;opacity:0;align-items:center;justify-content:center;padding:20px;transition:opacity .25s ease, backdrop-filter .25s ease, visibility 0s linear .25s}
+  .backdrop.open{visibility:visible;opacity:1;display:flex;backdrop-filter:blur(6px);transition:opacity .25s ease, backdrop-filter .25s ease, visibility 0s linear 0s}
   .modal{background:#0d0d13;border:1px solid rgba(255,255,255,.1);border-radius:20px;padding:24px;max-width:480px;width:100%;max-height:80vh;overflow-y:auto;animation:pop .25s cubic-bezier(.2,.7,.2,1)}
   @keyframes pop{from{transform:scale(.96);opacity:0}to{transform:scale(1);opacity:1}}
   .modal h3{margin:0 0 16px;font-size:17px;display:flex;align-items:center;gap:8px;font-weight:700}
@@ -458,6 +457,17 @@
         <div class="m" data-i="profileNoData">Vēl nav pievienota papildu informācija</div>
       </div>
     </div>
+    <div id="profTestResultBox" style="display:none; margin-top:16px;">
+      <div class="hr"></div>
+      <p style="font-size:12.5px; font-weight:700; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.03em; margin:14px 0 10px;" data-i="profTestResultTitle">Ievada testa rezultāts</p>
+      <div style="display:flex; align-items:center; gap:14px;">
+        <div style="width:52px;height:52px;border-radius:15px;background:var(--grad);color:#0b0b12;font-weight:800;font-size:19px;display:flex;align-items:center;justify-content:center;flex:none;" id="profTestLevelBadge"></div>
+        <div>
+          <div style="font-weight:700; font-size:14.5px;" id="profTestPctLine"></div>
+          <div style="color:rgba(255,255,255,.5); font-size:12px; margin-top:2px;" id="profTestBlocksLine"></div>
+        </div>
+      </div>
+    </div>
     <p class="hint" data-i="profileHint">Šeit drīz parādīsies tavu iepriekšējo uzdevumu vēsture, saglabātās esejas un iestatījumi.</p>
     <span class="badge" data-i="upcoming">Drīzumā</span>
   </div>
@@ -511,6 +521,7 @@ const dict = {
     welcomeBodyWithTest:"Tavs konts ir gatavs. Šeit ir tavs rezultāts no ievada testa:",
     welcomePctOf:"pareizu atbilžu",
     welcomeCta:"Sākt mācīties",
+    profTestResultTitle:"Ievada testa rezultāts",
     days:["Pr","Ot","Tr","Ce","Pk","Se","Sv"], locale:"lv-LV"
   },
   ru:{
@@ -537,6 +548,7 @@ const dict = {
     welcomeBodyWithTest:"Твой аккаунт готов. Вот твой результат вступительного теста:",
     welcomePctOf:"правильных ответов",
     welcomeCta:"Начать учиться",
+    profTestResultTitle:"Результат вступительного теста",
     days:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"], locale:"ru-RU"
   }
 };
@@ -605,6 +617,29 @@ function applyLang(){
   if (profNameEl) profNameEl.textContent = realName;
   const profAvatarEl = document.getElementById("profModalAvatar");
   if (profAvatarEl) profAvatarEl.textContent = realName.charAt(0).toUpperCase();
+
+  // Результат первого теста (пройденного до регистрации) — хранится навсегда
+  // в профиле, не только в одноразовой welcome-модалке. test_result кладёт
+  // в localStorage auth.js при каждой проверке токена (/check).
+  var profTestBox = document.getElementById("profTestResultBox");
+  var testResultRaw = localStorage.getItem("test_result");
+  if (profTestBox && testResultRaw) {
+    try {
+      var tr = JSON.parse(testResultRaw);
+      profTestBox.style.display = "block";
+      document.getElementById("profTestLevelBadge").textContent = tr.level;
+      document.getElementById("profTestPctLine").textContent = tr.overallPct + "% " + t.welcomePctOf;
+      var gL = lang === "lv" ? "Gramatika" : "Грамматика";
+      var rL = lang === "lv" ? "Lasītprasme" : "Чтение";
+      document.getElementById("profTestBlocksLine").textContent =
+        gL + " " + tr.grammarPct + "% · " + rL + " " + tr.readingPct + "%";
+    } catch (e) {
+      profTestBox.style.display = "none";
+    }
+  } else if (profTestBox) {
+    profTestBox.style.display = "none";
+  }
+
   document.documentElement.lang = lang;
   renderLb();
 }
