@@ -1605,10 +1605,19 @@ async function doRegister() {
   setBtnLoading("mRegBtn");
   document.getElementById("mRegErr").style.display = "none";
   try {
+    // Если человек пришёл с test-result.html — там уже посчитанная сводка
+    // результата теста лежит в sessionStorage. Передаём её вместе с формой
+    // регистрации, auth-worker сам валидирует форму заново на сервере.
+    var testResultRaw = sessionStorage.getItem("quiz_result_summary");
+    var testResult = null;
+    if (testResultRaw) {
+      try { testResult = JSON.parse(testResultRaw); } catch (e) { testResult = null; }
+    }
+
     var res = await fetch(AUTH_WORKER_URL + "register-check", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ name: name, username: user })
+      body: JSON.stringify({ name: name, username: user, testResult: testResult })
     });
     var data = await res.json();
     if (!res.ok) {
@@ -1618,6 +1627,7 @@ async function doRegister() {
       return;
     }
     showOk("mRegOk", dict["m.reg.redirecting"]);
+    sessionStorage.removeItem("quiz_result_summary");
     setTimeout(function() {
       window.location.href = "https://t.me/" + TELEGRAM_BOT_USERNAME + "?start=" + data.code;
     }, 600);
