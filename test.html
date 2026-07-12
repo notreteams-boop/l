@@ -197,7 +197,28 @@ function goBack() {
 
 function selectOption(qIndex, optIndex) {
   answers[qIndex] = optIndex;
-  render();
+  updateSelection();
+}
+
+// Лёгкое обновление ТОЛЬКО подсветки выбранного варианта и состояния кнопки
+// "Далее" — не трогает остальной DOM карточки, поэтому CSS-анимация появления
+// карточки (cardIn) не проигрывается заново при каждом клике на вариант.
+// render() полностью пересобирает карточку — используется только при смене
+// вопроса, где новая анимация уместна.
+function updateSelection() {
+  var optionButtons = document.querySelectorAll(".option");
+  optionButtons.forEach(function(btn, i) {
+    btn.classList.toggle("selected", answers[currentIndex] === i);
+  });
+
+  var t = T[lang];
+  var total = quizQuestions.length;
+  var isLast = currentIndex === total - 1;
+  var hasAnswer = answers[currentIndex] !== undefined;
+  var nextBtn = document.getElementById("nextBtn");
+  if (nextBtn) {
+    nextBtn.disabled = !hasAnswer;
+  }
 }
 
 function nextQuestion() {
