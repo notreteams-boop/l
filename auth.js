@@ -36,11 +36,19 @@ var AI_WORKER_URL = "https://ai-worker.gegeodin.workers.dev/";
     }
 
     // Сохраняем реальное имя пользователя — страницы (menu.html) читают
-    // его синхронно из localStorage вместо отдельного запроса.
+    // его синхронно из localStorage вместо отдельного запроса. Заодно
+    // welcomeSeen/testResult — используются для одноразовой приветственной
+    // модалки с результатами теста после первого логина.
     if (res.ok) {
       var checkData = await res.json();
       if (checkData.displayName) localStorage.setItem("display_name", checkData.displayName);
       if (checkData.username) localStorage.setItem("username", checkData.username);
+      localStorage.setItem("welcome_seen", checkData.welcomeSeen ? "1" : "0");
+      if (checkData.testResult) {
+        localStorage.setItem("test_result", JSON.stringify(checkData.testResult));
+      } else {
+        localStorage.removeItem("test_result");
+      }
     }
   } catch(e) {
     // Если сеть недоступна — пускаем, токен есть локально
@@ -142,5 +150,7 @@ window.logout = async function() {
   localStorage.removeItem("session_token");
   localStorage.removeItem("display_name");
   localStorage.removeItem("username");
+  localStorage.removeItem("welcome_seen");
+  localStorage.removeItem("test_result");
   window.location.href = "/l/";
 };
