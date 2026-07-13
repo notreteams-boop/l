@@ -257,7 +257,7 @@
         </div>
       </button>
 
-      <button class="card glow task t-3r">
+      <button class="card glow task t-3r" onclick="window.location.href='/l/reading.html'" data-testid="menu-reading-card">
         <div class="icon-b"><svg class="i i-lg" viewBox="0 0 24 24"><path d="M2 3h6a4 4 0 0 1 4 4v14a3 3 0 0 0-3-3H2z"/><path d="M22 3h-6a4 4 0 0 0-4 4v14a3 3 0 0 1 3-3h7z"/></svg></div>
         <div>
           <h3 data-i="t3r">Lasīšana</h3>
@@ -469,6 +469,12 @@
       </div>
       <div id="profMistakesList" style="margin-top:14px; display:flex; flex-direction:column; gap:9px;"></div>
     </div>
+    <div id="profSavedBox" style="margin-top:16px;">
+      <div class="hr"></div>
+      <p style="font-size:12.5px; font-weight:700; color:rgba(255,255,255,.5); text-transform:uppercase; letter-spacing:.03em; margin:14px 0 10px;" data-i="profSavedTitle">Saglabātie uzdevumi</p>
+      <div id="profSavedList" style="display:flex; flex-direction:column; gap:10px;"></div>
+      <p id="profSavedEmpty" style="color:rgba(255,255,255,.4); font-size:13px; margin:4px 0 0;" data-i="profSavedEmpty">Vēl nav saglabātu uzdevumu.</p>
+    </div>
     <p class="hint" data-i="profileHint">Šeit drīz parādīsies tavu iepriekšējo uzdevumu vēsture, saglabātās esejas un iestatījumi.</p>
     <span class="badge" data-i="upcoming">Drīzumā</span>
   </div>
@@ -524,6 +530,7 @@ const dict = {
     welcomePctOf:"pareizu atbilžu",
     welcomeCta:"Sākt mācīties",
     profTestResultTitle:"Ievada testa rezultāts",
+    profSavedTitle:"Saglabātie uzdevumi", profSavedEmpty:"Vēl nav saglabātu uzdevumu.",
     days:["Pr","Ot","Tr","Ce","Pk","Se","Sv"], locale:"lv-LV"
   },
   ru:{
@@ -551,6 +558,7 @@ const dict = {
     welcomePctOf:"правильных ответов",
     welcomeCta:"Начать учиться",
     profTestResultTitle:"Результат вступительного теста",
+    profSavedTitle:"Сохранённые задания", profSavedEmpty:"Пока нет сохранённых заданий.",
     days:["Пн","Вт","Ср","Чт","Пт","Сб","Вс"], locale:"ru-RU"
   }
 };
@@ -717,7 +725,50 @@ $$('.seg-item[data-lb]').forEach(el=>{
 });
 
 $('#viewAll').addEventListener('click',()=>$('#lbModal').classList.add('open'));
-$('#profileBtn').addEventListener('click',()=>$('#profileModal').classList.add('open'));
+$('#profileBtn').addEventListener('click',()=>{ $('#profileModal').classList.add('open'); loadSavedTasks(); });
+
+/* ============ Saglabātie uzdevumi (reading), ar objašnenijami ============ */
+function esc(s){ return (s==null?"":String(s)).replace(/[&<>"]/g,function(c){return {"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;"}[c];}); }
+async function loadSavedTasks(){
+  var token = localStorage.getItem("session_token"); if(!token) return;
+  var listEl = document.getElementById("profSavedList");
+  var emptyEl = document.getElementById("profSavedEmpty");
+  try{
+    var res = await fetch(AI_WORKER_URL + "get-saved-tasks", {
+      method:"POST", headers:{ "Content-Type":"application/json", "Authorization":"Bearer "+token }, body:"{}"
+    });
+    if(!res.ok) return;
+    var data = await res.json();
+    var tasks = (data.tasks||[]).filter(function(t){ return t.kind==="reading"; });
+    if(tasks.length===0){ listEl.innerHTML=""; emptyEl.style.display="block"; return; }
+    emptyEl.style.display="none";
+    var explLbl = lang==="lv"?"Paskaidrojums":"Объяснение";
+    listEl.innerHTML = tasks.map(function(t){
+      var qs = (t.questions||[]).map(function(q){
+        var yours = (t.userAnswers||{})[q.num];
+        var ok = yours===q.correct;
+        return '<div style="border-top:1px solid var(--bd);padding:8px 0 0;margin-top:8px;">'+
+          '<div style="font-size:12.5px;font-weight:600;line-height:1.4;">'+q.num+'. '+esc(q.prompt)+'</div>'+
+          '<div style="font-size:11.5px;margin-top:3px;">'+
+            (yours!==undefined?'<span style="color:'+(ok?'#34d399':'#f87171')+'">'+(lang==="lv"?"Tava: ":"Твой: ")+esc(yours)+'</span> · ':'')+
+            '<span style="color:#34d399">'+(lang==="lv"?"Pareizā: ":"Верно: ")+esc(q.correct)+'</span></div>'+
+          (q.explanation?'<div style="font-size:11.5px;color:rgba(255,255,255,.55);margin-top:5px;line-height:1.5;"><b style="color:#34d399">✦ '+explLbl+':</b> '+esc(q.explanation)+'</div>':'')+
+        '</div>';
+      }).join("");
+      return '<div style="background:rgba(255,255,255,.025);border:1px solid var(--bd);border-radius:12px;padding:12px 14px;">'+
+        '<div style="display:flex;justify-content:space-between;align-items:center;gap:8px;">'+
+          '<span style="font-size:13px;font-weight:700;">'+(lang==="lv"?"Uzdevums ":"Задание ")+(t.readingType||1)+' · '+esc(t.title||"Reading")+'</span>'+
+          '<button data-del="'+t.id+'" style="font-size:11px;color:#f87171;background:none;border:0;cursor:pointer;">'+(lang==="lv"?"Dzēst":"Удалить")+'</button>'+
+        '</div>'+qs+'</div>';
+    }).join("");
+    listEl.querySelectorAll("[data-del]").forEach(function(b){
+      b.addEventListener("click", async function(){
+        await fetch(AI_WORKER_URL+"delete-saved-task",{method:"POST",headers:{"Content-Type":"application/json","Authorization":"Bearer "+token},body:JSON.stringify({id:b.dataset.del})});
+        loadSavedTasks();
+      });
+    });
+  }catch(e){ /* тихо оставляем как есть */ }
+}
 
 $$('[data-close]').forEach(b=>b.addEventListener('click',e=>{
   e.target.closest('.backdrop').classList.remove('open');
