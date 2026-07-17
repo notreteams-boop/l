@@ -1,0 +1,2089 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>English OL — Rakstīšana</title>
+
+<!--
+  auth.js ОБЯЗАТЕЛЬНО первой строкой в head — он же скрывает страницу
+  (visibility:hidden -> visible) до завершения проверки токена и диспатчит
+  событие auth-ready, которое ловится в конце этого файла.
+-->
+<script src="/l/auth.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+  rel="stylesheet"
+/>
+
+<style>
+  :root {
+    --bg: #08080b;
+    --card: #101017;
+    --card2: #14141c;
+    --bd: rgba(255, 255, 255, 0.06);
+    --bdh: rgba(255, 255, 255, 0.12);
+    --t: #f4f5f7;
+    --td: #a4a7b3;
+    --tm: #6a6d7a;
+    --cyan: #6cf0e0;
+    --indigo: #7c8cff;
+    --violet: #a78bfa;
+    --amber: #fbbf24;
+    --green: #34d399;
+    --red: #f87171;
+    --grad: linear-gradient(135deg, #7c8cff 0%, #56d4ff 55%, #6cf0e0 100%);
+    --r: 18px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--t);
+    min-height: 100%;
+  }
+
+  body {
+    font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mono {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    letter-spacing: 0;
+  }
+
+  a,
+  button,
+  textarea {
+    font-family: inherit;
+  }
+
+  button {
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+    color: inherit;
+  }
+
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(600px 400px at 12% -5%, rgba(124, 140, 255, 0.14), transparent 60%),
+      radial-gradient(700px 500px at 105% 10%, rgba(167, 139, 250, 0.09), transparent 60%),
+      radial-gradient(800px 600px at 50% 110%, rgba(86, 212, 255, 0.06), transparent 60%);
+  }
+
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/></svg>");
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  @media (max-width: 640px) {
+    .wrap {
+      padding: 0 18px;
+    }
+  }
+
+  header {
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 0;
+    gap: 14px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-b {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background: var(--grad);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0b0b12;
+  }
+
+  .logo-t {
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: -0.02em;
+  }
+
+  .logo-t span {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .logo-s {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .cluster {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .seg {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--bd);
+    border-radius: 999px;
+    padding: 3px;
+    display: inline-flex;
+    gap: 2px;
+  }
+
+  .seg-item {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--td);
+    cursor: pointer;
+    transition: color 0.18s, background 0.18s;
+  }
+
+  .seg-item.active {
+    color: #0b0b12;
+    background: var(--grad);
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 15px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--bd);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--t);
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+
+  .back:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--bdh);
+    transform: translateX(-2px);
+  }
+
+  main {
+    padding: 38px 0 90px;
+  }
+
+  .rise {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+
+  @keyframes rise {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    color: rgba(167, 139, 250, 0.9);
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--violet);
+  }
+
+  h1 {
+    font-size: 42px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin: 0 0 10px;
+    font-weight: 800;
+  }
+
+  .sub {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 17px;
+    margin: 0 0 34px;
+  }
+
+  .tasks {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 18px;
+  }
+
+  @media (max-width: 720px) {
+    .tasks {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent), var(--card);
+    border: 1px solid var(--bd);
+    border-radius: var(--r);
+    transition: border-color 0.24s, transform 0.24s, box-shadow 0.24s;
+  }
+
+  .glow::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: calc(var(--r) + 1px);
+    padding: 1px;
+    background: var(--grad);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  .glow:hover::before {
+    opacity: 1;
+  }
+
+  .glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 60px -20px rgba(167, 139, 250, 0.25);
+  }
+
+  .task {
+    padding: 26px;
+    text-align: left;
+    display: flex;
+    flex-direction: column;
+    gap: 18px;
+    min-height: 210px;
+    width: 100%;
+    overflow: hidden;
+  }
+
+  .task .icon-b {
+    width: 48px;
+    height: 48px;
+    border-radius: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(
+      135deg,
+      color-mix(in oklab, var(--ta) 20%, transparent),
+      color-mix(in oklab, var(--tb) 12%, transparent)
+    );
+    border: 1px solid color-mix(in oklab, var(--ta) 35%, transparent);
+    color: var(--ta);
+  }
+
+  .task h3 {
+    margin: 0;
+    font-size: 21px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .task .desc {
+    color: rgba(255, 255, 255, 0.55);
+    font-size: 14px;
+    line-height: 1.5;
+    margin-top: 6px;
+  }
+
+  .task .foot {
+    margin-top: auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding-top: 6px;
+  }
+
+  .task .pts {
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--amber);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 999px;
+    padding: 4px 10px;
+  }
+
+  .task .cta {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    font-weight: 700;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    transition: color 0.2s;
+  }
+
+  .task:hover .cta {
+    color: #fff;
+  }
+
+  .t-1 {
+    --ta: #a78bfa;
+    --tb: #7c8cff;
+  }
+
+  .t-2 {
+    --ta: #6cf0e0;
+    --tb: #56d4ff;
+  }
+
+  .i {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .i-lg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .i-md {
+    width: 14px;
+    height: 14px;
+  }
+
+  .btn-primary {
+    background: var(--grad);
+    color: #0b0b12;
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-weight: 800;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 10px 30px -12px rgba(86, 212, 255, 0.6);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 16px 40px -12px rgba(86, 212, 255, 0.75);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
+  }
+
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--bd);
+    border-radius: 999px;
+    padding: 11px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    color: var(--t);
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--bdh);
+  }
+
+  .btn-ghost:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .task-head {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    gap: 16px;
+    flex-wrap: wrap;
+    margin-bottom: 22px;
+  }
+
+  .task-head .meta h2 {
+    margin: 0;
+    font-size: 26px;
+    font-weight: 800;
+    letter-spacing: -0.02em;
+  }
+
+  .task-head .meta .instr {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 15px;
+    margin-top: 8px;
+    max-width: 640px;
+    line-height: 1.5;
+  }
+
+  .pts-badge {
+    font-size: 12px;
+    font-weight: 800;
+    color: var(--amber);
+    border: 1px solid rgba(251, 191, 36, 0.3);
+    border-radius: 999px;
+    padding: 6px 12px;
+    white-space: nowrap;
+  }
+
+  .panel {
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent), var(--card);
+    border: 1px solid var(--bd);
+    border-radius: var(--r);
+    padding: 24px;
+    margin-bottom: 20px;
+  }
+
+  .panel-title {
+    font-size: 12px;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: rgba(255, 255, 255, 0.45);
+    font-weight: 700;
+    margin: 0 0 16px;
+  }
+
+  .texts {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .text-item {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+
+  .text-item .lbl {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 800;
+    font-size: 14px;
+    margin-bottom: 8px;
+  }
+
+  .text-item .lbl .letter {
+    width: 26px;
+    height: 26px;
+    border-radius: 8px;
+    background: var(--grad);
+    color: #0b0b12;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+  }
+
+  .text-item .lbl .author {
+    color: rgba(255, 255, 255, 0.5);
+    font-weight: 600;
+    font-size: 13px;
+  }
+
+  .text-item .body {
+    font-size: 14.5px;
+    line-height: 1.7;
+    color: rgba(255, 255, 255, 0.82);
+  }
+
+  .include-list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    margin-top: 4px;
+  }
+
+  .include-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.78);
+  }
+
+  .include-item .num {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 7px;
+    background: rgba(167, 139, 250, 0.15);
+    border: 1px solid rgba(167, 139, 250, 0.3);
+    color: var(--violet);
+    font-size: 11px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 1px;
+  }
+
+  .quote-note {
+    margin-top: 12px;
+    font-size: 12.5px;
+    color: rgba(255, 255, 255, 0.4);
+    font-style: italic;
+  }
+
+  .write-box {
+    position: relative;
+  }
+
+  textarea.answer {
+    width: 100%;
+    min-height: 260px;
+    resize: vertical;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    padding: 16px 18px;
+    color: var(--t);
+    font-size: 15px;
+    line-height: 1.65;
+    outline: none;
+    transition: border-color 0.2s, background 0.2s;
+  }
+
+  textarea.answer::placeholder {
+    color: rgba(255, 255, 255, 0.28);
+  }
+
+  textarea.answer:focus {
+    border-color: var(--bdh);
+    background: rgba(255, 255, 255, 0.03);
+  }
+
+  textarea.answer:disabled {
+    opacity: 0.7;
+    cursor: default;
+  }
+
+  .word-count-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 10px;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+
+  .word-count {
+    font-size: 13px;
+    font-weight: 700;
+    color: var(--tm);
+    transition: color 0.2s;
+  }
+
+  .word-count.under {
+    color: var(--red);
+  }
+
+  .word-count.ok {
+    color: var(--green);
+  }
+
+  .word-count.over {
+    color: var(--amber);
+  }
+
+  .word-hint {
+    font-size: 12px;
+    color: rgba(255, 255, 255, 0.35);
+  }
+
+  .actions {
+    display: flex;
+    gap: 12px;
+    flex-wrap: wrap;
+    align-items: center;
+    margin-top: 22px;
+  }
+
+  .score {
+    margin-left: auto;
+    font-weight: 800;
+    font-size: 15px;
+  }
+
+  .score .mono {
+    font-size: 20px;
+  }
+
+  .score.hidden {
+    display: none;
+  }
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 16px;
+    padding: 60px 20px;
+    color: rgba(255, 255, 255, 0.6);
+  }
+
+  .spinner {
+    width: 42px;
+    height: 42px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--violet);
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .spinner-sm {
+    width: 16px;
+    height: 16px;
+    border-radius: 50%;
+    border: 2px solid rgba(11, 11, 18, 0.25);
+    border-top-color: #0b0b12;
+    animation: spin 0.7s linear infinite;
+    display: inline-block;
+  }
+
+  .errbox {
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+    border-radius: 14px;
+    padding: 16px 18px;
+    color: #fecaca;
+    font-size: 14px;
+    display: none;
+  }
+
+  .errbox.show {
+    display: block;
+  }
+
+  /* -------- Результаты: сетка критериев -------- */
+
+  .results-panel {
+    display: none;
+  }
+
+  .results-panel.show {
+    display: block;
+    animation: rise 0.5s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+
+  .below-min-note {
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+    border-radius: 12px;
+    padding: 12px 16px;
+    color: #fecaca;
+    font-size: 13.5px;
+    line-height: 1.5;
+    margin-bottom: 18px;
+  }
+
+  .crit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+
+  .crit-tile {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    padding: 16px;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .crit-tile.hero {
+    background: linear-gradient(160deg, rgba(167, 139, 250, 0.12), rgba(86, 212, 255, 0.05));
+    border-color: rgba(167, 139, 250, 0.3);
+  }
+
+  .crit-tile .crit-label {
+    font-size: 11px;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    font-weight: 700;
+    color: rgba(255, 255, 255, 0.45);
+  }
+
+  .crit-tile .crit-score {
+    font-size: 24px;
+    font-weight: 800;
+    letter-spacing: -0.01em;
+  }
+
+  .crit-tile.hero .crit-score {
+    font-size: 30px;
+  }
+
+  .crit-score.tone-green {
+    color: var(--green);
+  }
+
+  .crit-score.tone-amber {
+    color: var(--amber);
+  }
+
+  .crit-score.tone-red {
+    color: var(--red);
+  }
+
+  .crit-dots {
+    display: flex;
+    gap: 4px;
+  }
+
+  .crit-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .crit-dot.filled {
+    background: currentColor;
+  }
+
+  .crit-tip {
+    font-size: 12.5px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.65);
+    margin-top: 2px;
+  }
+
+  .feedback-block {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--bd);
+    border-left: 3px solid var(--violet);
+    border-radius: 12px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+  }
+
+  .feedback-block.strengths {
+    border-left-color: var(--green);
+  }
+
+  .feedback-block .fb-tag {
+    font-size: 10.5px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    font-weight: 800;
+    color: var(--violet);
+    margin-bottom: 6px;
+  }
+
+  .feedback-block.strengths .fb-tag {
+    color: var(--green);
+  }
+
+  .feedback-block .fb-txt {
+    font-size: 13.5px;
+    line-height: 1.6;
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: #0d0d13;
+    border: 1px solid rgba(52, 211, 153, 0.4);
+    color: var(--t);
+    padding: 13px 20px;
+    border-radius: 14px;
+    font-weight: 700;
+    font-size: 14px;
+    z-index: 80;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.3s, transform 0.3s;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+
+  .chat-fab {
+    position: fixed;
+    right: 20px;
+    bottom: 24px;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: #0b0b12;
+    box-shadow: 0 10px 30px -8px rgba(86, 212, 255, 0.55);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 90;
+    transition: transform 0.2s, box-shadow 0.2s;
+    animation: chatPulse 2.4s ease-in-out infinite;
+  }
+
+  .chat-fab:hover {
+    transform: scale(1.08);
+    box-shadow: 0 14px 38px -8px rgba(86, 212, 255, 0.7);
+  }
+
+  .chat-fab .dots {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 1px;
+    line-height: 1;
+    transform: translateY(-2px);
+  }
+
+  @keyframes chatPulse {
+    0%,
+    100% {
+      box-shadow: 0 10px 30px -8px rgba(86, 212, 255, 0.55);
+    }
+    50% {
+      box-shadow: 0 10px 38px -4px rgba(86, 212, 255, 0.85);
+    }
+  }
+
+  .chat-panel {
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 95;
+    height: 42vh;
+    min-height: 320px;
+    max-height: 460px;
+    background: #0c0c11;
+    border-top: 1px solid var(--bdh);
+    border-radius: 20px 20px 0 0;
+    box-shadow: 0 -20px 60px -20px rgba(0, 0, 0, 0.6);
+    display: flex;
+    flex-direction: column;
+    transform: translateY(100%);
+    transition: transform 0.28s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .chat-panel.open {
+    transform: translateY(0);
+  }
+
+  .chat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 18px;
+    border-bottom: 1px solid var(--bd);
+    flex-shrink: 0;
+  }
+
+  .chat-title {
+    font-weight: 800;
+    font-size: 14px;
+    color: var(--t);
+  }
+
+  .chat-close {
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(255, 255, 255, 0.05);
+    color: var(--td);
+    transition: background 0.18s, color 0.18s;
+  }
+
+  .chat-close:hover {
+    background: rgba(255, 255, 255, 0.1);
+    color: #fff;
+  }
+
+  .chat-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .chat-msg {
+    max-width: 82%;
+    padding: 9px 13px;
+    border-radius: 14px;
+    font-size: 13.5px;
+    line-height: 1.5;
+  }
+
+  .chat-msg.user {
+    align-self: flex-end;
+    background: var(--grad);
+    color: #0b0b12;
+    border-bottom-right-radius: 4px;
+    font-weight: 600;
+  }
+
+  .chat-msg.ai {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid var(--bd);
+    color: rgba(255, 255, 255, 0.88);
+    border-bottom-left-radius: 4px;
+  }
+
+  .chat-msg.ai.pending {
+    color: var(--tm);
+    font-style: italic;
+  }
+
+  .chat-msg.ai.err {
+    border-color: rgba(248, 113, 113, 0.35);
+    background: rgba(248, 113, 113, 0.07);
+    color: #fecaca;
+  }
+
+  .chat-form {
+    display: flex;
+    gap: 8px;
+    padding: 12px 14px;
+    border-top: 1px solid var(--bd);
+    flex-shrink: 0;
+  }
+
+  .chat-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--bd);
+    border-radius: 999px;
+    padding: 10px 16px;
+    color: var(--t);
+    font-size: 13.5px;
+    font-family: inherit;
+  }
+
+  .chat-input:focus {
+    outline: none;
+    border-color: var(--bdh);
+  }
+
+  .chat-send {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: #0b0b12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+    transition: transform 0.15s;
+  }
+
+  .chat-send:hover {
+    transform: scale(1.06);
+  }
+
+  .chat-send:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  ::selection {
+    background: rgba(167, 139, 250, 0.35);
+    color: #fff;
+  }
+
+  ::-webkit-scrollbar {
+    width: 10px;
+    height: 10px;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: rgba(255, 255, 255, 0.08);
+    border-radius: 10px;
+  }
+</style>
+</head>
+
+<body style="visibility: hidden">
+<div class="ambient"></div>
+<div class="grain"></div>
+
+<header>
+  <div class="wrap hd">
+    <button class="back" id="topBack" data-i="back">
+      <svg class="i" viewBox="0 0 24 24">
+        <path d="M15 18l-6-6 6-6" />
+      </svg>
+      <span data-i="back">Atpakaļ</span>
+    </button>
+
+    <div class="logo">
+      <div class="logo-b">
+        <svg class="i i-lg" viewBox="0 0 24 24">
+          <path d="M12 20h9" />
+          <path d="M16.5 3.5a2.12 2.12 0 0 1 3 3L7 19l-4 1 1-4L16.5 3.5z" />
+        </svg>
+      </div>
+      <div>
+        <div class="logo-t">English <span>OL</span></div>
+        <div class="logo-s" data-i="subject">Rakstīšana</div>
+      </div>
+    </div>
+
+    <div class="cluster">
+      <div class="seg">
+        <div class="seg-item active" data-lang="lv">LV</div>
+        <div class="seg-item" data-lang="ru">RU</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ============== ЭКРАН ВЫБОРА ЗАДАНИЯ ============== -->
+  <div class="wrap" id="selectorView">
+    <div class="rise">
+      <div class="eyebrow" data-i="eyebrow">RAKSTĪŠANA · WRITING</div>
+      <h1 data-i="h1">Izvēlies uzdevumu</h1>
+      <p class="sub" data-i="sub">Katrs uzdevums tiek ģenerēts ar AI valsts eksāmena līmenī.</p>
+    </div>
+
+    <div class="tasks rise" style="animation-delay: 0.08s">
+      <button
+        class="card glow task t-1"
+        id="cardTask1"
+        data-testid="writing-task1-card"
+      >
+        <div class="icon-b">
+          <svg class="i i-lg" viewBox="0 0 24 24">
+            <rect x="2" y="4" width="20" height="16" rx="2" />
+            <path d="M22 6L12 13 2 6" />
+          </svg>
+        </div>
+        <div>
+          <h3 data-i="t1name">1. uzdevums</h3>
+          <p class="desc" data-i="t1desc">
+            E-pasts vai vēstule pēc sludinājuma — jāatklāj 4 punkti.
+          </p>
+        </div>
+        <div class="foot">
+          <span class="pts" data-i="t1pts">9 punkti</span>
+          <span class="cta">
+            <span data-i="start">Sākt</span>
+            <svg class="i i-md" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          </span>
+        </div>
+      </button>
+
+      <button
+        class="card glow task t-2"
+        id="cardTask2"
+        data-testid="writing-task2-card"
+      >
+        <div class="icon-b">
+          <svg class="i i-lg" viewBox="0 0 24 24">
+            <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" />
+            <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" />
+          </svg>
+        </div>
+        <div>
+          <h3 data-i="t2name">2. uzdevums</h3>
+          <p class="desc" data-i="t2desc">
+            Eseja par diviem avotiem — problēma, risinājumi, secinājums.
+          </p>
+        </div>
+        <div class="foot">
+          <span class="pts" data-i="t2pts">16 punkti</span>
+          <span class="cta">
+            <span data-i="start">Sākt</span>
+            <svg class="i i-md" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+          </span>
+        </div>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============== ЭКРАН ЗАДАНИЯ ============== -->
+  <div class="wrap hidden" id="taskView">
+    <button class="back" id="taskBack" style="margin-bottom: 22px">
+      <svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+      <span data-i="taskBack">Uz uzdevumiem</span>
+    </button>
+
+    <div class="loading" id="taskLoading">
+      <div class="spinner"></div>
+      <span data-i="loadingText">AI ģenerē uzdevumu…</span>
+    </div>
+
+    <div class="errbox" id="taskError"></div>
+
+    <div class="hidden" id="taskContent">
+      <div class="task-head">
+        <div class="meta">
+          <h2 id="taskTitle"></h2>
+          <p class="instr" id="taskInstr"></p>
+        </div>
+        <span class="pts-badge" id="taskPtsBadge"></span>
+      </div>
+
+      <!-- источники / объявление — заполняется из JS в зависимости от taskType -->
+      <div class="panel" id="sourcePanel"></div>
+
+      <!-- поле ввода -->
+      <div class="panel write-box">
+        <p class="panel-title" data-i="writeTitle">TAVA ATBILDE</p>
+        <textarea
+          class="answer"
+          id="answerBox"
+          data-i-placeholder="writePlaceholder"
+          placeholder="Raksti šeit…"
+        ></textarea>
+        <div class="word-count-row">
+          <span class="word-count mono" id="wordCount">0</span>
+          <span class="word-hint" id="wordHint"></span>
+        </div>
+      </div>
+
+      <div class="actions">
+        <button class="btn-primary" id="checkBtn" data-i="checkBtn">Pārbaudīt</button>
+        <button class="btn-ghost hidden" id="saveBtn" data-i="saveBtn">Saglabāt profilā</button>
+        <button class="btn-ghost" id="regenBtn" data-i="regenBtn">Jauns uzdevums</button>
+        <span class="score hidden" id="scoreBox"></span>
+      </div>
+
+      <!-- результаты проверки -->
+      <div class="panel results-panel" id="resultsPanel">
+        <p class="panel-title" data-i="resultsTitle">REZULTĀTS</p>
+
+        <div class="below-min-note hidden" id="belowMinNote"></div>
+
+        <div class="crit-grid" id="critGrid"></div>
+
+        <div class="feedback-block strengths hidden" id="strengthsBlock">
+          <div class="fb-tag" data-i="strengthsLabel">KAS IZDEVĀS LABI</div>
+          <div class="fb-txt" id="strengthsTxt"></div>
+        </div>
+
+        <div class="feedback-block hidden" id="overallTipBlock">
+          <div class="fb-tag" data-i="overallTipLabel">KO UZLABOT</div>
+          <div class="fb-txt" id="overallTipTxt"></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<button class="chat-fab hidden" id="chatFab">
+  <span class="dots">•••</span>
+</button>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <span class="chat-title" data-i="chatTitle">Jautā par uzdevumu</span>
+    <button class="chat-close" id="chatClose">
+      <svg class="i" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" /></svg>
+    </button>
+  </div>
+  <div class="chat-log" id="chatLog"></div>
+  <form class="chat-form" id="chatForm">
+    <input
+      class="chat-input"
+      id="chatInput"
+      data-i-placeholder="chatPlaceholder"
+      placeholder="Uzdod jautājumu…"
+      autocomplete="off"
+    />
+    <button class="chat-send" type="submit" id="chatSend">
+      <svg class="i" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" /></svg>
+    </button>
+  </form>
+</div>
+
+<script>
+  /* ================= Конфиг ================= */
+  // auth.js кладёт в window/global AUTH_WORKER_URL и AI_WORKER_URL — про
+  // новый writing-worker он не знает, поэтому объявляем отдельно, по той же
+  // схеме поддомена (<имя-воркера>.gegeodin.workers.dev).
+  const WRITING_WORKER_URL = "https://writing-worker.gegeodin.workers.dev/";
+
+  /* ================= i18n ================= */
+  const dict = {
+    lv: {
+      back: "Atpakaļ",
+      subject: "Rakstīšana",
+      eyebrow: "RAKSTĪŠANA · WRITING",
+      h1: "Izvēlies uzdevumu",
+      sub: "Katrs uzdevums tiek ģenerēts ar AI valsts eksāmena līmenī.",
+      t1name: "1. uzdevums",
+      t1desc: "E-pasts vai vēstule pēc sludinājuma — jāatklāj 4 punkti.",
+      t1pts: "9 punkti",
+      t2name: "2. uzdevums",
+      t2desc: "Eseja par diviem avotiem — problēma, risinājumi, secinājums.",
+      t2pts: "16 punkti",
+      start: "Sākt",
+      taskBack: "Uz uzdevumiem",
+      loadingText: "AI ģenerē uzdevumu…",
+      writeTitle: "TAVA ATBILDE",
+      writePlaceholder: "Raksti šeit…",
+      checkBtn: "Pārbaudīt",
+      checkingBtn: "Pārbauda…",
+      saveBtn: "Saglabāt profilā",
+      savingBtn: "Saglabā…",
+      regenBtn: "Jauns uzdevums",
+      resultsTitle: "REZULTĀTS",
+      strengthsLabel: "KAS IZDEVĀS LABI",
+      overallTipLabel: "KO UZLABOT",
+      chatTitle: "Jautā par uzdevumu",
+      chatPlaceholder: "Uzdod jautājumu…",
+      adPanelTitle: "SLUDINĀJUMS",
+      includePanelTitle: "JĀIEKĻAUJ VĒSTULĒ",
+      sourcesPanelTitle: "AVOTI",
+      includeEssayPanelTitle: "JĀIEKĻAUJ ESEJĀ",
+      quoteNote: 'Neaizmirsti izmantot "pēdiņas", ja izlemsi citēt frāzi no avota.',
+      wordsUnit: "vārdi",
+      criticContent: "Saturs",
+      criticOrganization: "Struktūra",
+      criticLanguage: "Valoda",
+      criticLanguageRange: "Valodas daudzveidība",
+      criticLanguageAccuracy: "Valodas pareizība",
+      criticWordCount: "Vārdu skaits",
+      heroLabel: "Kopā",
+      belowMinPrefix: "Teksts ir pārāk īss izvērtēšanai (nepieciešami vismaz",
+      belowMinSuffix: "vārdi).",
+      savedToast: "Uzdevums saglabāts profilā!",
+      errGeneric: "Neizdevās izveidot uzdevumu. Mēģini vēlreiz.",
+      errCheck: "Neizdevās pārbaudīt tekstu. Mēģini vēlreiz.",
+      errRateLimit: "Pagaidi dažas sekundes un mēģini vēlreiz.",
+      errSessionExpired: "Sesija beigusies, ielogojies no jauna.",
+      errSave: "Neizdevās saglabāt. Mēģini vēlreiz.",
+      chatPending: "Domā…",
+      chatErr: "Neizdevās saņemt atbildi.",
+      emptyTextErr: "Vispirms uzraksti savu atbildi.",
+    },
+    ru: {
+      back: "Назад",
+      subject: "Письмо",
+      eyebrow: "ПИСЬМО · WRITING",
+      h1: "Выбери задание",
+      sub: "Каждое задание генерирует ИИ на уровне госэкзамена.",
+      t1name: "1. Задание",
+      t1desc: "Email по объявлению — нужно раскрыть 4 пункта.",
+      t1pts: "9 баллов",
+      t2name: "2. Задание",
+      t2desc: "Эссе по двум источникам — проблема, решения, вывод.",
+      t2pts: "16 баллов",
+      start: "Начать",
+      taskBack: "К заданиям",
+      loadingText: "ИИ генерирует задание…",
+      writeTitle: "ТВОЙ ОТВЕТ",
+      writePlaceholder: "Пиши здесь…",
+      checkBtn: "Проверить",
+      checkingBtn: "Проверяю…",
+      saveBtn: "Сохранить в профиль",
+      savingBtn: "Сохраняю…",
+      regenBtn: "Новое задание",
+      resultsTitle: "РЕЗУЛЬТАТ",
+      strengthsLabel: "ЧТО ПОЛУЧИЛОСЬ ХОРОШО",
+      overallTipLabel: "ЧТО УЛУЧШИТЬ",
+      chatTitle: "Спроси про задание",
+      chatPlaceholder: "Задай вопрос…",
+      adPanelTitle: "ОБЪЯВЛЕНИЕ",
+      includePanelTitle: "НУЖНО РАСКРЫТЬ",
+      sourcesPanelTitle: "ИСТОЧНИКИ",
+      includeEssayPanelTitle: "НУЖНО РАСКРЫТЬ",
+      quoteNote: 'Не забудь использовать "кавычки", если решишь процитировать фразу из источника.',
+      wordsUnit: "слов",
+      criticContent: "Содержание",
+      criticOrganization: "Структура",
+      criticLanguage: "Язык",
+      criticLanguageRange: "Разнообразие языка",
+      criticLanguageAccuracy: "Грамотность",
+      criticWordCount: "Кол-во слов",
+      heroLabel: "Всего",
+      belowMinPrefix: "Текст слишком короткий для оценки (нужно минимум",
+      belowMinSuffix: "слов).",
+      savedToast: "Задание сохранено в профиль!",
+      errGeneric: "Не удалось создать задание. Попробуй ещё раз.",
+      errCheck: "Не удалось проверить текст. Попробуй ещё раз.",
+      errRateLimit: "Подожди пару секунд и попробуй снова.",
+      errSessionExpired: "Сессия истекла, войди заново.",
+      errSave: "Не удалось сохранить. Попробуй ещё раз.",
+      chatPending: "Думаю…",
+      chatErr: "Не удалось получить ответ.",
+      emptyTextErr: "Сначала напиши свой ответ.",
+    },
+  };
+
+  let lang = "lv";
+
+  function applyLang() {
+    document.querySelectorAll("[data-i]").forEach(function (el) {
+      const key = el.getAttribute("data-i");
+      if (dict[lang][key] !== undefined) {
+        el.textContent = dict[lang][key];
+      }
+    });
+    document.querySelectorAll("[data-i-placeholder]").forEach(function (el) {
+      const key = el.getAttribute("data-i-placeholder");
+      if (dict[lang][key] !== undefined) {
+        el.setAttribute("placeholder", dict[lang][key]);
+      }
+    });
+    // элементы, которые обновляются заново при каждом рендере (не через
+    // data-i, т.к. содержат динамические данные) — перерисовываем вручную,
+    // если задание уже загружено.
+    if (currentTask) {
+      renderTask();
+    }
+    if (lastGradeResult) {
+      renderResults(lastGradeResult);
+    }
+  }
+
+  document.querySelectorAll(".seg-item[data-lang]").forEach(function (el) {
+    el.addEventListener("click", function () {
+      lang = el.getAttribute("data-lang");
+      document.querySelectorAll(".seg-item[data-lang]").forEach(function (s) {
+        s.classList.toggle("active", s === el);
+      });
+      applyLang();
+    });
+  });
+
+  /* ================= Локализованные подписи критериев ================= */
+
+  const CRIT_LABEL_KEYS = {
+    content: "criticContent",
+    organization: "criticOrganization",
+    language: "criticLanguage",
+    languageRange: "criticLanguageRange",
+    languageAccuracy: "criticLanguageAccuracy",
+  };
+
+  /* ================= State ================= */
+
+  let currentTaskType = "task1"; // "task1" | "task2"
+  let currentTask = null; // объект задания, отданный воркером
+  let currentTaskId = null;
+  let lastGradeResult = null; // последний результат /check-writing
+  let chatOpened = false;
+
+  function $(sel) {
+    return document.querySelector(sel);
+  }
+
+  /* ================= Навигация ================= */
+
+  function showSelector() {
+    $("#selectorView").classList.remove("hidden");
+    $("#taskView").classList.add("hidden");
+    $("#chatFab").classList.add("hidden");
+    $("#chatPanel").classList.remove("open");
+    currentTask = null;
+    currentTaskId = null;
+    lastGradeResult = null;
+  }
+
+  function goMenu() {
+    window.location.href = "/l/menu.html";
+  }
+
+  $("#topBack").addEventListener("click", function () {
+    if ($("#selectorView").classList.contains("hidden")) {
+      showSelector();
+    } else {
+      goMenu();
+    }
+  });
+
+  $("#taskBack").addEventListener("click", function () {
+    showSelector();
+  });
+
+  $("#cardTask1").addEventListener("click", function () {
+    startTask("task1");
+  });
+
+  $("#cardTask2").addEventListener("click", function () {
+    startTask("task2");
+  });
+
+  function startTask(taskType) {
+    currentTaskType = taskType;
+    $("#selectorView").classList.add("hidden");
+    $("#taskView").classList.remove("hidden");
+    generate(taskType);
+  }
+
+  /* ================= Генерация задания ================= */
+
+  async function generate(taskType) {
+    $("#taskLoading").classList.remove("hidden");
+    $("#taskError").classList.remove("show");
+    $("#taskContent").classList.add("hidden");
+    $("#chatFab").classList.add("hidden");
+    lastGradeResult = null;
+    $("#resultsPanel").classList.remove("show");
+    $("#saveBtn").classList.add("hidden");
+    $("#scoreBox").classList.add("hidden");
+    $("#answerBox").value = "";
+    $("#answerBox").disabled = false;
+    updateWordCount();
+
+    try {
+      const res = await fetch(WRITING_WORKER_URL + "generate-writing-task", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("session_token"),
+        },
+        body: JSON.stringify({ taskType: taskType }),
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem("session_token");
+        window.location.href = "/l/login.html?expired=1";
+        return;
+      }
+
+      if (res.status === 429) {
+        showTaskError(dict[lang].errRateLimit);
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error("HTTP " + res.status);
+      }
+
+      const envelope = await res.json();
+      currentTask = envelope.task;
+      currentTaskId = envelope.id;
+
+      $("#taskLoading").classList.add("hidden");
+      $("#taskContent").classList.remove("hidden");
+      $("#chatFab").classList.remove("hidden");
+      renderTask();
+    } catch (err) {
+      const fallback = DEMO[taskType];
+      if (fallback) {
+        currentTask = fallback;
+        currentTaskId = "demo";
+        $("#taskLoading").classList.add("hidden");
+        $("#taskContent").classList.remove("hidden");
+        $("#chatFab").classList.remove("hidden");
+        renderTask();
+      } else {
+        showTaskError(dict[lang].errGeneric);
+      }
+    }
+  }
+
+  function showTaskError(msg) {
+    $("#taskLoading").classList.add("hidden");
+    $("#taskError").textContent = msg;
+    $("#taskError").classList.add("show");
+  }
+
+  $("#regenBtn").addEventListener("click", function () {
+    generate(currentTaskType);
+  });
+
+  /* ================= Render задания ================= */
+
+  function esc(str) {
+    const div = document.createElement("div");
+    div.textContent = str || "";
+    return div.innerHTML;
+  }
+
+  function renderTask() {
+    if (!currentTask) return;
+    const t = currentTask;
+    const rubric = RUBRIC_CLIENT[currentTaskType];
+
+    $("#taskTitle").textContent = t.title || "";
+
+    if (currentTaskType === "task2") {
+      $("#taskInstr").textContent = t.essayPrompt || "";
+    } else {
+      $("#taskInstr").textContent = t.situationText || "";
+    }
+
+    $("#taskPtsBadge").textContent = rubric.maxScore + " " + (lang === "ru" ? "баллов" : "punkti");
+
+    // источники / объявление
+    const sourcePanel = $("#sourcePanel");
+    if (currentTaskType === "task2") {
+      sourcePanel.innerHTML =
+        '<p class="panel-title">' +
+        esc(dict[lang].sourcesPanelTitle) +
+        '</p>' +
+        '<div class="texts">' +
+        '<div class="text-item"><div class="lbl"><span class="letter">1</span><span class="author">' +
+        esc(t.source1.label || "") +
+        '</span></div><div class="body">' +
+        esc(t.source1.text) +
+        '</div></div>' +
+        '<div class="text-item"><div class="lbl"><span class="letter">2</span><span class="author">' +
+        esc(t.source2.label || "") +
+        '</span></div><div class="body">' +
+        esc(t.source2.text) +
+        '</div></div>' +
+        '</div>' +
+        '<p class="panel-title" style="margin-top:20px">' +
+        esc(dict[lang].includeEssayPanelTitle) +
+        '</p>' +
+        '<div class="include-list">' +
+        (t.includePoints || [])
+          .map(function (p, i) {
+            return (
+              '<div class="include-item"><span class="num">' +
+              (i + 1) +
+              '</span><span>' +
+              esc(p) +
+              '</span></div>'
+            );
+          })
+          .join("") +
+        '</div>' +
+        '<p class="quote-note">' +
+        esc(dict[lang].quoteNote) +
+        '</p>';
+    } else {
+      sourcePanel.innerHTML =
+        '<p class="panel-title">' +
+        esc(dict[lang].adPanelTitle) +
+        '</p>' +
+        '<div class="text-item">' +
+        (t.adSource
+          ? '<div class="lbl"><span class="author">' + esc(t.adSource) + "</span></div>"
+          : "") +
+        '<div class="body">' +
+        esc(t.adText) +
+        '</div></div>' +
+        '<p class="panel-title" style="margin-top:20px">' +
+        esc(dict[lang].includePanelTitle) +
+        '</p>' +
+        '<div class="include-list">' +
+        (t.includePoints || [])
+          .map(function (p, i) {
+            return (
+              '<div class="include-item"><span class="num">' +
+              (i + 1) +
+              '</span><span>' +
+              esc(p) +
+              '</span></div>'
+            );
+          })
+          .join("") +
+        '</div>';
+    }
+
+    updateWordCount();
+  }
+
+  /* ================= Счётчик слов ================= */
+
+  const RUBRIC_CLIENT = {
+    task1: { maxScore: 9, minWords: 120, maxWords: 150, evalMinWords: 50 },
+    task2: { maxScore: 16, minWords: 250, maxWords: 300, evalMinWords: 100 },
+  };
+
+  function countWordsClient(text) {
+    const matches = (text || "").trim().match(/\S+/g);
+    return matches ? matches.length : 0;
+  }
+
+  function updateWordCount() {
+    const text = $("#answerBox").value;
+    const n = countWordsClient(text);
+    const rubric = RUBRIC_CLIENT[currentTaskType];
+
+    const el = $("#wordCount");
+    el.textContent = n;
+    el.classList.remove("under", "ok", "over");
+    if (n < rubric.minWords) {
+      el.classList.add("under");
+    } else if (n > rubric.maxWords) {
+      el.classList.add("over");
+    } else {
+      el.classList.add("ok");
+    }
+
+    $("#wordHint").textContent =
+      "/ " + rubric.minWords + "–" + rubric.maxWords + " " + dict[lang].wordsUnit;
+  }
+
+  $("#answerBox").addEventListener("input", updateWordCount);
+
+  /* ================= Проверка (check-writing) ================= */
+
+  $("#checkBtn").addEventListener("click", async function () {
+    const text = $("#answerBox").value.trim();
+    if (!text) {
+      toast(dict[lang].emptyTextErr, false);
+      return;
+    }
+
+    const btn = $("#checkBtn");
+    btn.disabled = true;
+    const originalLabel = btn.textContent;
+    btn.innerHTML = '<span class="spinner-sm"></span>';
+
+    try {
+      const res = await fetch(WRITING_WORKER_URL + "check-writing", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("session_token"),
+        },
+        body: JSON.stringify({
+          taskType: currentTaskType,
+          taskContext: currentTask,
+          text: text,
+          lang: lang,
+        }),
+      });
+
+      if (res.status === 401 || res.status === 403) {
+        localStorage.removeItem("session_token");
+        window.location.href = "/l/login.html?expired=1";
+        return;
+      }
+
+      if (res.status === 429) {
+        toast(dict[lang].errRateLimit, false);
+        return;
+      }
+
+      if (!res.ok) {
+        throw new Error("HTTP " + res.status);
+      }
+
+      const result = await res.json();
+      lastGradeResult = result;
+      renderResults(result);
+
+      $("#saveBtn").classList.remove("hidden");
+      $("#scoreBox").classList.remove("hidden");
+      $("#scoreBox").innerHTML =
+        '<span class="mono">' + result.totalScore + "/" + result.totalMax + "</span>";
+
+      // отдельным вызовом — начисление в общий счёт (лидерборд), как и в
+      // reading-модуле; не блокирует отображение результата, если упадёт.
+      fetch(WRITING_WORKER_URL + "solve", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("session_token"),
+        },
+        body: JSON.stringify({
+          totalScore: result.totalScore,
+          totalMax: result.totalMax,
+        }),
+      }).catch(function () {});
+    } catch (err) {
+      toast(dict[lang].errCheck, false);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  });
+
+  function scoreTone(score, max) {
+    const ratio = max > 0 ? score / max : 0;
+    if (ratio >= 0.7) return "tone-green";
+    if (ratio >= 0.4) return "tone-amber";
+    return "tone-red";
+  }
+
+  function renderResults(result) {
+    $("#resultsPanel").classList.add("show");
+
+    const belowNote = $("#belowMinNote");
+    if (result.belowMinWords) {
+      belowNote.textContent =
+        dict[lang].belowMinPrefix + " " + result.evalMinWords + " " + dict[lang].belowMinSuffix;
+      belowNote.classList.remove("hidden");
+    } else {
+      belowNote.classList.add("hidden");
+    }
+
+    const tiles = [];
+
+    // hero-плитка — суммарный балл
+    tiles.push(
+      '<div class="crit-tile hero">' +
+        '<div class="crit-label">' +
+        esc(dict[lang].heroLabel) +
+        '</div>' +
+        '<div class="crit-score mono ' +
+        scoreTone(result.totalScore, result.totalMax) +
+        '">' +
+        result.totalScore +
+        "/" +
+        result.totalMax +
+        '</div>' +
+        '</div>'
+    );
+
+    // плитка по каждому официальному критерию
+    result.criteria.forEach(function (c) {
+      const labelKey = CRIT_LABEL_KEYS[c.key] || c.key;
+      const tone = scoreTone(c.score, c.maxPoints);
+      const dotsCount = c.maxPoints;
+      const filledDots = Math.round(c.score);
+      let dotsHtml = "";
+      for (let i = 0; i < dotsCount; i++) {
+        dotsHtml +=
+          '<span class="crit-dot ' +
+          (i < filledDots ? "filled" : "") +
+          '" style="color:var(--' +
+          (tone === "tone-green" ? "green" : tone === "tone-amber" ? "amber" : "red") +
+          ')"></span>';
+      }
+
+      tiles.push(
+        '<div class="crit-tile">' +
+          '<div class="crit-label">' +
+          esc(dict[lang][labelKey] || c.key) +
+          '</div>' +
+          '<div class="crit-score mono ' +
+          tone +
+          '">' +
+          c.score +
+          "/" +
+          c.maxPoints +
+          '</div>' +
+          '<div class="crit-dots">' +
+          dotsHtml +
+          '</div>' +
+          '<div class="crit-tip">' +
+          esc(c.tip) +
+          '</div>' +
+          '</div>'
+      );
+    });
+
+    // плитка по количеству слов
+    const wcTone = result.belowMinWords
+      ? "tone-red"
+      : result.wordCount > result.maxWords
+      ? "tone-amber"
+      : "tone-green";
+    tiles.push(
+      '<div class="crit-tile">' +
+        '<div class="crit-label">' +
+        esc(dict[lang].criticWordCount) +
+        '</div>' +
+        '<div class="crit-score mono ' +
+        wcTone +
+        '">' +
+        result.wordCount +
+        '</div>' +
+        '<div class="crit-tip">' +
+        result.minWords +
+        "–" +
+        result.maxWords +
+        " " +
+        esc(dict[lang].wordsUnit) +
+        '</div>' +
+        '</div>'
+    );
+
+    $("#critGrid").innerHTML = tiles.join("");
+
+    if (result.strengths) {
+      $("#strengthsTxt").textContent = result.strengths;
+      $("#strengthsBlock").classList.remove("hidden");
+    } else {
+      $("#strengthsBlock").classList.add("hidden");
+    }
+
+    if (result.overallTip) {
+      $("#overallTipTxt").textContent = result.overallTip;
+      $("#overallTipBlock").classList.remove("hidden");
+    } else {
+      $("#overallTipBlock").classList.add("hidden");
+    }
+  }
+
+  /* ================= Сохранение в профиль ================= */
+
+  $("#saveBtn").addEventListener("click", async function () {
+    if (!lastGradeResult) return;
+
+    const btn = $("#saveBtn");
+    btn.disabled = true;
+    const originalLabel = btn.textContent;
+    btn.textContent = dict[lang].savingBtn;
+
+    try {
+      const res = await fetch(WRITING_WORKER_URL + "save-task", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("session_token"),
+        },
+        body: JSON.stringify({
+          task: {
+            kind: "writing",
+            taskType: currentTaskType,
+            title: currentTask.title || "",
+            taskContext: currentTask,
+            text: $("#answerBox").value,
+            grade: lastGradeResult,
+          },
+        }),
+      });
+
+      if (!res.ok) {
+        throw new Error("HTTP " + res.status);
+      }
+
+      toast(dict[lang].savedToast, true);
+    } catch (err) {
+      toast(dict[lang].errSave, false);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalLabel;
+    }
+  });
+
+  /* ================= Toast ================= */
+
+  let toastTimer = null;
+
+  function toast(msg, ok) {
+    const el = $("#toast");
+    el.textContent = msg;
+    el.style.borderColor = ok ? "rgba(52,211,153,.4)" : "rgba(248,113,113,.4)";
+    el.classList.add("show");
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(function () {
+      el.classList.remove("show");
+    }, 3200);
+  }
+
+  /* ================= Чат с ИИ ================= */
+
+  function openChatPanel() {
+    $("#chatPanel").classList.add("open");
+    if (!chatOpened) {
+      chatOpened = true;
+      $("#chatLog").innerHTML = "";
+    }
+    $("#chatInput").focus();
+  }
+
+  $("#chatFab").addEventListener("click", openChatPanel);
+
+  $("#chatClose").addEventListener("click", function () {
+    $("#chatPanel").classList.remove("open");
+  });
+
+  $("#chatForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const input = $("#chatInput");
+    const question = input.value.trim();
+    if (!question) return;
+
+    input.value = "";
+    $("#chatSend").disabled = true;
+
+    const log = $("#chatLog");
+    log.innerHTML += '<div class="chat-msg user">' + esc(question) + "</div>";
+
+    const pendingId = "pending-" + Date.now();
+    log.innerHTML +=
+      '<div class="chat-msg ai pending" id="' +
+      pendingId +
+      '">' +
+      esc(dict[lang].chatPending) +
+      "</div>";
+    log.scrollTop = log.scrollHeight;
+
+    try {
+      const res = await fetch(WRITING_WORKER_URL + "ask-question", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + localStorage.getItem("session_token"),
+        },
+        body: JSON.stringify({
+          taskContext: currentTask,
+          gradeContext: lastGradeResult,
+          question: question,
+          lang: lang,
+        }),
+      });
+
+      if (!res.ok) throw new Error("HTTP " + res.status);
+
+      const data = await res.json();
+      const pendingEl = document.getElementById(pendingId);
+      pendingEl.textContent = data.answer;
+      pendingEl.classList.remove("pending");
+    } catch (err) {
+      const pendingEl = document.getElementById(pendingId);
+      pendingEl.textContent = dict[lang].chatErr;
+      pendingEl.classList.remove("pending");
+      pendingEl.classList.add("err");
+    } finally {
+      $("#chatSend").disabled = false;
+      log.scrollTop = log.scrollHeight;
+    }
+  });
+
+  /* ================= Demo fallback (offline / dev) ================= */
+
+  const DEMO = {
+    task1: {
+      kind: "writing",
+      taskType: "task1",
+      title: "Debate Club",
+      situationText:
+        "You saw this advertisement on your school notice board and decided to write an email to find out more and to apply.",
+      adSource: "School notice board",
+      adText:
+        '"DEBATE CLUB" — Do you want to speak up? Join our new after-school debate club! Meetings every Wednesday. No experience needed — just bring your opinions. Email Ms. Adams to find out more and sign up.',
+      includePoints: [
+        "Explain why you want to join the debate club",
+        "Ask what topics the club usually discusses",
+        "Ask if there is any preparation needed before the first meeting",
+        "Mention a time that works for you to meet Ms. Adams beforehand",
+      ],
+      minWords: 120,
+      maxWords: 150,
+      maxScore: 9,
+    },
+    task2: {
+      kind: "writing",
+      taskType: "task2",
+      title: "Social Media and Teenagers",
+      essayPrompt:
+        "Using the ideas from both sources, explain the problem described, suggest at least two possible solutions, and give your own conclusion.",
+      source1: {
+        label: "Source 1: Youth Health Blog",
+        text:
+          "A recent survey of 2,000 teenagers found that those who spend more than four hours a day on social media report higher levels of anxiety and poor sleep. Many said they compare themselves constantly to filtered, curated images of other people's lives, which lowers their self-esteem over time.",
+      },
+      source2: {
+        label: "Source 2: Local News Online",
+        text:
+          "Not everyone agrees social media is the main problem. A school counsellor in Riga pointed out that some students use these platforms to find support groups and connect with friends who share their interests, especially those who feel isolated at school.",
+      },
+      includePoints: [
+        "Explain the problem raised by the two sources",
+        "Suggest at least two realistic solutions",
+        "Give your own personal conclusion",
+      ],
+      minWords: 250,
+      maxWords: 300,
+      maxScore: 16,
+    },
+  };
+
+  /* ================= Инициализация ================= */
+
+  function init() {
+    document.body.style.visibility = "visible";
+    applyLang();
+  }
+
+  if (window.authReady) {
+    init();
+  } else {
+    document.addEventListener("auth-ready", init);
+  }
+</script>
+</body>
+  </html>
