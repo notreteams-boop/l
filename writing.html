@@ -1685,7 +1685,8 @@
       }
 
       if (!res.ok) {
-        throw new Error("HTTP " + res.status);
+        const bodyText = await res.text();
+        throw new Error(bodyText || "HTTP " + res.status);
       }
 
       const envelope = await res.json();
@@ -1697,6 +1698,10 @@
       $("#chatFab").classList.remove("hidden");
       renderTask();
     } catch (err) {
+      // Показываем реальный текст ошибки сервера тостом — полезно, пока
+      // отлаживаем деплой; DEMO при этом всё равно подставляется, чтобы
+      // страницу можно было листать дальше.
+      toast(String(err && err.message ? err.message : err), false);
       const fallback = DEMO[taskType];
       if (fallback) {
         currentTask = fallback;
@@ -1890,7 +1895,8 @@
       }
 
       if (!res.ok) {
-        throw new Error("HTTP " + res.status);
+        const bodyText = await res.text();
+        throw new Error(bodyText || "HTTP " + res.status);
       }
 
       const result = await res.json();
@@ -1916,7 +1922,7 @@
         }),
       }).catch(function () {});
     } catch (err) {
-      toast(dict[lang].errCheck, false);
+      toast(String(err && err.message ? err.message : err), false);
     } finally {
       btn.disabled = false;
       btn.textContent = originalLabel;
