@@ -1351,52 +1351,63 @@
 
       <div class="actions">
         <button class="btn-primary" id="checkBtn" data-i="checkBtn">Pārbaudīt</button>
-        <button class="btn-ghost hidden" id="saveBtn" data-i="saveBtn">Saglabāt profilā</button>
-        <button class="btn-ghost" id="regenBtn" data-i="regenBtn">Jauns uzdevums</button>
-        <span class="score hidden" id="scoreBox"></span>
       </div>
+    </div>
+  </div>
 
-      <!-- результаты проверки -->
-      <div class="panel results-panel" id="resultsPanel">
-        <p class="panel-title" data-i="resultsTitle">REZULTĀTS</p>
+  <!-- ============== ЭКРАН РЕЗУЛЬТАТОВ ============== -->
+  <div class="wrap hidden" id="resultsView">
+    <button class="back" id="resultsBack" style="margin-bottom: 22px">
+      <svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+      <span data-i="resultsBack">Atpakaļ pie teksta</span>
+    </button>
 
-        <div class="below-min-note hidden" id="belowMinNote"></div>
+    <div class="panel results-panel show" id="resultsPanel">
+      <p class="panel-title" data-i="resultsTitle">REZULTĀTS</p>
 
-        <div class="corrections-section hidden" id="correctionsSection">
-          <div class="corr-toggle-row">
-            <div class="seg" id="corrToggle">
-              <div class="seg-item active" data-mode="before" data-i="beforeCheck">Pirms</div>
-              <div class="seg-item" data-mode="after" data-i="afterCheck">Pēc</div>
-            </div>
+      <div class="below-min-note hidden" id="belowMinNote"></div>
+
+      <div class="corrections-section hidden" id="correctionsSection">
+        <div class="corr-toggle-row">
+          <div class="seg" id="corrToggle">
+            <div class="seg-item active" data-mode="before" data-i="beforeCheck">Pirms</div>
+            <div class="seg-item" data-mode="after" data-i="afterCheck">Pēc</div>
           </div>
-          <div class="text-item corr-text-box" id="corrTextBox"></div>
-          <p class="panel-title" style="margin-top: 20px" data-i="whyLabel">
-            KĀPĒC TĀ? — SKAIDROJUMS
-          </p>
-          <div id="corrExplainList"></div>
         </div>
-
-        <div class="clean-note hidden" id="cleanNote" data-i="cleanNote">
-          Būtisku kļūdu nav — labs darbs!
-        </div>
-
-        <div class="crit-grid" id="critGrid"></div>
-
-        <div class="feedback-block strengths hidden" id="strengthsBlock">
-          <div class="fb-tag" data-i="strengthsLabel">KAS IZDEVĀS LABI</div>
-          <div class="fb-txt" id="strengthsTxt"></div>
-        </div>
-
-        <div class="feedback-block hidden" id="overallTipBlock">
-          <div class="fb-tag" data-i="overallTipLabel">KO UZLABOT</div>
-          <div class="fb-txt" id="overallTipTxt"></div>
-        </div>
+        <div class="text-item corr-text-box" id="corrTextBox"></div>
+        <p class="panel-title" style="margin-top: 20px" data-i="whyLabel">
+          KĀPĒC TĀ? — SKAIDROJUMS
+        </p>
+        <div id="corrExplainList"></div>
       </div>
+
+      <div class="clean-note hidden" id="cleanNote" data-i="cleanNote">
+        Būtisku kļūdu nav — labs darbs!
+      </div>
+
+      <div class="crit-grid" id="critGrid"></div>
+
+      <div class="feedback-block strengths hidden" id="strengthsBlock">
+        <div class="fb-tag" data-i="strengthsLabel">KAS IZDEVĀS LABI</div>
+        <div class="fb-txt" id="strengthsTxt"></div>
+      </div>
+
+      <div class="feedback-block hidden" id="overallTipBlock">
+        <div class="fb-tag" data-i="overallTipLabel">KO UZLABOT</div>
+        <div class="fb-txt" id="overallTipTxt"></div>
+      </div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-ghost" id="saveBtn" data-i="saveBtn">Saglabāt profilā</button>
+      <button class="btn-ghost" id="regenBtn" data-i="regenBtn">Jauns uzdevums</button>
+      <span class="score" id="scoreBox"></span>
     </div>
   </div>
 </main>
 
 <div class="toast" id="toast"></div>
+
 
 <button class="chat-fab hidden" id="chatFab">
   <span class="dots">•••</span>
@@ -1484,6 +1495,7 @@
       chatPending: "Domā…",
       chatErr: "Neizdevās saņemt atbildi.",
       emptyTextErr: "Vispirms uzraksti savu atbildi.",
+      resultsBack: "Atpakaļ pie teksta",
       beforeCheck: "Pirms",
       afterCheck: "Pēc",
       whyLabel: "KĀPĒC TĀ? — SKAIDROJUMS",
@@ -1540,6 +1552,7 @@
       chatPending: "Думаю…",
       chatErr: "Не удалось получить ответ.",
       emptyTextErr: "Сначала напиши свой ответ.",
+      resultsBack: "Назад к тексту",
       beforeCheck: "До",
       afterCheck: "После",
       whyLabel: "ПОЧЕМУ ТАК? — ОБЪЯСНЕНИЕ",
@@ -1610,12 +1623,27 @@
   function showSelector() {
     $("#selectorView").classList.remove("hidden");
     $("#taskView").classList.add("hidden");
+    $("#resultsView").classList.add("hidden");
     $("#chatFab").classList.add("hidden");
     $("#chatPanel").classList.remove("open");
     currentTask = null;
     currentTaskId = null;
     lastGradeResult = null;
   }
+
+  function showResultsView() {
+    $("#taskView").classList.add("hidden");
+    $("#resultsView").classList.remove("hidden");
+    window.scrollTo(0, 0);
+  }
+
+  function showTaskViewFromResults() {
+    $("#resultsView").classList.add("hidden");
+    $("#taskView").classList.remove("hidden");
+    window.scrollTo(0, 0);
+  }
+
+  $("#resultsBack").addEventListener("click", showTaskViewFromResults);
 
   function goMenu() {
     window.location.href = "/l/menu.html";
@@ -1651,6 +1679,8 @@
   /* ================= Генерация задания ================= */
 
   async function generate(taskType) {
+    $("#resultsView").classList.add("hidden");
+    $("#taskView").classList.remove("hidden");
     $("#taskLoading").classList.remove("hidden");
     $("#taskError").classList.remove("show");
     $("#taskContent").classList.add("hidden");
@@ -1902,9 +1932,8 @@
       const result = await res.json();
       lastGradeResult = result;
       renderResults(result);
+      showResultsView();
 
-      $("#saveBtn").classList.remove("hidden");
-      $("#scoreBox").classList.remove("hidden");
       $("#scoreBox").innerHTML =
         '<span class="mono">' + result.totalScore + "/" + result.totalMax + "</span>";
 
@@ -2407,10 +2436,9 @@
       if (saved.grade) {
         lastGradeResult = saved.grade;
         renderResults(saved.grade);
-        $("#saveBtn").classList.remove("hidden");
-        $("#scoreBox").classList.remove("hidden");
         $("#scoreBox").innerHTML =
           '<span class="mono">' + saved.grade.totalScore + "/" + saved.grade.totalMax + "</span>";
+        showResultsView();
       }
     } catch (err) {
       showTaskError(dict[lang].errGeneric);
