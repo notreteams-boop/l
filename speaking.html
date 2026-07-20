@@ -666,6 +666,54 @@
     padding: 30px 20px 10px;
   }
 
+  .materials-toggle {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    padding: 13px 18px;
+    color: var(--td);
+    font-size: 13.5px;
+    font-weight: 700;
+    margin-bottom: 6px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .materials-toggle:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--bdh);
+  }
+
+  .materials-toggle span {
+    flex: 1;
+    text-align: left;
+  }
+
+  .materials-toggle .chevron {
+    transition: transform 0.22s;
+    flex-shrink: 0;
+  }
+
+  .materials-toggle.open .chevron {
+    transform: rotate(180deg);
+  }
+
+  .materials-panel {
+    max-height: 0;
+    overflow: hidden;
+    opacity: 0;
+    transition: max-height 0.32s cubic-bezier(0.2, 0.8, 0.2, 1), opacity 0.24s, margin 0.32s;
+  }
+
+  .materials-panel.open {
+    max-height: 2000px;
+    opacity: 1;
+    margin-bottom: 18px;
+  }
+
   .record-topic {
     font-size: 14px;
     color: var(--td);
@@ -1438,6 +1486,33 @@
 
   <!-- ============== 3. ЭКРАН ЗАПИСИ РЕЧИ (record-speech) ============== -->
   <div class="wrap hidden" id="recordSpeechView">
+    <button class="materials-toggle" id="speechMaterialsToggle" type="button">
+      <svg class="i i-md" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
+      <span data-i="materialsToggle">Skatīt uzdevumu un avotus</span>
+      <svg class="i i-md chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9" /></svg>
+    </button>
+
+    <div class="materials-panel" id="speechMaterialsPanel">
+      <div class="panel" style="margin-bottom: 12px">
+        <p class="panel-title" data-i="topicLabel">TĒMA</p>
+        <p class="source-text" id="recSpeechTopicFull" style="font-weight: 700; font-size: 16px"></p>
+      </div>
+      <div class="panel" style="margin-bottom: 12px">
+        <div class="source-block">
+          <div class="source-label" id="recSpeechSource1Label"></div>
+          <div class="source-text" id="recSpeechSource1Text"></div>
+        </div>
+        <div class="source-block" style="margin-bottom: 0">
+          <div class="source-label" id="recSpeechSource2Label"></div>
+          <div class="source-text" id="recSpeechSource2Text"></div>
+        </div>
+      </div>
+      <div class="panel hidden" id="recSpeechNotesPanel" style="margin-bottom: 0">
+        <p class="panel-title" data-i="notesLabel">PIEZĪMES (nav obligāti)</p>
+        <p class="source-text" id="recSpeechNotesText"></p>
+      </div>
+    </div>
+
     <div class="record-stage">
       <div class="eyebrow" data-i="recSpeechEyebrow">SAGATAVOTĀ RUNA</div>
       <p class="record-topic" id="recSpeechTopic"></p>
@@ -1478,6 +1553,7 @@
           <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
         </button>
       </div>
+
     </div>
     <div class="errbox" id="speechError"></div>
   </div>
@@ -1488,6 +1564,29 @@
       <div class="eyebrow" data-i="qEyebrow">EKSAMINĒTĀJA JAUTĀJUMI</div>
       <h2 data-i="qTitle">Atbildi mutiski uz visiem 3 jautājumiem</h2>
       <p class="sub" data-i="qSub">Nospied ierakstu un atbildi pēc kārtas uz visiem jautājumiem vienā ierakstā.</p>
+    </div>
+
+    <button class="materials-toggle" id="answersMaterialsToggle" type="button">
+      <svg class="i i-md" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20" /><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z" /></svg>
+      <span data-i="materialsToggle">Skatīt uzdevumu un avotus</span>
+      <svg class="i i-md chevron" viewBox="0 0 24 24"><polyline points="6 9 12 15 18 9" /></svg>
+    </button>
+
+    <div class="materials-panel" id="answersMaterialsPanel">
+      <div class="panel" style="margin-bottom: 12px">
+        <p class="panel-title" data-i="topicLabel">TĒMA</p>
+        <p class="source-text" id="qTopicFull" style="font-weight: 700; font-size: 16px"></p>
+      </div>
+      <div class="panel" style="margin-bottom: 0">
+        <div class="source-block">
+          <div class="source-label" id="qSource1Label"></div>
+          <div class="source-text" id="qSource1Text"></div>
+        </div>
+        <div class="source-block" style="margin-bottom: 0">
+          <div class="source-label" id="qSource2Label"></div>
+          <div class="source-text" id="qSource2Text"></div>
+        </div>
+      </div>
     </div>
 
     <ul class="q-list" id="qList"></ul>
@@ -1677,6 +1776,7 @@
       skipPrepBtn: "Sākt runāt tagad",
       recSpeechEyebrow: "SAGATAVOTĀ RUNA",
       speechMaxHint: "Maksimums 5:30 — pēc tam ieraksts apstāsies automātiski",
+      materialsToggle: "Skatīt uzdevumu un avotus",
       recStatusIdle: "Nospied, lai sāktu ierakstu",
       recStatusLive: "Ieraksta…",
       recStatusDone: "Ieraksts pabeigts",
@@ -1713,6 +1813,7 @@
       errMic: "Nevar piekļūt mikrofonam. Pārbaudi pārlūka atļaujas.",
       errGrading: "Neizdevās izvērtēt runu. Mēģini vēlreiz.",
       errRateLimit: "Pagaidi mazliet un mēģini vēlreiz.",
+      retryCountdown: "Pagaidi vēl {s} s un mēģini vēlreiz…",
       errSessionExpired: "Sesija beigusies, ielogojies no jauna.",
       errSave: "Neizdevās saglabāt. Mēģini vēlreiz.",
       criticPreparedSpeech: "Sagatavotā runa",
@@ -1747,6 +1848,7 @@
       skipPrepBtn: "Начать говорить сейчас",
       recSpeechEyebrow: "ПОДГОТОВЛЕННАЯ РЕЧЬ",
       speechMaxHint: "Максимум 5:30 — потом запись остановится автоматически",
+      materialsToggle: "Смотреть задание и источники",
       recStatusIdle: "Нажми, чтобы начать запись",
       recStatusLive: "Идёт запись…",
       recStatusDone: "Запись завершена",
@@ -1783,6 +1885,7 @@
       errMic: "Нет доступа к микрофону. Проверь разрешения браузера.",
       errGrading: "Не удалось оценить речь. Попробуй ещё раз.",
       errRateLimit: "Подожди немного и попробуй снова.",
+      retryCountdown: "Подожди ещё {s} с и попробуй снова…",
       errSessionExpired: "Сессия истекла, войди заново.",
       errSave: "Не удалось сохранить. Попробуй ещё раз.",
       criticPreparedSpeech: "Подготовленная речь",
@@ -1862,6 +1965,38 @@
     const m = Math.floor(s / 60);
     const rem = s % 60;
     return m + ":" + String(rem).padStart(2, "0");
+  }
+
+  // Показывает живой обратный отсчёт в errEl ("Pagaidi vēl 42 s…") и держит
+  // disableEl заблокированным, пока секунды не закончатся — используется при
+  // ответе воркера 429 (rate_limited) с полем retryAfterSeconds, чтобы
+  // человек видел точное время ожидания вместо статичной ошибки.
+  // Ставим disabled через setTimeout(0), чтобы это произошло ПОСЛЕ любого
+  // finally-блока вызывающей функции, который мог бы сбросить disabled=false
+  // синхронно сразу вслед за вызовом этой функции.
+  function startRetryCountdown(errEl, seconds, disableEl) {
+    let remaining = Math.ceil(seconds);
+
+    function render() {
+      errEl.textContent = dict[lang].retryCountdown.replace("{s}", remaining);
+      errEl.classList.add("show");
+    }
+    render();
+
+    setTimeout(function () {
+      if (disableEl) disableEl.disabled = true;
+    }, 0);
+
+    const interval = setInterval(function () {
+      remaining -= 1;
+      if (remaining <= 0) {
+        clearInterval(interval);
+        errEl.classList.remove("show");
+        if (disableEl) disableEl.disabled = false;
+        return;
+      }
+      render();
+    }, 1000);
   }
 </script>
 
@@ -1953,6 +2088,10 @@
       });
 
       if (!res.ok) {
+        if (res.status === 429 && data.retryAfterSeconds) {
+          startRetryCountdown($("#introError"), data.retryAfterSeconds, $("#startBtn"));
+          return;
+        }
         throw new Error(data.error || dict[lang].errGeneric);
       }
 
@@ -2298,8 +2437,42 @@
     $("#speechRedoBtn").classList.add("hidden");
     $("#speechMicBtn").disabled = false;
     $("#speechError").classList.remove("show");
+
+    if (currentTask) {
+      $("#recSpeechTopicFull").textContent = currentTask.topicLine || "";
+      $("#recSpeechSource1Label").textContent = currentTask.source1.label || "Source 1";
+      $("#recSpeechSource1Text").textContent = currentTask.source1.text || "";
+      $("#recSpeechSource2Label").textContent = currentTask.source2.label || "Source 2";
+      $("#recSpeechSource2Text").textContent = currentTask.source2.text || "";
+    }
+    const notes = $("#notesArea").value.trim();
+    if (notes) {
+      $("#recSpeechNotesPanel").classList.remove("hidden");
+      $("#recSpeechNotesText").textContent = notes;
+    } else {
+      $("#recSpeechNotesPanel").classList.add("hidden");
+    }
+    closeMaterialsPanel($("#speechMaterialsToggle"), $("#speechMaterialsPanel"));
+
     showView("recordSpeechView");
   }
+
+  function closeMaterialsPanel(toggleBtn, panelEl) {
+    toggleBtn.classList.remove("open");
+    panelEl.classList.remove("open");
+  }
+
+  function setupMaterialsToggle(toggleId, panelId) {
+    const toggleBtn = $(toggleId);
+    const panelEl = $(panelId);
+    toggleBtn.addEventListener("click", function () {
+      const isOpen = panelEl.classList.toggle("open");
+      toggleBtn.classList.toggle("open", isOpen);
+    });
+  }
+
+  setupMaterialsToggle("#speechMaterialsToggle", "#speechMaterialsPanel");
+  setupMaterialsToggle("#answersMaterialsToggle", "#answersMaterialsPanel");
 
   $("#speechMicBtn").addEventListener("click", async function () {
     if (speechRecorder.isRecording()) {
@@ -2375,6 +2548,16 @@
     $("#answersRedoBtn").classList.add("hidden");
     $("#answersMicBtn").disabled = false;
     $("#answersError").classList.remove("show");
+
+    if (currentTask) {
+      $("#qTopicFull").textContent = currentTask.topicLine || "";
+      $("#qSource1Label").textContent = currentTask.source1.label || "Source 1";
+      $("#qSource1Text").textContent = currentTask.source1.text || "";
+      $("#qSource2Label").textContent = currentTask.source2.label || "Source 2";
+      $("#qSource2Text").textContent = currentTask.source2.text || "";
+    }
+    closeMaterialsPanel($("#answersMaterialsToggle"), $("#answersMaterialsPanel"));
+
     showView("questionsView");
   }
 
@@ -2485,6 +2668,12 @@
       });
 
       if (!res.ok) {
+        if (res.status === 429 && data.retryAfterSeconds) {
+          showView("questionsView");
+          startRetryCountdown($("#answersError"), data.retryAfterSeconds, $("#answersDoneBtn"));
+          stopGradingStepsAnimation();
+          return;
+        }
         throw new Error(data.error || dict[lang].errGrading);
       }
 
