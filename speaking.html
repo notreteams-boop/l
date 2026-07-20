@@ -1401,7 +1401,7 @@
         </div>
         <div class="info-cell">
           <div class="num">3–5<span style="font-size:13px">min</span></div>
-          <div class="lbl" data-i="infoSpeech">Sagatavotā runa</div>
+          <div class="lbl" data-i="infoSpeechHint">Runā vismaz 3, ne vairāk par 5 minūtēm</div>
         </div>
         <div class="info-cell">
           <div class="num">3</div>
@@ -1518,7 +1518,7 @@
       <p class="record-topic" id="recSpeechTopic"></p>
 
       <div class="rec-timer mono" id="speechTimerNum">5:30</div>
-      <div class="rec-sub" data-i="speechMaxHint">Maksimums 5:30 — pēc tam ieraksts apstāsies automātiski</div>
+      <div class="rec-sub" data-i="speechMaxHint">Runā 3–5 minūtes — atlikušais laiks līdz maksimumam (5:30)</div>
 
       <div class="level-bars" id="speechLevelBars"></div>
 
@@ -1675,6 +1675,7 @@
 
     <div class="too-short-note hidden" id="tooShortSpeechNote"></div>
     <div class="too-short-note hidden" id="tooShortAnswersNote"></div>
+    <div class="too-short-note hidden" id="durationPenaltyNote"></div>
 
     <div class="block-label" data-i="block1Label">UZDEVUMA IZPILDE</div>
     <div class="crit-grid" id="critGridBlock1"></div>
@@ -1762,6 +1763,7 @@
       introDesc: "AI izveidos tēmu ar diviem avotiem — tāpat kā eksāmenā.",
       infoPrep: "Sagatavošanās laiks",
       infoSpeech: "Sagatavotā runa",
+      infoSpeechHint: "Runā vismaz 3, ne vairāk par 5 minūtēm",
       infoQuestions: "Eksaminētāja jautājumi",
       startBtn: "Sākt uzdevumu",
       loadingText: "AI izveido tēmu…",
@@ -1775,7 +1777,7 @@
       notesPlaceholder: "Raksti īsas piezīmes runai šeit…",
       skipPrepBtn: "Sākt runāt tagad",
       recSpeechEyebrow: "SAGATAVOTĀ RUNA",
-      speechMaxHint: "Maksimums 5:30 — pēc tam ieraksts apstāsies automātiski",
+      speechMaxHint: "Runā 3–5 minūtes — atlikušais laiks līdz maksimumam (5:30)",
       materialsToggle: "Skatīt uzdevumu un avotus",
       recStatusIdle: "Nospied, lai sāktu ierakstu",
       recStatusLive: "Ieraksta…",
@@ -1822,6 +1824,7 @@
       criticLanguageAccuracy: "Valodas pareizība",
       criticFluency: "Valodas plūdums",
       tooShortSpeech: "Runas ieraksts bija pārāk īss, lai to godīgi novērtētu.",
+      durationPenalty: "Tava runa ilga {t} — ārpus 3–5 minūšu diapazona, tāpēc kopvērtējums samazināts.",
       tooShortAnswers: "Atbilžu ieraksts bija pārāk īss, lai to godīgi novērtētu.",
     },
     ru: {
@@ -1834,6 +1837,7 @@
       introDesc: "ИИ создаст тему с двумя источниками — как на экзамене.",
       infoPrep: "Время подготовки",
       infoSpeech: "Подготовленная речь",
+      infoSpeechHint: "Говори минимум 3, максимум 5 минут",
       infoQuestions: "Вопросы экзаменатора",
       startBtn: "Начать задание",
       loadingText: "ИИ создаёт тему…",
@@ -1847,7 +1851,7 @@
       notesPlaceholder: "Пиши короткие заметки для речи здесь…",
       skipPrepBtn: "Начать говорить сейчас",
       recSpeechEyebrow: "ПОДГОТОВЛЕННАЯ РЕЧЬ",
-      speechMaxHint: "Максимум 5:30 — потом запись остановится автоматически",
+      speechMaxHint: "Говори 3–5 минут — оставшееся время до максимума (5:30)",
       materialsToggle: "Смотреть задание и источники",
       recStatusIdle: "Нажми, чтобы начать запись",
       recStatusLive: "Идёт запись…",
@@ -1894,6 +1898,7 @@
       criticLanguageAccuracy: "Грамотность",
       criticFluency: "Беглость",
       tooShortSpeech: "Запись речи была слишком короткой для честной оценки.",
+      durationPenalty: "Твоя речь длилась {t} — вне диапазона 3–5 минут, поэтому итоговый балл снижен.",
       tooShortAnswers: "Запись ответов была слишком короткой для честной оценки.",
     },
   };
@@ -2007,6 +2012,7 @@
 
   let speechAudioBlob = null; // Blob запись речи
   let answersAudioBlob = null; // Blob запись ответов
+  let speechDurationSeconds = 0; // точная длительность речи (с браузера, не с ИИ)
 
   let prepTimerInterval = null;
   let prepSecondsLeft = 5 * 60;
@@ -2492,12 +2498,14 @@
   });
 
   function onSpeechRecordingFinished() {
+    speechDurationSeconds = speechRecorder.getElapsedSeconds();
     $("#speechDoneBtn").classList.remove("hidden");
     $("#speechRedoBtn").classList.remove("hidden");
   }
 
   $("#speechRedoBtn").addEventListener("click", function () {
     speechAudioBlob = null;
+    speechDurationSeconds = 0;
     goToRecordSpeech();
   });
 
@@ -2652,6 +2660,8 @@
         body: JSON.stringify({
           taskContext: currentTask,
           lang: lang,
+          speechDurationSeconds: speechDurationSeconds,
+          notesText: $("#notesArea").value.trim(),
           speechAudio: {
             base64: speechB64,
             mimeType: speechAudioBlob.type || "audio/webm",
@@ -2725,6 +2735,11 @@
     $("#tooShortAnswersNote").classList.toggle("hidden", !grade.tooShortAnswers);
     if (grade.tooShortAnswers) {
       $("#tooShortAnswersNote").textContent = dict[lang].tooShortAnswers;
+    }
+    $("#durationPenaltyNote").classList.toggle("hidden", !grade.durationPenaltyApplied);
+    if (grade.durationPenaltyApplied) {
+      $("#durationPenaltyNote").textContent =
+        dict[lang].durationPenalty.replace("{t}", fmtTime(grade.speechDurationSeconds || 0));
     }
 
     const block1 = grade.criteria.filter(function (c) { return c.block === 1; });
