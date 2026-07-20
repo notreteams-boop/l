@@ -1,0 +1,2747 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>English OL — Runāšana</title>
+
+<!--
+  auth.js ОБЯЗАТЕЛЬНО первой строкой в head — он же скрывает страницу
+  (visibility:hidden -> visible) до завершения проверки токена и диспатчит
+  событие auth-ready, которое ловится в конце этого файла. Тот же паттерн,
+  что в writing.html/reading.html.
+-->
+<script src="/l/auth.js"></script>
+
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link
+  href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@400;500;600&display=swap"
+  rel="stylesheet"
+/>
+
+<style>
+  :root {
+    --bg: #08080b;
+    --card: #101017;
+    --card2: #14141c;
+    --bd: rgba(255, 255, 255, 0.06);
+    --bdh: rgba(255, 255, 255, 0.12);
+    --t: #f4f5f7;
+    --td: #a4a7b3;
+    --tm: #6a6d7a;
+    --cyan: #6cf0e0;
+    --indigo: #7c8cff;
+    --violet: #a78bfa;
+    --amber: #fbbf24;
+    --green: #34d399;
+    --red: #f87171;
+    --grad: linear-gradient(135deg, #7c8cff 0%, #56d4ff 55%, #6cf0e0 100%);
+    --r: 18px;
+  }
+
+  * {
+    box-sizing: border-box;
+  }
+
+  html,
+  body {
+    margin: 0;
+    padding: 0;
+    background: var(--bg);
+    color: var(--t);
+    min-height: 100%;
+  }
+
+  body {
+    font-family: "Manrope", -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+    letter-spacing: -0.01em;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  .mono {
+    font-family: "JetBrains Mono", ui-monospace, monospace;
+    letter-spacing: 0;
+  }
+
+  a,
+  button,
+  textarea,
+  input {
+    font-family: inherit;
+  }
+
+  button {
+    cursor: pointer;
+    border: 0;
+    background: transparent;
+    color: inherit;
+  }
+
+  .ambient {
+    position: fixed;
+    inset: 0;
+    z-index: 0;
+    pointer-events: none;
+    background: radial-gradient(600px 400px at 12% -5%, rgba(124, 140, 255, 0.14), transparent 60%),
+      radial-gradient(700px 500px at 105% 10%, rgba(167, 139, 250, 0.09), transparent 60%),
+      radial-gradient(800px 600px at 50% 110%, rgba(86, 212, 255, 0.06), transparent 60%);
+  }
+
+  .grain {
+    position: fixed;
+    inset: 0;
+    z-index: 1;
+    pointer-events: none;
+    opacity: 0.035;
+    mix-blend-mode: overlay;
+    background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='160' height='160'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='2' stitchTiles='stitch'/></filter><rect width='100%25' height='100%25' filter='url(%23n)' opacity='0.9'/></svg>");
+  }
+
+  .wrap {
+    position: relative;
+    z-index: 2;
+    max-width: 1080px;
+    margin: 0 auto;
+    padding: 0 32px;
+  }
+
+  @media (max-width: 640px) {
+    .wrap {
+      padding: 0 18px;
+    }
+  }
+
+  header {
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .hd {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 18px 0;
+    gap: 14px;
+  }
+
+  .logo {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .logo-b {
+    width: 36px;
+    height: 36px;
+    border-radius: 12px;
+    background: var(--grad);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0b0b12;
+  }
+
+  .logo-t {
+    font-weight: 800;
+    font-size: 17px;
+    letter-spacing: -0.02em;
+  }
+
+  .logo-t span {
+    color: rgba(255, 255, 255, 0.55);
+  }
+
+  .logo-s {
+    font-size: 10px;
+    letter-spacing: 0.22em;
+    color: rgba(255, 255, 255, 0.4);
+    text-transform: uppercase;
+    margin-top: 2px;
+  }
+
+  .cluster {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .seg {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--bd);
+    border-radius: 999px;
+    padding: 3px;
+    display: inline-flex;
+    gap: 2px;
+  }
+
+  .seg-item {
+    padding: 6px 14px;
+    border-radius: 999px;
+    font-size: 12px;
+    font-weight: 700;
+    color: var(--td);
+    cursor: pointer;
+    transition: color 0.18s, background 0.18s;
+  }
+
+  .seg-item.active {
+    color: #0b0b12;
+    background: var(--grad);
+  }
+
+  .back {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 9px 15px;
+    border-radius: 999px;
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--bd);
+    font-weight: 600;
+    font-size: 14px;
+    color: var(--t);
+    transition: background 0.2s, border-color 0.2s, transform 0.2s;
+  }
+
+  .back:hover {
+    background: rgba(255, 255, 255, 0.06);
+    border-color: var(--bdh);
+    transform: translateX(-2px);
+  }
+
+  .back:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+  }
+
+  main {
+    padding: 38px 0 90px;
+  }
+
+  .rise {
+    opacity: 0;
+    transform: translateY(14px);
+    animation: rise 0.55s cubic-bezier(0.2, 0.7, 0.2, 1) forwards;
+  }
+
+  @keyframes rise {
+    to {
+      opacity: 1;
+      transform: none;
+    }
+  }
+
+  .eyebrow {
+    font-size: 11px;
+    letter-spacing: 0.24em;
+    color: rgba(167, 139, 250, 0.9);
+    text-transform: uppercase;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 12px;
+  }
+
+  .eyebrow::before {
+    content: "";
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--violet);
+  }
+
+  h1 {
+    font-size: 42px;
+    line-height: 1.05;
+    letter-spacing: -0.03em;
+    margin: 0 0 10px;
+    font-weight: 800;
+  }
+
+  h2 {
+    font-size: 26px;
+    letter-spacing: -0.02em;
+    margin: 0 0 6px;
+    font-weight: 800;
+  }
+
+  .sub {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 17px;
+    margin: 0 0 34px;
+  }
+
+  .card {
+    position: relative;
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.02), transparent), var(--card);
+    border: 1px solid var(--bd);
+    border-radius: var(--r);
+    transition: border-color 0.24s, transform 0.24s, box-shadow 0.24s;
+  }
+
+  .glow::before {
+    content: "";
+    position: absolute;
+    inset: -1px;
+    border-radius: calc(var(--r) + 1px);
+    padding: 1px;
+    background: var(--grad);
+    -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0);
+    -webkit-mask-composite: xor;
+    mask-composite: exclude;
+    opacity: 0;
+    transition: opacity 0.3s;
+    pointer-events: none;
+  }
+
+  .glow:hover::before {
+    opacity: 1;
+  }
+
+  .glow:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 20px 60px -20px rgba(167, 139, 250, 0.25);
+  }
+
+  .i {
+    width: 16px;
+    height: 16px;
+    stroke: currentColor;
+    fill: none;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
+
+  .i-lg {
+    width: 22px;
+    height: 22px;
+  }
+
+  .i-md {
+    width: 14px;
+    height: 14px;
+  }
+
+  .btn-primary {
+    background: var(--grad);
+    color: #0b0b12;
+    border-radius: 999px;
+    padding: 12px 22px;
+    font-weight: 800;
+    font-size: 15px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 10px 30px -12px rgba(86, 212, 255, 0.6);
+  }
+
+  .btn-primary:hover {
+    transform: translateY(-1px);
+    box-shadow: 0 14px 36px -12px rgba(86, 212, 255, 0.75);
+  }
+
+  .btn-primary:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .btn-ghost {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--bd);
+    color: var(--t);
+    border-radius: 999px;
+    padding: 11px 20px;
+    font-weight: 700;
+    font-size: 14px;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    transition: background 0.2s, border-color 0.2s;
+  }
+
+  .btn-ghost:hover {
+    background: rgba(255, 255, 255, 0.07);
+    border-color: var(--bdh);
+  }
+
+  .btn-ghost:disabled {
+    opacity: 0.45;
+    cursor: not-allowed;
+  }
+
+  .btn-danger {
+    background: linear-gradient(135deg, #f87171, #fb7185);
+    color: #1a0808;
+  }
+
+  .actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 22px;
+    flex-wrap: wrap;
+  }
+
+  .hidden {
+    display: none !important;
+  }
+
+  .panel {
+    background: var(--card2);
+    border: 1px solid var(--bd);
+    border-radius: var(--r);
+    padding: 22px;
+    margin-bottom: 18px;
+  }
+
+  .panel-title {
+    font-size: 11px;
+    letter-spacing: 0.16em;
+    text-transform: uppercase;
+    color: var(--tm);
+    font-weight: 700;
+    margin: 0 0 14px;
+  }
+
+  .loading {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    padding: 80px 0;
+    color: var(--td);
+    font-size: 15px;
+  }
+
+  .spinner {
+    width: 34px;
+    height: 34px;
+    border-radius: 50%;
+    border: 3px solid rgba(255, 255, 255, 0.1);
+    border-top-color: var(--indigo);
+    animation: spin 0.8s linear infinite;
+  }
+
+  @keyframes spin {
+    to {
+      transform: rotate(360deg);
+    }
+  }
+
+  .errbox {
+    display: none;
+    background: rgba(248, 113, 113, 0.08);
+    border: 1px solid rgba(248, 113, 113, 0.3);
+    color: #fca5a5;
+    padding: 16px 20px;
+    border-radius: 14px;
+    font-size: 14px;
+    margin-bottom: 20px;
+  }
+
+  .errbox.show {
+    display: block;
+  }
+
+  .toast {
+    position: fixed;
+    bottom: 26px;
+    left: 50%;
+    transform: translateX(-50%) translateY(20px);
+    background: var(--card2);
+    border: 1px solid var(--bdh);
+    color: var(--t);
+    padding: 13px 22px;
+    border-radius: 999px;
+    font-size: 14px;
+    font-weight: 600;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.25s, transform 0.25s;
+    z-index: 50;
+    box-shadow: 0 20px 50px -12px rgba(0, 0, 0, 0.6);
+  }
+
+  .toast.show {
+    opacity: 1;
+    transform: translateX(-50%) translateY(0);
+  }
+</style>
+<style>
+  /* ============== ЭКРАН INTRO ============== */
+  .intro-card {
+    padding: 40px;
+    text-align: center;
+    max-width: 620px;
+    margin: 0 auto;
+  }
+
+  .intro-icon {
+    width: 72px;
+    height: 72px;
+    border-radius: 22px;
+    margin: 0 auto 22px;
+    background: linear-gradient(135deg, rgba(167, 139, 250, 0.22), rgba(86, 212, 255, 0.14));
+    border: 1px solid rgba(167, 139, 250, 0.35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--violet);
+  }
+
+  .info-grid {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 12px;
+    margin: 26px 0 30px;
+  }
+
+  @media (max-width: 560px) {
+    .info-grid {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  .info-cell {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    padding: 16px 12px;
+  }
+
+  .info-cell .num {
+    font-size: 20px;
+    font-weight: 800;
+    color: var(--cyan);
+  }
+
+  .info-cell .lbl {
+    font-size: 11px;
+    color: var(--td);
+    margin-top: 4px;
+    line-height: 1.4;
+  }
+
+  .mic-permission-note {
+    font-size: 13px;
+    color: var(--tm);
+    margin-top: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+  }
+
+  /* ============== ЭКРАН ПОДГОТОВКИ (prep) ============== */
+  .prep-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 18px;
+    margin-bottom: 22px;
+    flex-wrap: wrap;
+  }
+
+  .timer-box {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background: var(--card2);
+    border: 1px solid var(--bd);
+    border-radius: 16px;
+    padding: 12px 20px;
+  }
+
+  .timer-box.warn {
+    border-color: rgba(251, 191, 36, 0.4);
+  }
+
+  .timer-box.danger {
+    border-color: rgba(248, 113, 113, 0.5);
+    animation: pulse-danger 1s infinite;
+  }
+
+  @keyframes pulse-danger {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(248, 113, 113, 0.35); }
+    50% { box-shadow: 0 0 0 6px rgba(248, 113, 113, 0); }
+  }
+
+  .timer-num {
+    font-size: 26px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+  }
+
+  .timer-lbl {
+    font-size: 11px;
+    color: var(--tm);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+  }
+
+  .source-block {
+    margin-bottom: 14px;
+  }
+
+  .source-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: var(--indigo);
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 6px;
+  }
+
+  .source-text {
+    font-size: 15px;
+    line-height: 1.65;
+    color: rgba(255, 255, 255, 0.88);
+    white-space: pre-line;
+  }
+
+  .task-points {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .task-points li {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 14.5px;
+    line-height: 1.5;
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .task-points .num-badge {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 8px;
+    background: rgba(124, 140, 255, 0.15);
+    border: 1px solid rgba(124, 140, 255, 0.35);
+    color: var(--indigo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 12px;
+    font-weight: 800;
+    margin-top: 1px;
+  }
+
+  .notes-area {
+    width: 100%;
+    min-height: 120px;
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    padding: 16px;
+    color: var(--t);
+    font-size: 14.5px;
+    line-height: 1.6;
+    resize: vertical;
+    outline: none;
+    transition: border-color 0.2s;
+  }
+
+  .notes-area:focus {
+    border-color: var(--bdh);
+  }
+
+  /* ============== ЭКРАН ЗАПИСИ (record) ============== */
+  .record-stage {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    padding: 30px 20px 10px;
+  }
+
+  .record-topic {
+    font-size: 14px;
+    color: var(--td);
+    margin-bottom: 30px;
+    max-width: 480px;
+  }
+
+  .rec-timer {
+    font-size: 56px;
+    font-weight: 800;
+    font-variant-numeric: tabular-nums;
+    letter-spacing: -0.02em;
+    margin-bottom: 6px;
+  }
+
+  .rec-timer.warn {
+    color: var(--amber);
+  }
+
+  .rec-timer.danger {
+    color: var(--red);
+  }
+
+  .rec-sub {
+    font-size: 13px;
+    color: var(--tm);
+    margin-bottom: 34px;
+  }
+
+  .mic-btn-wrap {
+    position: relative;
+    width: 168px;
+    height: 168px;
+    margin-bottom: 30px;
+  }
+
+  .mic-ring {
+    position: absolute;
+    inset: 0;
+    border-radius: 50%;
+    border: 2px solid rgba(248, 113, 113, 0.35);
+    opacity: 0;
+    transform: scale(0.9);
+  }
+
+  .mic-ring.active {
+    animation: mic-pulse 1.6s ease-out infinite;
+  }
+
+  @keyframes mic-pulse {
+    0% { opacity: 0.55; transform: scale(0.85); }
+    100% { opacity: 0; transform: scale(1.35); }
+  }
+
+  .mic-btn {
+    position: absolute;
+    inset: 14px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #7c8cff, #56d4ff);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #0b0b12;
+    box-shadow: 0 20px 50px -14px rgba(86, 212, 255, 0.6);
+    transition: transform 0.18s, box-shadow 0.18s, background 0.18s;
+  }
+
+  .mic-btn:hover {
+    transform: scale(1.03);
+  }
+
+  .mic-btn.recording {
+    background: linear-gradient(135deg, #f87171, #fb7185);
+    box-shadow: 0 20px 50px -14px rgba(248, 113, 113, 0.65);
+  }
+
+  .mic-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    transform: none;
+  }
+
+  .level-bars {
+    display: flex;
+    align-items: flex-end;
+    gap: 4px;
+    height: 28px;
+    margin-bottom: 26px;
+  }
+
+  .level-bar {
+    width: 4px;
+    border-radius: 2px;
+    background: var(--bdh);
+    height: 6px;
+    transition: height 0.08s ease-out, background 0.08s;
+  }
+
+  .level-bar.on {
+    background: var(--cyan);
+  }
+
+  .rec-status {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    color: var(--tm);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 4px;
+  }
+
+  .rec-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: var(--tm);
+  }
+
+  .rec-dot.live {
+    background: var(--red);
+    animation: dot-blink 1s infinite;
+  }
+
+  @keyframes dot-blink {
+    50% { opacity: 0.25; }
+  }
+
+  .record-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+  }
+
+  /* ============== ЭКРАН ВОПРОСОВ (questions) ============== */
+  .q-list {
+    list-style: none;
+    margin: 0 0 26px;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .q-item {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+    background: rgba(255, 255, 255, 0.025);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    padding: 16px 18px;
+  }
+
+  .q-item .num-badge {
+    flex-shrink: 0;
+    width: 26px;
+    height: 26px;
+    border-radius: 9px;
+    background: rgba(108, 240, 224, 0.14);
+    border: 1px solid rgba(108, 240, 224, 0.35);
+    color: var(--cyan);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 13px;
+    font-weight: 800;
+  }
+
+  .q-item p {
+    margin: 0;
+    font-size: 15px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.9);
+  }
+
+  /* ============== ЭКРАН GRADING (лоадер) ============== */
+  .grading-loader {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 20px;
+    padding: 100px 0;
+  }
+
+  .grading-loader .spinner {
+    width: 44px;
+    height: 44px;
+  }
+
+  .grading-steps {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+  }
+
+  .grading-step {
+    font-size: 13px;
+    color: var(--tm);
+  }
+
+  .grading-step.active {
+    color: var(--td);
+    font-weight: 700;
+  }
+
+  /* ============== ЭКРАН РЕЗУЛЬТАТОВ (results) ============== */
+  .score-hero {
+    display: flex;
+    align-items: center;
+    gap: 26px;
+    padding: 30px;
+    margin-bottom: 20px;
+    flex-wrap: wrap;
+  }
+
+  .score-ring-wrap {
+    position: relative;
+    width: 116px;
+    height: 116px;
+    flex-shrink: 0;
+  }
+
+  .score-ring-wrap svg {
+    transform: rotate(-90deg);
+  }
+
+  .score-ring-bg {
+    fill: none;
+    stroke: rgba(255, 255, 255, 0.06);
+    stroke-width: 9;
+  }
+
+  .score-ring-fg {
+    fill: none;
+    stroke: url(#scoreGrad);
+    stroke-width: 9;
+    stroke-linecap: round;
+    transition: stroke-dashoffset 1s cubic-bezier(0.2, 0.8, 0.2, 1);
+  }
+
+  .score-ring-txt {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .score-ring-txt .n {
+    font-size: 26px;
+    font-weight: 800;
+  }
+
+  .score-ring-txt .d {
+    font-size: 11px;
+    color: var(--tm);
+  }
+
+  .score-hero-text h2 {
+    margin-bottom: 4px;
+  }
+
+  .score-hero-text p {
+    margin: 0;
+    color: var(--td);
+    font-size: 14px;
+  }
+
+  .crit-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+    gap: 12px;
+    margin-bottom: 20px;
+  }
+
+  .crit-cell {
+    background: rgba(255, 255, 255, 0.03);
+    border: 1px solid var(--bd);
+    border-radius: 14px;
+    padding: 16px;
+  }
+
+  .crit-cell .lbl {
+    font-size: 10.5px;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--tm);
+    font-weight: 700;
+    margin-bottom: 8px;
+    line-height: 1.4;
+  }
+
+  .crit-cell .val {
+    font-size: 22px;
+    font-weight: 800;
+    margin-bottom: 6px;
+  }
+
+  .crit-dots {
+    display: flex;
+    gap: 3px;
+  }
+
+  .crit-dot {
+    width: 14px;
+    height: 5px;
+    border-radius: 3px;
+    background: rgba(255, 255, 255, 0.1);
+  }
+
+  .crit-dot.on {
+    background: var(--indigo);
+  }
+
+  .crit-cell .tip {
+    font-size: 12px;
+    color: var(--td);
+    line-height: 1.45;
+    margin-top: 8px;
+  }
+
+  .block-label {
+    font-size: 11px;
+    letter-spacing: 0.14em;
+    text-transform: uppercase;
+    color: var(--tm);
+    font-weight: 700;
+    margin: 22px 0 12px;
+  }
+
+  .feedback-block {
+    border-radius: 14px;
+    padding: 16px 18px;
+    margin-bottom: 12px;
+    border-left: 3px solid transparent;
+  }
+
+  .feedback-block.strengths {
+    background: rgba(52, 211, 153, 0.07);
+    border-left-color: var(--green);
+  }
+
+  .feedback-block.tip {
+    background: rgba(167, 139, 250, 0.07);
+    border-left-color: var(--violet);
+  }
+
+  .fb-tag {
+    font-size: 10.5px;
+    font-weight: 800;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    margin-bottom: 6px;
+  }
+
+  .feedback-block.strengths .fb-tag {
+    color: var(--green);
+  }
+
+  .feedback-block.tip .fb-tag {
+    color: var(--violet);
+  }
+
+  .fb-txt {
+    font-size: 14px;
+    line-height: 1.55;
+    color: rgba(255, 255, 255, 0.88);
+  }
+
+  /* транскрипт + подсветка ошибок, тот же паттерн Pirms/Pēc, что в writing */
+  .transcript-tabs {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 14px;
+  }
+
+  .transcript-box {
+    font-size: 14.5px;
+    line-height: 1.75;
+    color: rgba(255, 255, 255, 0.85);
+    white-space: pre-line;
+  }
+
+  .err-mark {
+    background: rgba(248, 113, 113, 0.16);
+    color: #fca5a5;
+    text-decoration: line-through;
+    padding: 1px 3px;
+    border-radius: 4px;
+  }
+
+  .fix-mark {
+    background: rgba(52, 211, 153, 0.16);
+    color: #86efac;
+    padding: 1px 3px;
+    border-radius: 4px;
+  }
+
+  .clean-note {
+    background: rgba(52, 211, 153, 0.08);
+    border: 1px solid rgba(52, 211, 153, 0.25);
+    color: #86efac;
+    padding: 14px 18px;
+    border-radius: 14px;
+    font-size: 14px;
+    margin-bottom: 16px;
+  }
+
+  .corr-list {
+    display: flex;
+    flex-direction: column;
+    gap: 14px;
+  }
+
+  .corr-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+  }
+
+  .corr-num {
+    flex-shrink: 0;
+    width: 22px;
+    height: 22px;
+    border-radius: 50%;
+    background: rgba(124, 140, 255, 0.15);
+    color: var(--indigo);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 11px;
+    font-weight: 800;
+    margin-top: 2px;
+  }
+
+  .corr-swap {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    font-weight: 700;
+    margin-bottom: 4px;
+    flex-wrap: wrap;
+  }
+
+  .corr-explain {
+    font-size: 13px;
+    color: var(--td);
+    line-height: 1.5;
+  }
+
+  .transcript-section-title {
+    font-size: 13px;
+    font-weight: 800;
+    color: var(--td);
+    margin: 22px 0 10px;
+  }
+
+  .transcript-section-title:first-child {
+    margin-top: 0;
+  }
+
+  .too-short-note {
+    font-size: 13px;
+    color: var(--amber);
+    background: rgba(251, 191, 36, 0.08);
+    border: 1px solid rgba(251, 191, 36, 0.25);
+    padding: 10px 14px;
+    border-radius: 10px;
+    margin-bottom: 12px;
+  }
+
+  /* ============== ЧАТ (тот же паттерн, что writing.html) ============== */
+  .chat-fab {
+    position: fixed;
+    right: 24px;
+    bottom: 24px;
+    width: 54px;
+    height: 54px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: #0b0b12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 16px 40px -12px rgba(86, 212, 255, 0.6);
+    z-index: 40;
+    transition: transform 0.2s;
+  }
+
+  .chat-fab:hover {
+    transform: scale(1.06);
+  }
+
+  .chat-fab .dots {
+    font-size: 20px;
+    font-weight: 800;
+    letter-spacing: 2px;
+    margin-top: -6px;
+  }
+
+  .chat-panel {
+    position: fixed;
+    right: 24px;
+    bottom: 90px;
+    width: min(380px, calc(100vw - 32px));
+    height: min(520px, calc(100vh - 140px));
+    background: var(--card);
+    border: 1px solid var(--bdh);
+    border-radius: 20px;
+    display: flex;
+    flex-direction: column;
+    box-shadow: 0 30px 80px -20px rgba(0, 0, 0, 0.7);
+    z-index: 41;
+    opacity: 0;
+    transform: translateY(16px) scale(0.98);
+    pointer-events: none;
+    transition: opacity 0.2s, transform 0.2s;
+  }
+
+  .chat-panel.open {
+    opacity: 1;
+    transform: none;
+    pointer-events: auto;
+  }
+
+  .chat-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 18px;
+    border-bottom: 1px solid var(--bd);
+  }
+
+  .chat-title {
+    font-weight: 800;
+    font-size: 14px;
+  }
+
+  .chat-close {
+    color: var(--td);
+    padding: 4px;
+  }
+
+  .chat-log {
+    flex: 1;
+    overflow-y: auto;
+    padding: 16px 18px;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .chat-msg {
+    font-size: 13.5px;
+    line-height: 1.5;
+    padding: 10px 13px;
+    border-radius: 12px;
+    max-width: 88%;
+  }
+
+  .chat-msg.user {
+    align-self: flex-end;
+    background: rgba(124, 140, 255, 0.16);
+    color: #dfe3ff;
+  }
+
+  .chat-msg.ai {
+    align-self: flex-start;
+    background: rgba(255, 255, 255, 0.05);
+    color: rgba(255, 255, 255, 0.85);
+  }
+
+  .chat-form {
+    display: flex;
+    gap: 8px;
+    padding: 14px;
+    border-top: 1px solid var(--bd);
+  }
+
+  .chat-input {
+    flex: 1;
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid var(--bd);
+    border-radius: 999px;
+    padding: 10px 16px;
+    color: var(--t);
+    font-size: 13.5px;
+    outline: none;
+  }
+
+  .chat-input:focus {
+    border-color: var(--bdh);
+  }
+
+  .chat-send {
+    width: 38px;
+    height: 38px;
+    border-radius: 50%;
+    background: var(--grad);
+    color: #0b0b12;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+  }
+
+  .score {
+    margin-left: auto;
+    font-size: 15px;
+    font-weight: 800;
+  }
+</style>
+</head>
+<body style="visibility: hidden">
+<div class="ambient"></div>
+<div class="grain"></div>
+
+<header>
+  <div class="wrap hd">
+    <button class="back" id="topBack" data-i="back">
+      <svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+      <span data-i="back">Atpakaļ</span>
+    </button>
+
+    <div class="logo">
+      <div class="logo-b">
+        <svg class="i i-lg" viewBox="0 0 24 24">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+          <line x1="12" y1="19" x2="12" y2="23" />
+          <line x1="8" y1="23" x2="16" y2="23" />
+        </svg>
+      </div>
+      <div>
+        <div class="logo-t">English <span>OL</span></div>
+        <div class="logo-s" data-i="subject">Runāšana</div>
+      </div>
+    </div>
+
+    <div class="cluster">
+      <div class="seg">
+        <div class="seg-item active" data-lang="lv">LV</div>
+        <div class="seg-item" data-lang="ru">RU</div>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main>
+  <!-- ============== 1. ЭКРАН INTRO ============== -->
+  <div class="wrap" id="introView">
+    <div class="rise">
+      <div class="eyebrow" data-i="eyebrow">RUNĀŠANA · SPEAKING</div>
+      <h1 data-i="h1">Mutvārdu daļa</h1>
+      <p class="sub" data-i="sub">Debašu kluba diskusija — sagatavotā runa un atbildes uz eksaminētāja jautājumiem.</p>
+    </div>
+
+    <div class="card glow intro-card rise" style="animation-delay: 0.08s">
+      <div class="intro-icon">
+        <svg class="i i-lg" viewBox="0 0 24 24">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+          <line x1="12" y1="19" x2="12" y2="23" />
+          <line x1="8" y1="23" x2="16" y2="23" />
+        </svg>
+      </div>
+      <h2 data-i="introTitle">Gatavs sākt?</h2>
+      <p class="sub" style="margin-bottom: 0" data-i="introDesc">
+        AI izveidos tēmu ar diviem avotiem — tāpat kā eksāmenā.
+      </p>
+
+      <div class="info-grid">
+        <div class="info-cell">
+          <div class="num">5:00</div>
+          <div class="lbl" data-i="infoPrep">Sagatavošanās laiks</div>
+        </div>
+        <div class="info-cell">
+          <div class="num">3–5<span style="font-size:13px">min</span></div>
+          <div class="lbl" data-i="infoSpeech">Sagatavotā runa</div>
+        </div>
+        <div class="info-cell">
+          <div class="num">3</div>
+          <div class="lbl" data-i="infoQuestions">Eksaminētāja jautājumi</div>
+        </div>
+      </div>
+
+      <button class="btn-primary" id="startBtn" style="width: 100%">
+        <svg class="i" viewBox="0 0 24 24"><path d="M5 3l14 9-14 9V3z" /></svg>
+        <span data-i="startBtn">Sākt uzdevumu</span>
+      </button>
+
+      <div class="mic-permission-note">
+        <svg class="i i-md" viewBox="0 0 24 24">
+          <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+          <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+        </svg>
+        <span data-i="micNote">Būs nepieciešama piekļuve mikrofonam</span>
+      </div>
+    </div>
+
+    <div class="errbox" id="introError"></div>
+  </div>
+
+  <!-- ============== 2. ЭКРАН ПОДГОТОВКИ (prep) ============== -->
+  <div class="wrap hidden" id="prepView">
+    <button class="back" id="prepBack" style="margin-bottom: 22px">
+      <svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+      <span data-i="prepBack">Atcelt</span>
+    </button>
+
+    <div class="prep-head">
+      <div>
+        <div class="eyebrow" data-i="prepEyebrow">SAGATAVOŠANĀS</div>
+        <h2 id="prepTitle"></h2>
+      </div>
+      <div class="timer-box" id="prepTimerBox">
+        <svg class="i i-lg" viewBox="0 0 24 24" style="color: var(--indigo)">
+          <circle cx="12" cy="12" r="10" />
+          <path d="M12 6v6l4 2" />
+        </svg>
+        <div>
+          <div class="timer-num mono" id="prepTimerNum">5:00</div>
+          <div class="timer-lbl" data-i="prepTimerLbl">Atlicis</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="panel-title" data-i="topicLabel">TĒMA</p>
+      <p class="source-text" id="prepTopicLine" style="font-weight: 700; font-size: 17px"></p>
+    </div>
+
+    <div class="panel">
+      <div class="source-block">
+        <div class="source-label" id="prepSource1Label"></div>
+        <div class="source-text" id="prepSource1Text"></div>
+      </div>
+      <div class="source-block" style="margin-bottom: 0">
+        <div class="source-label" id="prepSource2Label"></div>
+        <div class="source-text" id="prepSource2Text"></div>
+      </div>
+    </div>
+
+    <div class="panel">
+      <p class="panel-title" data-i="mustCoverLabel">TAVĀ RUNĀ JĀIETVER</p>
+      <ul class="task-points" id="prepPointsList"></ul>
+    </div>
+
+    <div class="panel">
+      <p class="panel-title" data-i="notesLabel">PIEZĪMES (nav obligāti)</p>
+      <textarea class="notes-area" id="notesArea" data-i-placeholder="notesPlaceholder" placeholder="Raksti īsas piezīmes runai šeit…"></textarea>
+    </div>
+
+    <div class="actions">
+      <button class="btn-primary" id="skipPrepBtn">
+        <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+        <span data-i="skipPrepBtn">Sākt runāt tagad</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============== 3. ЭКРАН ЗАПИСИ РЕЧИ (record-speech) ============== -->
+  <div class="wrap hidden" id="recordSpeechView">
+    <div class="record-stage">
+      <div class="eyebrow" data-i="recSpeechEyebrow">SAGATAVOTĀ RUNA</div>
+      <p class="record-topic" id="recSpeechTopic"></p>
+
+      <div class="rec-timer mono" id="speechTimerNum">5:30</div>
+      <div class="rec-sub" data-i="speechMaxHint">Maksimums 5:30 — pēc tam ieraksts apstāsies automātiski</div>
+
+      <div class="level-bars" id="speechLevelBars"></div>
+
+      <div class="mic-btn-wrap">
+        <div class="mic-ring" id="speechMicRing"></div>
+        <button class="mic-btn" id="speechMicBtn">
+          <svg class="i i-lg" viewBox="0 0 24 24" id="speechMicIcon">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            <line x1="12" y1="19" x2="12" y2="23" />
+            <line x1="8" y1="23" x2="16" y2="23" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="rec-status">
+        <span class="rec-dot" id="speechRecDot"></span>
+        <span id="speechRecStatus" data-i="recStatusIdle">Nospied, lai sāktu ierakstu</span>
+      </div>
+
+      <div class="record-actions">
+        <button class="btn-ghost" id="speechBackBtn">
+          <svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+          <span data-i="back">Atpakaļ</span>
+        </button>
+        <button class="btn-ghost hidden" id="speechRedoBtn">
+          <svg class="i" viewBox="0 0 24 24"><path d="M1 4v6h6M23 20v-6h-6" /><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" /></svg>
+          <span data-i="redoBtn">Ierakstīt no jauna</span>
+        </button>
+        <button class="btn-primary hidden" id="speechDoneBtn">
+          <span data-i="speechDoneBtn">Tālāk uz jautājumiem</span>
+          <svg class="i" viewBox="0 0 24 24"><path d="M5 12h14M12 5l7 7-7 7" /></svg>
+        </button>
+      </div>
+    </div>
+    <div class="errbox" id="speechError"></div>
+  </div>
+
+  <!-- ============== 4. ЭКРАН ВОПРОСОВ + ЗАПИСЬ ОТВЕТОВ (questions) ============== -->
+  <div class="wrap hidden" id="questionsView">
+    <div class="rise">
+      <div class="eyebrow" data-i="qEyebrow">EKSAMINĒTĀJA JAUTĀJUMI</div>
+      <h2 data-i="qTitle">Atbildi mutiski uz visiem 3 jautājumiem</h2>
+      <p class="sub" data-i="qSub">Nospied ierakstu un atbildi pēc kārtas uz visiem jautājumiem vienā ierakstā.</p>
+    </div>
+
+    <ul class="q-list" id="qList"></ul>
+
+    <div class="record-stage" style="padding-top: 6px">
+      <div class="rec-timer mono" id="answersTimerNum">0:00</div>
+      <div class="rec-sub" data-i="answersMaxHint">Nav laika limita — pabeidz, kad esi atbildējis uz visiem</div>
+
+      <div class="level-bars" id="answersLevelBars"></div>
+
+      <div class="mic-btn-wrap">
+        <div class="mic-ring" id="answersMicRing"></div>
+        <button class="mic-btn" id="answersMicBtn">
+          <svg class="i i-lg" viewBox="0 0 24 24" id="answersMicIcon">
+            <path d="M12 1a3 3 0 0 0-3 3v8a3 3 0 0 0 6 0V4a3 3 0 0 0-3-3z" />
+            <path d="M19 10v2a7 7 0 0 1-14 0v-2" />
+            <line x1="12" y1="19" x2="12" y2="23" />
+            <line x1="8" y1="23" x2="16" y2="23" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="rec-status">
+        <span class="rec-dot" id="answersRecDot"></span>
+        <span id="answersRecStatus" data-i="recStatusIdle">Nospied, lai sāktu ierakstu</span>
+      </div>
+
+      <div class="record-actions">
+        <button class="btn-ghost" id="answersBackBtn">
+          <svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+          <span data-i="back">Atpakaļ</span>
+        </button>
+        <button class="btn-ghost hidden" id="answersRedoBtn">
+          <svg class="i" viewBox="0 0 24 24"><path d="M1 4v6h6M23 20v-6h-6" /><path d="M20.49 9A9 9 0 0 0 5.64 5.64L1 10m22 4l-4.64 4.36A9 9 0 0 1 3.51 15" /></svg>
+          <span data-i="redoBtn">Ierakstīt no jauna</span>
+        </button>
+        <button class="btn-primary hidden" id="answersDoneBtn">
+          <span data-i="finishBtn">Pabeigt un vērtēt</span>
+          <svg class="i" viewBox="0 0 24 24"><path d="M20 6L9 17l-5-5" /></svg>
+        </button>
+      </div>
+    </div>
+    <div class="errbox" id="answersError"></div>
+  </div>
+
+  <!-- ============== 5. ЭКРАН ОЦЕНКИ (grading loader) ============== -->
+  <div class="wrap hidden" id="gradingView">
+    <div class="grading-loader">
+      <div class="spinner"></div>
+      <div class="grading-steps">
+        <div class="grading-step active" data-i="gradingStep1">AI klausās tavu runu…</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============== 6. ЭКРАН РЕЗУЛЬТАТОВ (results) ============== -->
+  <div class="wrap hidden" id="resultsView">
+    <button class="back" id="resultsBack" style="margin-bottom: 22px">
+      <svg class="i" viewBox="0 0 24 24"><path d="M15 18l-6-6 6-6" /></svg>
+      <span data-i="resultsBack">Uz sākumu</span>
+    </button>
+
+    <div class="card score-hero">
+      <div class="score-ring-wrap">
+        <svg viewBox="0 0 116 116" width="116" height="116">
+          <defs>
+            <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+              <stop offset="0%" stop-color="#7c8cff" />
+              <stop offset="55%" stop-color="#56d4ff" />
+              <stop offset="100%" stop-color="#6cf0e0" />
+            </linearGradient>
+          </defs>
+          <circle class="score-ring-bg" cx="58" cy="58" r="50" />
+          <circle class="score-ring-fg" id="scoreRingFg" cx="58" cy="58" r="50" stroke-dasharray="314" stroke-dashoffset="314" />
+        </svg>
+        <div class="score-ring-txt">
+          <div class="n" id="scoreRingNum">0</div>
+          <div class="d">/ 25</div>
+        </div>
+      </div>
+      <div class="score-hero-text">
+        <h2 data-i="resultsTitle">Rezultāts</h2>
+        <p id="scoreHeroSub"></p>
+      </div>
+    </div>
+
+    <div class="too-short-note hidden" id="tooShortSpeechNote"></div>
+    <div class="too-short-note hidden" id="tooShortAnswersNote"></div>
+
+    <div class="block-label" data-i="block1Label">UZDEVUMA IZPILDE</div>
+    <div class="crit-grid" id="critGridBlock1"></div>
+
+    <div class="block-label" data-i="block2Label">VALODA</div>
+    <div class="crit-grid" id="critGridBlock2"></div>
+
+    <div class="feedback-block strengths hidden" id="strengthsBlock">
+      <div class="fb-tag" data-i="strengthsLabel">KAS IZDEVĀS LABI</div>
+      <div class="fb-txt" id="strengthsTxt"></div>
+    </div>
+
+    <div class="feedback-block tip hidden" id="overallTipBlock">
+      <div class="fb-tag" data-i="overallTipLabel">KO UZLABOT</div>
+      <div class="fb-txt" id="overallTipTxt"></div>
+    </div>
+
+    <div class="panel" id="correctionsPanel" style="margin-top: 22px">
+      <p class="panel-title" data-i="correctionsLabel">VALODAS KĻŪDAS</p>
+      <div class="clean-note hidden" id="cleanNote" data-i="cleanNote">Būtisku kļūdu nav — lieliski!</div>
+      <div class="corr-list" id="corrList"></div>
+    </div>
+
+    <div class="panel">
+      <p class="panel-title" data-i="transcriptLabel">RAKSTVEIDA ATŠIFRĒJUMS</p>
+      <div class="transcript-section-title" data-i="transcriptSpeechLabel">Sagatavotā runa</div>
+      <div class="transcript-box" id="transcriptSpeechBox"></div>
+      <div class="transcript-section-title" data-i="transcriptAnswersLabel">Atbildes uz jautājumiem</div>
+      <div class="transcript-box" id="transcriptAnswersBox"></div>
+    </div>
+
+    <div class="actions">
+      <button class="btn-ghost" id="saveBtn" data-i="saveBtn">Saglabāt profilā</button>
+      <button class="btn-ghost" id="newTopicBtn" data-i="newTopicBtn">Jauna tēma</button>
+      <span class="score" id="scoreBox"></span>
+    </div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<button class="chat-fab hidden" id="chatFab">
+  <span class="dots">•••</span>
+</button>
+
+<div class="chat-panel" id="chatPanel">
+  <div class="chat-head">
+    <span class="chat-title" data-i="chatTitle">Jautā par uzdevumu</span>
+    <button class="chat-close" id="chatClose">
+      <svg class="i" viewBox="0 0 24 24"><path d="M18 6L6 18M6 6l12 12" /></svg>
+    </button>
+  </div>
+  <div class="chat-log" id="chatLog"></div>
+  <form class="chat-form" id="chatForm">
+    <input
+      class="chat-input"
+      id="chatInput"
+      data-i-placeholder="chatPlaceholder"
+      placeholder="Uzdod jautājumu…"
+      autocomplete="off"
+    />
+    <button class="chat-send" type="submit" id="chatSend">
+      <svg class="i" viewBox="0 0 24 24"><path d="M22 2L11 13M22 2l-7 20-4-9-9-4 20-7z" /></svg>
+    </button>
+  </form>
+</div>
+
+<script>
+  /* ================= Конфиг ================= */
+  // auth.js кладёт в window/global AUTH_WORKER_URL и AI_WORKER_URL — про
+  // новый speaking-worker он не знает, поэтому объявляем отдельно, по той же
+  // схеме поддомена (<имя-воркера>.gegeodin.workers.dev), как WRITING_WORKER_URL
+  // в writing.html.
+  const SPEAKING_WORKER_URL = "https://speaking-worker.gegeodin.workers.dev/";
+
+  /* ================= i18n ================= */
+  const dict = {
+    lv: {
+      back: "Atpakaļ",
+      subject: "Runāšana",
+      eyebrow: "RUNĀŠANA · SPEAKING",
+      h1: "Mutvārdu daļa",
+      sub: "Debašu kluba diskusija — sagatavotā runa un atbildes uz eksaminētāja jautājumiem.",
+      introTitle: "Gatavs sākt?",
+      introDesc: "AI izveidos tēmu ar diviem avotiem — tāpat kā eksāmenā.",
+      infoPrep: "Sagatavošanās laiks",
+      infoSpeech: "Sagatavotā runa",
+      infoQuestions: "Eksaminētāja jautājumi",
+      startBtn: "Sākt uzdevumu",
+      loadingText: "AI izveido tēmu…",
+      micNote: "Būs nepieciešama piekļuve mikrofonam",
+      prepBack: "Atcelt",
+      prepEyebrow: "SAGATAVOŠANĀS",
+      prepTimerLbl: "Atlicis",
+      topicLabel: "TĒMA",
+      mustCoverLabel: "TAVĀ RUNĀ JĀIETVER",
+      notesLabel: "PIEZĪMES (nav obligāti)",
+      notesPlaceholder: "Raksti īsas piezīmes runai šeit…",
+      skipPrepBtn: "Sākt runāt tagad",
+      recSpeechEyebrow: "SAGATAVOTĀ RUNA",
+      speechMaxHint: "Maksimums 5:30 — pēc tam ieraksts apstāsies automātiski",
+      recStatusIdle: "Nospied, lai sāktu ierakstu",
+      recStatusLive: "Ieraksta…",
+      recStatusDone: "Ieraksts pabeigts",
+      redoBtn: "Ierakstīt no jauna",
+      speechDoneBtn: "Tālāk uz jautājumiem",
+      qEyebrow: "EKSAMINĒTĀJA JAUTĀJUMI",
+      qTitle: "Atbildi mutiski uz visiem 3 jautājumiem",
+      qSub: "Nospied ierakstu un atbildi pēc kārtas uz visiem jautājumiem vienā ierakstā.",
+      answersMaxHint: "Nav laika limita — pabeidz, kad esi atbildējis uz visiem",
+      finishBtn: "Pabeigt un vērtēt",
+      gradingStep1: "AI klausās tavu runu…",
+      gradingStep2: "Analizē valodas lietojumu…",
+      gradingStep3: "Veido rezultātu…",
+      resultsBack: "Uz sākumu",
+      resultsTitle: "Rezultāts",
+      block1Label: "UZDEVUMA IZPILDE",
+      block2Label: "VALODA",
+      strengthsLabel: "KAS IZDEVĀS LABI",
+      overallTipLabel: "KO UZLABOT",
+      correctionsLabel: "VALODAS KĻŪDAS",
+      cleanNote: "Būtisku kļūdu nav — lieliski!",
+      transcriptLabel: "RAKSTVEIDA ATŠIFRĒJUMS",
+      transcriptSpeechLabel: "Sagatavotā runa",
+      transcriptAnswersLabel: "Atbildes uz jautājumiem",
+      saveBtn: "Saglabāt profilā",
+      savingBtn: "Saglabā…",
+      newTopicBtn: "Jauna tēma",
+      chatTitle: "Jautā par uzdevumu",
+      chatPlaceholder: "Uzdod jautājumu…",
+      chatPending: "Domā…",
+      chatErr: "Neizdevās saņemt atbildi.",
+      savedToast: "Saglabāts profilā!",
+      errGeneric: "Kaut kas nogāja greizi. Mēģini vēlreiz.",
+      errMic: "Nevar piekļūt mikrofonam. Pārbaudi pārlūka atļaujas.",
+      errGrading: "Neizdevās izvērtēt runu. Mēģini vēlreiz.",
+      errRateLimit: "Pagaidi mazliet un mēģini vēlreiz.",
+      errSessionExpired: "Sesija beigusies, ielogojies no jauna.",
+      errSave: "Neizdevās saglabāt. Mēģini vēlreiz.",
+      criticPreparedSpeech: "Sagatavotā runa",
+      criticInteraction: "Mijiedarbība",
+      criticLanguageRange: "Valodas bagātība",
+      criticLanguageAccuracy: "Valodas pareizība",
+      criticFluency: "Valodas plūdums",
+      tooShortSpeech: "Runas ieraksts bija pārāk īss, lai to godīgi novērtētu.",
+      tooShortAnswers: "Atbilžu ieraksts bija pārāk īss, lai to godīgi novērtētu.",
+    },
+    ru: {
+      back: "Назад",
+      subject: "Говорение",
+      eyebrow: "ГОВОРЕНИЕ · SPEAKING",
+      h1: "Устная часть",
+      sub: "Дискуссия в дебат-клубе — подготовленная речь и ответы на вопросы экзаменатора.",
+      introTitle: "Готов начать?",
+      introDesc: "ИИ создаст тему с двумя источниками — как на экзамене.",
+      infoPrep: "Время подготовки",
+      infoSpeech: "Подготовленная речь",
+      infoQuestions: "Вопросы экзаменатора",
+      startBtn: "Начать задание",
+      loadingText: "ИИ создаёт тему…",
+      micNote: "Понадобится доступ к микрофону",
+      prepBack: "Отменить",
+      prepEyebrow: "ПОДГОТОВКА",
+      prepTimerLbl: "Осталось",
+      topicLabel: "ТЕМА",
+      mustCoverLabel: "В РЕЧИ НУЖНО РАСКРЫТЬ",
+      notesLabel: "ЗАМЕТКИ (не обязательно)",
+      notesPlaceholder: "Пиши короткие заметки для речи здесь…",
+      skipPrepBtn: "Начать говорить сейчас",
+      recSpeechEyebrow: "ПОДГОТОВЛЕННАЯ РЕЧЬ",
+      speechMaxHint: "Максимум 5:30 — потом запись остановится автоматически",
+      recStatusIdle: "Нажми, чтобы начать запись",
+      recStatusLive: "Идёт запись…",
+      recStatusDone: "Запись завершена",
+      redoBtn: "Записать заново",
+      speechDoneBtn: "Дальше к вопросам",
+      qEyebrow: "ВОПРОСЫ ЭКЗАМЕНАТОРА",
+      qTitle: "Ответь устно на все 3 вопроса",
+      qSub: "Нажми запись и ответь по порядку на все вопросы в одной записи.",
+      answersMaxHint: "Без лимита времени — заверши, когда ответишь на все",
+      finishBtn: "Завершить и оценить",
+      gradingStep1: "ИИ слушает твою речь…",
+      gradingStep2: "Анализирует использование языка…",
+      gradingStep3: "Формирует результат…",
+      resultsBack: "На главную",
+      resultsTitle: "Результат",
+      block1Label: "ВЫПОЛНЕНИЕ ЗАДАНИЯ",
+      block2Label: "ЯЗЫК",
+      strengthsLabel: "ЧТО ПОЛУЧИЛОСЬ ХОРОШО",
+      overallTipLabel: "ЧТО УЛУЧШИТЬ",
+      correctionsLabel: "ЯЗЫКОВЫЕ ОШИБКИ",
+      cleanNote: "Существенных ошибок нет — отлично!",
+      transcriptLabel: "ПИСЬМЕННАЯ РАСШИФРОВКА",
+      transcriptSpeechLabel: "Подготовленная речь",
+      transcriptAnswersLabel: "Ответы на вопросы",
+      saveBtn: "Сохранить в профиль",
+      savingBtn: "Сохраняю…",
+      newTopicBtn: "Новая тема",
+      chatTitle: "Спроси про задание",
+      chatPlaceholder: "Задай вопрос…",
+      chatPending: "Думаю…",
+      chatErr: "Не удалось получить ответ.",
+      savedToast: "Сохранено в профиль!",
+      errGeneric: "Что-то пошло не так. Попробуй ещё раз.",
+      errMic: "Нет доступа к микрофону. Проверь разрешения браузера.",
+      errGrading: "Не удалось оценить речь. Попробуй ещё раз.",
+      errRateLimit: "Подожди немного и попробуй снова.",
+      errSessionExpired: "Сессия истекла, войди заново.",
+      errSave: "Не удалось сохранить. Попробуй ещё раз.",
+      criticPreparedSpeech: "Подготовленная речь",
+      criticInteraction: "Взаимодействие",
+      criticLanguageRange: "Богатство языка",
+      criticLanguageAccuracy: "Грамотность",
+      criticFluency: "Беглость",
+      tooShortSpeech: "Запись речи была слишком короткой для честной оценки.",
+      tooShortAnswers: "Запись ответов была слишком короткой для честной оценки.",
+    },
+  };
+
+  let lang = "lv";
+
+  function applyLang() {
+    document.querySelectorAll("[data-i]").forEach(function (el) {
+      const key = el.getAttribute("data-i");
+      if (dict[lang][key] !== undefined) {
+        el.textContent = dict[lang][key];
+      }
+    });
+    document.querySelectorAll("[data-i-placeholder]").forEach(function (el) {
+      const key = el.getAttribute("data-i-placeholder");
+      if (dict[lang][key] !== undefined) {
+        el.setAttribute("placeholder", dict[lang][key]);
+      }
+    });
+    if (currentTask) {
+      renderPrep();
+      renderQuestions();
+    }
+    if (lastGradeResult) {
+      renderResults(lastGradeResult);
+    }
+  }
+
+  document.querySelectorAll(".seg-item[data-lang]").forEach(function (el) {
+    el.addEventListener("click", function () {
+      lang = el.getAttribute("data-lang");
+      document.querySelectorAll(".seg-item[data-lang]").forEach(function (s) {
+        s.classList.toggle("active", s === el);
+      });
+      applyLang();
+    });
+  });
+
+  /* ================= Локализованные подписи критериев ================= */
+  const CRITERIA_LABEL_KEYS = {
+    preparedSpeech: "criticPreparedSpeech",
+    interaction: "criticInteraction",
+    languageRange: "criticLanguageRange",
+    languageAccuracy: "criticLanguageAccuracy",
+    fluency: "criticFluency",
+  };
+
+  function esc(str) {
+    const div = document.createElement("div");
+    div.textContent = str == null ? "" : String(str);
+    return div.innerHTML;
+  }
+
+  function $(sel) {
+    return document.querySelector(sel);
+  }
+
+  function showToast(msg) {
+    const t = $("#toast");
+    t.textContent = msg;
+    t.classList.add("show");
+    setTimeout(function () {
+      t.classList.remove("show");
+    }, 2400);
+  }
+
+  function fmtTime(totalSeconds) {
+    const s = Math.max(0, Math.round(totalSeconds));
+    const m = Math.floor(s / 60);
+    const rem = s % 60;
+    return m + ":" + String(rem).padStart(2, "0");
+  }
+</script>
+
+<script>
+  /* ================= Состояние ================= */
+  let currentTask = null; // { id, topicLine, source1, source2, examinerQuestions, maxScore }
+  let lastGradeResult = null;
+
+  let speechAudioBlob = null; // Blob запись речи
+  let answersAudioBlob = null; // Blob запись ответов
+
+  let prepTimerInterval = null;
+  let prepSecondsLeft = 5 * 60;
+
+  let chatOpen = false;
+
+  const VIEWS = [
+    "introView",
+    "prepView",
+    "recordSpeechView",
+    "questionsView",
+    "gradingView",
+    "resultsView",
+  ];
+
+  function showView(id) {
+    VIEWS.forEach(function (v) {
+      $("#" + v).classList.toggle("hidden", v !== id);
+    });
+    window.scrollTo({ top: 0, behavior: "instant" in window ? "instant" : "auto" });
+  }
+
+  /* ================= Навигация "Назад" (шапка) ================= */
+  function goToDashboard() {
+    window.location.href = "/l/menu.html";
+  }
+
+  $("#topBack").addEventListener("click", function () {
+    const visible = VIEWS.find(function (v) {
+      return !$("#" + v).classList.contains("hidden");
+    });
+    if (visible === "introView") {
+      goToDashboard();
+    } else {
+      confirmLeaveTask();
+    }
+  });
+
+  function confirmLeaveTask() {
+    stopAllRecording();
+    resetToIntro();
+  }
+
+  function resetToIntro() {
+    currentTask = null;
+    lastGradeResult = null;
+    speechAudioBlob = null;
+    answersAudioBlob = null;
+    stopPrepTimer();
+    $("#chatFab").classList.add("hidden");
+    $("#chatPanel").classList.remove("open");
+    $("#chatLog").innerHTML = "";
+    showView("introView");
+  }
+
+  /* ================= Générация темы ================= */
+  $("#startBtn").addEventListener("click", startNewTask);
+
+  async function startNewTask() {
+    $("#introError").classList.remove("show");
+    const token = localStorage.getItem("session_token");
+    if (!token) return;
+
+    $("#startBtn").disabled = true;
+    const originalHtml = $("#startBtn").innerHTML;
+    $("#startBtn").innerHTML = '<span>' + (dict[lang].loadingText || "…") + '</span>';
+
+    try {
+      const res = await fetch(SPEAKING_WORKER_URL + "generate-speaking-task", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: "{}",
+      });
+      const data = await res.json().catch(function () {
+        return {};
+      });
+
+      if (!res.ok) {
+        throw new Error(data.error || dict[lang].errGeneric);
+      }
+
+      currentTask = data.task;
+      lastGradeResult = null;
+      speechAudioBlob = null;
+      answersAudioBlob = null;
+
+      startPrepStage();
+    } catch (err) {
+      $("#introError").textContent = (err && err.message) || dict[lang].errGeneric;
+      $("#introError").classList.add("show");
+    } finally {
+      $("#startBtn").disabled = false;
+      $("#startBtn").innerHTML = originalHtml;
+    }
+  }
+
+  /* ================= Экран подготовки ================= */
+  function renderPrep() {
+    if (!currentTask) return;
+    $("#prepTitle").textContent = currentTask.title || "";
+    $("#prepTopicLine").textContent = currentTask.topicLine || "";
+    $("#prepSource1Label").textContent = currentTask.source1.label || "Source 1";
+    $("#prepSource1Text").textContent = currentTask.source1.text || "";
+    $("#prepSource2Label").textContent = currentTask.source2.label || "Source 2";
+    $("#prepSource2Text").textContent = currentTask.source2.text || "";
+
+    const pointsKeysLv = [
+      "formulē uzdevumā izvirzīto problēmu",
+      "salīdzini avotos sniegto informāciju",
+      "izsaki savu viedokli par šo jautājumu",
+      "pamato savu viedokli ar vismaz diviem argumentiem, minot iemeslus un piemērus",
+      "izdari secinājumu",
+    ];
+    const pointsKeysRu = [
+      "сформулируй проблему, поднятую в задании",
+      "сравни информацию, представленную в источниках",
+      "выскажи своё мнение по этому вопросу",
+      "обоснуй своё мнение минимум двумя аргументами, приведи причины и примеры",
+      "сделай вывод",
+    ];
+    const points = lang === "ru" ? pointsKeysRu : pointsKeysLv;
+    $("#prepPointsList").innerHTML = points
+      .map(function (p, i) {
+        return (
+          '<li><span class="num-badge">' +
+          (i + 1) +
+          "</span><span>" +
+          esc(p) +
+          "</span></li>"
+        );
+      })
+      .join("");
+
+    $("#recSpeechTopic").textContent = currentTask.topicLine || "";
+  }
+
+  function startPrepStage() {
+    renderPrep();
+    prepSecondsLeft = 5 * 60;
+    updatePrepTimerUI();
+    showView("prepView");
+    stopPrepTimer();
+    prepTimerInterval = setInterval(function () {
+      prepSecondsLeft -= 1;
+      updatePrepTimerUI();
+      if (prepSecondsLeft <= 0) {
+        stopPrepTimer();
+        goToRecordSpeech();
+      }
+    }, 1000);
+  }
+
+  function stopPrepTimer() {
+    if (prepTimerInterval) {
+      clearInterval(prepTimerInterval);
+      prepTimerInterval = null;
+    }
+  }
+
+  function updatePrepTimerUI() {
+    $("#prepTimerNum").textContent = fmtTime(prepSecondsLeft);
+    const box = $("#prepTimerBox");
+    box.classList.toggle("warn", prepSecondsLeft <= 60 && prepSecondsLeft > 20);
+    box.classList.toggle("danger", prepSecondsLeft <= 20);
+  }
+
+  $("#prepBack").addEventListener("click", function () {
+    stopPrepTimer();
+    resetToIntro();
+  });
+
+  $("#skipPrepBtn").addEventListener("click", function () {
+    stopPrepTimer();
+    goToRecordSpeech();
+  });
+</script>
+
+<script>
+  /* ================= Запись аудио (переиспользуемый модуль) =================
+     Используется дважды: для записи речи (с автостопом на 5:30) и для записи
+     ответов на вопросы (без лимита, только ручной стоп). Аудио никогда не
+     покидает браузер до момента отправки в /grade-speech — не пишется на
+     диск, не загружается отдельным запросом.
+  */
+
+  function createRecorderController(opts) {
+    // opts: { levelBarsEl, micRingEl, micBtnEl, micIconEl, recDotEl,
+    //         statusEl, timerEl, maxSeconds (optional), onTick, onAutoStop }
+    const state = {
+      mediaRecorder: null,
+      stream: null,
+      audioContext: null,
+      analyser: null,
+      chunks: [],
+      recording: false,
+      startedAt: 0,
+      elapsedSeconds: 0,
+      tickInterval: null,
+      rafId: null,
+      resultBlob: null,
+    };
+
+    // level bars — строим один раз
+    const BAR_COUNT = 24;
+    opts.levelBarsEl.innerHTML = "";
+    for (let i = 0; i < BAR_COUNT; i++) {
+      const b = document.createElement("div");
+      b.className = "level-bar";
+      opts.levelBarsEl.appendChild(b);
+    }
+    const bars = Array.from(opts.levelBarsEl.children);
+
+    function pickMimeType() {
+      const candidates = [
+        "audio/webm;codecs=opus",
+        "audio/webm",
+        "audio/mp4",
+        "audio/ogg;codecs=opus",
+      ];
+      for (const c of candidates) {
+        if (window.MediaRecorder && MediaRecorder.isTypeSupported && MediaRecorder.isTypeSupported(c)) {
+          return c;
+        }
+      }
+      return "";
+    }
+
+    async function start() {
+      state.stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+
+      const AudioCtx = window.AudioContext || window.webkitAudioContext;
+      state.audioContext = new AudioCtx();
+      const source = state.audioContext.createMediaStreamSource(state.stream);
+      state.analyser = state.audioContext.createAnalyser();
+      state.analyser.fftSize = 256;
+      source.connect(state.analyser);
+
+      const mimeType = pickMimeType();
+      state.mediaRecorder = mimeType
+        ? new MediaRecorder(state.stream, { mimeType: mimeType })
+        : new MediaRecorder(state.stream);
+
+      state.chunks = [];
+      state.mediaRecorder.addEventListener("dataavailable", function (e) {
+        if (e.data && e.data.size > 0) state.chunks.push(e.data);
+      });
+
+      const stopPromise = new Promise(function (resolve) {
+        state.mediaRecorder.addEventListener(
+          "stop",
+          function () {
+            const blobType = state.mediaRecorder.mimeType || "audio/webm";
+            const blob = new Blob(state.chunks, { type: blobType });
+            state.resultBlob = blob;
+            resolve(blob);
+          },
+          { once: true }
+        );
+      });
+
+      state.mediaRecorder.start();
+      state.recording = true;
+      state.startedAt = Date.now();
+      state.elapsedSeconds = 0;
+
+      updateStatusUI(true);
+      opts.micRingEl.classList.add("active");
+      opts.recDotEl.classList.add("live");
+
+      state.tickInterval = setInterval(function () {
+        state.elapsedSeconds = (Date.now() - state.startedAt) / 1000;
+        const displaySeconds = opts.maxSeconds
+          ? Math.max(0, opts.maxSeconds - state.elapsedSeconds)
+          : state.elapsedSeconds;
+        opts.timerEl.textContent = fmtTime(displaySeconds);
+
+        if (opts.maxSeconds) {
+          const ratio = displaySeconds / opts.maxSeconds;
+          opts.timerEl.classList.toggle("warn", ratio <= 0.2 && ratio > 0.06);
+          opts.timerEl.classList.toggle("danger", ratio <= 0.06);
+        }
+
+        if (opts.onTick) opts.onTick(state.elapsedSeconds);
+
+        if (opts.maxSeconds && state.elapsedSeconds >= opts.maxSeconds) {
+          stop();
+          if (opts.onAutoStop) opts.onAutoStop();
+        }
+      }, 200);
+
+      drawLevels();
+
+      return stopPromise;
+    }
+
+    function drawLevels() {
+      if (!state.recording || !state.analyser) return;
+      const data = new Uint8Array(state.analyser.frequencyBinCount);
+      state.analyser.getByteFrequencyData(data);
+      const avg = data.reduce(function (a, b) { return a + b; }, 0) / data.length;
+      const norm = Math.min(1, avg / 90);
+
+      bars.forEach(function (bar, i) {
+        const wobble = Math.sin(Date.now() / 120 + i) * 0.15;
+        const h = Math.max(6, Math.round((norm + wobble) * 26));
+        bar.style.height = Math.min(28, Math.max(6, h)) + "px";
+        bar.classList.toggle("on", norm > 0.06);
+      });
+
+      state.rafId = requestAnimationFrame(drawLevels);
+    }
+
+    function stop() {
+      if (!state.recording) return;
+      state.recording = false;
+
+      if (state.tickInterval) {
+        clearInterval(state.tickInterval);
+        state.tickInterval = null;
+      }
+      if (state.rafId) {
+        cancelAnimationFrame(state.rafId);
+        state.rafId = null;
+      }
+
+      opts.micRingEl.classList.remove("active");
+      opts.recDotEl.classList.remove("live");
+      bars.forEach(function (b) {
+        b.style.height = "6px";
+        b.classList.remove("on");
+      });
+
+      if (state.mediaRecorder && state.mediaRecorder.state !== "inactive") {
+        state.mediaRecorder.stop();
+      }
+      if (state.stream) {
+        state.stream.getTracks().forEach(function (t) { t.stop(); });
+      }
+      if (state.audioContext) {
+        state.audioContext.close().catch(function () {});
+      }
+
+      updateStatusUI(false, true);
+    }
+
+    function updateStatusUI(isRecording, isDone) {
+      opts.micBtnEl.classList.toggle("recording", isRecording);
+      if (isRecording) {
+        opts.statusEl.setAttribute("data-i", "recStatusLive");
+        opts.statusEl.textContent = dict[lang].recStatusLive;
+      } else if (isDone) {
+        opts.statusEl.setAttribute("data-i", "recStatusDone");
+        opts.statusEl.textContent = dict[lang].recStatusDone;
+      } else {
+        opts.statusEl.setAttribute("data-i", "recStatusIdle");
+        opts.statusEl.textContent = dict[lang].recStatusIdle;
+      }
+    }
+
+    function reset() {
+      state.chunks = [];
+      state.resultBlob = null;
+      state.elapsedSeconds = 0;
+      updateStatusUI(false, false);
+      opts.timerEl.classList.remove("warn", "danger");
+      opts.timerEl.textContent = opts.maxSeconds ? fmtTime(opts.maxSeconds) : "0:00";
+    }
+
+    return {
+      start: start,
+      stop: stop,
+      reset: reset,
+      getBlob: function () { return state.resultBlob; },
+      isRecording: function () { return state.recording; },
+      getElapsedSeconds: function () { return state.elapsedSeconds; },
+    };
+  }
+
+  function blobToBase64(blob) {
+    return new Promise(function (resolve, reject) {
+      const reader = new FileReader();
+      reader.onload = function () {
+        const result = reader.result;
+        const base64 = result.split(",")[1] || "";
+        resolve(base64);
+      };
+      reader.onerror = function () {
+        reject(new Error("Blob read failed"));
+      };
+      reader.readAsDataURL(blob);
+    });
+  }
+
+  function stopAllRecording() {
+    if (speechRecorder && speechRecorder.isRecording()) speechRecorder.stop();
+    if (answersRecorder && answersRecorder.isRecording()) answersRecorder.stop();
+  }
+</script>
+
+<script>
+  /* ================= Экран записи речи ================= */
+  const SPEECH_MAX_SECONDS = 5 * 60 + 30; // 5:30
+
+  const speechRecorder = createRecorderController({
+    levelBarsEl: $("#speechLevelBars"),
+    micRingEl: $("#speechMicRing"),
+    micBtnEl: $("#speechMicBtn"),
+    micIconEl: $("#speechMicIcon"),
+    recDotEl: $("#speechRecDot"),
+    statusEl: $("#speechRecStatus"),
+    timerEl: $("#speechTimerNum"),
+    maxSeconds: SPEECH_MAX_SECONDS,
+    onAutoStop: function () {
+      onSpeechRecordingFinished();
+    },
+  });
+
+  function goToRecordSpeech() {
+    speechRecorder.reset();
+    $("#speechDoneBtn").classList.add("hidden");
+    $("#speechRedoBtn").classList.add("hidden");
+    $("#speechMicBtn").disabled = false;
+    $("#speechError").classList.remove("show");
+    showView("recordSpeechView");
+  }
+
+  $("#speechMicBtn").addEventListener("click", async function () {
+    if (speechRecorder.isRecording()) {
+      speechRecorder.stop();
+      onSpeechRecordingFinished();
+      return;
+    }
+    $("#speechError").classList.remove("show");
+    try {
+      speechRecorder.start().then(function (blob) {
+        speechAudioBlob = blob;
+      });
+    } catch (err) {
+      $("#speechError").textContent = dict[lang].errMic;
+      $("#speechError").classList.add("show");
+    }
+  });
+
+  function onSpeechRecordingFinished() {
+    $("#speechDoneBtn").classList.remove("hidden");
+    $("#speechRedoBtn").classList.remove("hidden");
+  }
+
+  $("#speechRedoBtn").addEventListener("click", function () {
+    speechAudioBlob = null;
+    goToRecordSpeech();
+  });
+
+  $("#speechBackBtn").addEventListener("click", function () {
+    stopAllRecording();
+    startPrepStage();
+  });
+
+  $("#speechDoneBtn").addEventListener("click", function () {
+    if (!speechAudioBlob && speechRecorder.getBlob()) {
+      speechAudioBlob = speechRecorder.getBlob();
+    }
+    goToQuestions();
+  });
+
+  /* ================= Экран вопросов + запись ответов ================= */
+  const answersRecorder = createRecorderController({
+    levelBarsEl: $("#answersLevelBars"),
+    micRingEl: $("#answersMicRing"),
+    micBtnEl: $("#answersMicBtn"),
+    micIconEl: $("#answersMicIcon"),
+    recDotEl: $("#answersRecDot"),
+    statusEl: $("#answersRecStatus"),
+    timerEl: $("#answersTimerNum"),
+    maxSeconds: null, // без лимита
+  });
+
+  function renderQuestions() {
+    if (!currentTask) return;
+    const questions = currentTask.examinerQuestions || [];
+    $("#qList").innerHTML = questions
+      .map(function (q, i) {
+        return (
+          '<li class="q-item"><span class="num-badge">' +
+          (i + 1) +
+          "</span><p>" +
+          esc(q) +
+          "</p></li>"
+        );
+      })
+      .join("");
+  }
+
+  function goToQuestions() {
+    renderQuestions();
+    answersRecorder.reset();
+    $("#answersDoneBtn").classList.add("hidden");
+    $("#answersRedoBtn").classList.add("hidden");
+    $("#answersMicBtn").disabled = false;
+    $("#answersError").classList.remove("show");
+    showView("questionsView");
+  }
+
+  $("#answersMicBtn").addEventListener("click", async function () {
+    if (answersRecorder.isRecording()) {
+      answersRecorder.stop();
+      onAnswersRecordingFinished();
+      return;
+    }
+    $("#answersError").classList.remove("show");
+    try {
+      answersRecorder.start().then(function (blob) {
+        answersAudioBlob = blob;
+      });
+    } catch (err) {
+      $("#answersError").textContent = dict[lang].errMic;
+      $("#answersError").classList.add("show");
+    }
+  });
+
+  function onAnswersRecordingFinished() {
+    $("#answersDoneBtn").classList.remove("hidden");
+    $("#answersRedoBtn").classList.remove("hidden");
+  }
+
+  $("#answersRedoBtn").addEventListener("click", function () {
+    answersAudioBlob = null;
+    goToQuestions();
+  });
+
+  $("#answersBackBtn").addEventListener("click", function () {
+    stopAllRecording();
+    goToRecordSpeech();
+  });
+
+  $("#answersDoneBtn").addEventListener("click", function () {
+    if (!answersAudioBlob && answersRecorder.getBlob()) {
+      answersAudioBlob = answersRecorder.getBlob();
+    }
+    submitForGrading();
+  });
+</script>
+
+<script>
+  /* ================= Отправка на оценку ================= */
+  const GRADING_STEP_KEYS = ["gradingStep1", "gradingStep2", "gradingStep3"];
+  let gradingStepInterval = null;
+
+  function startGradingStepsAnimation() {
+    let i = 0;
+    const el = $("#gradingView .grading-step");
+    el.setAttribute("data-i", GRADING_STEP_KEYS[0]);
+    el.textContent = dict[lang][GRADING_STEP_KEYS[0]];
+    gradingStepInterval = setInterval(function () {
+      i = (i + 1) % GRADING_STEP_KEYS.length;
+      el.setAttribute("data-i", GRADING_STEP_KEYS[i]);
+      el.textContent = dict[lang][GRADING_STEP_KEYS[i]];
+    }, 2600);
+  }
+
+  function stopGradingStepsAnimation() {
+    if (gradingStepInterval) {
+      clearInterval(gradingStepInterval);
+      gradingStepInterval = null;
+    }
+  }
+
+  async function submitForGrading() {
+    if (!speechAudioBlob || !answersAudioBlob || !currentTask) {
+      showToast(dict[lang].errGeneric);
+      return;
+    }
+
+    showView("gradingView");
+    startGradingStepsAnimation();
+
+    const token = localStorage.getItem("session_token");
+    if (!token) return;
+
+    try {
+      const [speechB64, answersB64] = await Promise.all([
+        blobToBase64(speechAudioBlob),
+        blobToBase64(answersAudioBlob),
+      ]);
+
+      const res = await fetch(SPEAKING_WORKER_URL + "grade-speech", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+          taskContext: currentTask,
+          lang: lang,
+          speechAudio: {
+            base64: speechB64,
+            mimeType: speechAudioBlob.type || "audio/webm",
+          },
+          answersAudio: {
+            base64: answersB64,
+            mimeType: answersAudioBlob.type || "audio/webm",
+          },
+        }),
+      });
+
+      const data = await res.json().catch(function () {
+        return {};
+      });
+
+      if (!res.ok) {
+        throw new Error(data.error || dict[lang].errGrading);
+      }
+
+      lastGradeResult = data.grade;
+      renderResults(lastGradeResult);
+      showView("resultsView");
+      $("#chatFab").classList.remove("hidden");
+
+      // начисление очков — best effort, не блокирует показ результатов
+      fetch(SPEAKING_WORKER_URL + "solve", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+          totalScore: lastGradeResult.totalScore,
+          totalMax: lastGradeResult.totalMax,
+        }),
+      }).catch(function () {});
+    } catch (err) {
+      showView("questionsView");
+      $("#answersError").textContent = (err && err.message) || dict[lang].errGrading;
+      $("#answersError").classList.add("show");
+    } finally {
+      stopGradingStepsAnimation();
+    }
+  }
+
+  /* ================= Рендер результатов ================= */
+  function renderResults(grade) {
+    const ringFg = $("#scoreRingFg");
+    const circumference = 2 * Math.PI * 50;
+    const ratio = grade.totalMax > 0 ? grade.totalScore / grade.totalMax : 0;
+    const offset = circumference * (1 - ratio);
+    ringFg.setAttribute("stroke-dasharray", circumference.toFixed(1));
+    setTimeout(function () {
+      ringFg.style.strokeDashoffset = offset.toFixed(1);
+    }, 60);
+
+    $("#scoreRingNum").textContent = grade.totalScore;
+    $("#scoreHeroSub").textContent = (currentTask && currentTask.topicLine) || "";
+    $("#scoreBox").textContent = grade.totalScore + " / " + grade.totalMax;
+
+    $("#tooShortSpeechNote").classList.toggle("hidden", !grade.tooShortSpeech);
+    if (grade.tooShortSpeech) {
+      $("#tooShortSpeechNote").textContent = dict[lang].tooShortSpeech;
+    }
+    $("#tooShortAnswersNote").classList.toggle("hidden", !grade.tooShortAnswers);
+    if (grade.tooShortAnswers) {
+      $("#tooShortAnswersNote").textContent = dict[lang].tooShortAnswers;
+    }
+
+    const block1 = grade.criteria.filter(function (c) { return c.block === 1; });
+    const block2 = grade.criteria.filter(function (c) { return c.block === 2; });
+
+    $("#critGridBlock1").innerHTML = block1.map(renderCritCell).join("");
+    $("#critGridBlock2").innerHTML = block2.map(renderCritCell).join("");
+
+    if (grade.strengths) {
+      $("#strengthsBlock").classList.remove("hidden");
+      $("#strengthsTxt").textContent = grade.strengths;
+    } else {
+      $("#strengthsBlock").classList.add("hidden");
+    }
+
+    if (grade.overallTip) {
+      $("#overallTipBlock").classList.remove("hidden");
+      $("#overallTipTxt").textContent = grade.overallTip;
+    } else {
+      $("#overallTipBlock").classList.add("hidden");
+    }
+
+    // Корректировки/ошибки
+    if (!grade.corrections || grade.corrections.length === 0) {
+      $("#cleanNote").classList.remove("hidden");
+      $("#corrList").innerHTML = "";
+    } else {
+      $("#cleanNote").classList.add("hidden");
+      $("#corrList").innerHTML = grade.corrections
+        .map(function (c, i) {
+          return (
+            '<div class="corr-item"><span class="corr-num">' +
+            (i + 1) +
+            '</span><div><div class="corr-swap"><span class="err-mark">' +
+            esc(c.wrong) +
+            '</span><svg class="i i-md" viewBox="0 0 24 24" style="color:var(--tm)"><path d="M5 12h14M12 5l7 7-7 7"/></svg><span class="fix-mark">' +
+            esc(c.correct) +
+            '</span></div><div class="corr-explain">' +
+            esc(c.explanation) +
+            "</div></div></div>"
+          );
+        })
+        .join("");
+    }
+
+    // Транскрипты — просто текст (подсветку ошибок делать поверх транскрипта
+    // не пытаемся размечать программно, т.к. Gemini транскрибирует устную
+    // речь не всегда дословно предсказуемо; корректировки уже показаны выше
+    // отдельным списком с ясным before/after).
+    $("#transcriptSpeechBox").textContent =
+      grade.transcriptSpeech || (lang === "ru" ? "(нет данных)" : "(nav datu)");
+    $("#transcriptAnswersBox").textContent =
+      grade.transcriptAnswers || (lang === "ru" ? "(нет данных)" : "(nav datu)");
+  }
+
+  function renderCritCell(c) {
+    const labelKey = CRITERIA_LABEL_KEYS[c.key] || c.key;
+    const label = dict[lang][labelKey] || c.key;
+    const dotsCount = c.maxPoints;
+    let dots = "";
+    for (let i = 0; i < dotsCount; i++) {
+      dots += '<span class="crit-dot' + (i < Math.round(c.score) ? " on" : "") + '"></span>';
+    }
+    return (
+      '<div class="crit-cell"><div class="lbl">' +
+      esc(label) +
+      '</div><div class="val">' +
+      c.score +
+      "/" +
+      c.maxPoints +
+      '</div><div class="crit-dots">' +
+      dots +
+      '</div><div class="tip">' +
+      esc(c.tip || "") +
+      "</div></div>"
+    );
+  }
+
+  /* ================= Действия на экране результатов ================= */
+  $("#resultsBack").addEventListener("click", function () {
+    resetToIntro();
+  });
+
+  $("#newTopicBtn").addEventListener("click", function () {
+    resetToIntro();
+    setTimeout(startNewTask, 60);
+  });
+
+  $("#saveBtn").addEventListener("click", async function () {
+    if (!lastGradeResult || !currentTask) return;
+    const token = localStorage.getItem("session_token");
+    if (!token) return;
+
+    const btn = $("#saveBtn");
+    const originalText = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = dict[lang].savingBtn;
+
+    try {
+      const res = await fetch(SPEAKING_WORKER_URL + "save-task", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+          task: {
+            kind: "speaking",
+            title: currentTask.title || currentTask.topicLine,
+            taskContext: currentTask,
+            grade: lastGradeResult,
+          },
+        }),
+      });
+      const data = await res.json().catch(function () {
+        return {};
+      });
+      if (!res.ok) throw new Error(data.error || dict[lang].errSave);
+      showToast(dict[lang].savedToast);
+    } catch (err) {
+      showToast((err && err.message) || dict[lang].errSave);
+    } finally {
+      btn.disabled = false;
+      btn.textContent = originalText;
+    }
+  });
+</script>
+
+<script>
+  /* ================= Чат с ИИ (тот же паттерн, что writing.html) ================= */
+  $("#chatFab").addEventListener("click", function () {
+    chatOpen = !chatOpen;
+    $("#chatPanel").classList.toggle("open", chatOpen);
+    if (chatOpen) $("#chatInput").focus();
+  });
+
+  $("#chatClose").addEventListener("click", function () {
+    chatOpen = false;
+    $("#chatPanel").classList.remove("open");
+  });
+
+  function appendChatMsg(role, text) {
+    const log = $("#chatLog");
+    const div = document.createElement("div");
+    div.className = "chat-msg " + role;
+    div.textContent = text;
+    log.appendChild(div);
+    log.scrollTop = log.scrollHeight;
+    return div;
+  }
+
+  $("#chatForm").addEventListener("submit", async function (e) {
+    e.preventDefault();
+    const input = $("#chatInput");
+    const question = input.value.trim();
+    if (!question || !currentTask) return;
+
+    input.value = "";
+    appendChatMsg("user", question);
+    const pendingEl = appendChatMsg("ai", dict[lang].chatPending);
+
+    const token = localStorage.getItem("session_token");
+    if (!token) return;
+
+    try {
+      const res = await fetch(SPEAKING_WORKER_URL + "ask-question", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: "Bearer " + token,
+        },
+        body: JSON.stringify({
+          taskContext: currentTask,
+          gradeContext: lastGradeResult,
+          question: question,
+          lang: lang,
+        }),
+      });
+      const data = await res.json().catch(function () {
+        return {};
+      });
+      if (!res.ok) throw new Error(data.error || dict[lang].chatErr);
+      pendingEl.textContent = data.answer;
+    } catch (err) {
+      pendingEl.textContent = (err && err.message) || dict[lang].chatErr;
+    }
+  });
+
+  /* ================= Инициализация ================= */
+  function init() {
+    applyLang();
+    showView("introView");
+  }
+
+  if (window.authReady) {
+    init();
+  } else {
+    document.addEventListener("auth-ready", init, { once: true });
+  }
+
+  // Останавливаем запись/таймеры, если пользователь уходит со страницы —
+  // не оставляем висящий доступ к микрофону.
+  window.addEventListener("beforeunload", function () {
+    stopAllRecording();
+    stopPrepTimer();
+  });
+</script>
+</body>
+</html>
