@@ -451,9 +451,18 @@
     t1.statements.forEach(s => {
       let cls = "stmt-item";
       if (graded) cls += usedLetters.has(s.letter) ? " used-correctly" : " distractor-used";
+      const explText = (lang === "ru" ? s.explanation_ru : s.explanation_lv) || "";
+      const explBlock = (graded && explText)
+        ? `<button type="button" class="expl-trigger" data-stmt="${esc(s.letter)}">
+             <svg class="i i-md" viewBox="0 0 24 24"><polyline points="9 18 15 12 9 6"/></svg>
+             ${dict[lang].explTag}
+           </button>
+           <div class="expl" id="expl-stmt-${esc(s.letter)}"><div class="txt">${esc(explText)}</div></div>`
+        : "";
       legend.insertAdjacentHTML("beforeend",
-        `<div class="${cls}"><span class="stmt-letter">${esc(s.letter)}</span><span>${esc(s.text)}</span></div>`);
+        `<div class="${cls}"><div style="flex:1"><div style="display:flex;gap:10px"><span class="stmt-letter">${esc(s.letter)}</span><span>${esc(s.text)}</span></div>${explBlock}</div></div>`);
     });
+    bindStmtExplTriggers();
 
     // Speakers rows with pills
     const box = $("#speakersBox");
@@ -491,6 +500,17 @@
         const n = btn.getAttribute("data-n");
         userAnswers[n] = btn.getAttribute("data-letter");
         renderAll();
+      });
+    });
+  }
+
+  function bindStmtExplTriggers() {
+    document.querySelectorAll(".expl-trigger[data-stmt]").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const letter = btn.getAttribute("data-stmt");
+        const el = $("#expl-stmt-" + letter);
+        const open = el.classList.toggle("show");
+        btn.classList.toggle("open", open);
       });
     });
   }
