@@ -428,7 +428,7 @@
   function renderQuestions() {
     const box = $("#questionsBox");
     box.innerHTML = "";
-    currentTask.task3.questions.forEach(q => {
+    currentTask.task3.questions.forEach((q, idx) => {
       const sel = userAnswers[q.num];
       const letters = Object.keys(q.options);
       const opts = letters.map(lab => {
@@ -448,7 +448,7 @@
       box.insertAdjacentHTML("beforeend", `
         <div class="q-item">
           <div class="q-head">
-            <div class="q-num">${q.num}</div>
+            <div class="q-num">${idx + 1}</div>
             <div class="q-prompt">${esc(q.prompt)}</div>
           </div>
           <div class="q-options">${opts}</div>
