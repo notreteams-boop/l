@@ -465,10 +465,10 @@
       const m = /^\{\{gap(\d+)\}\}$/.exec(part);
       if (m) {
         const localIdx = Number(m[1]); // 1..11 as generated
-        const num = localIdx + 6; // display numbers 7..17 per official numbering
+        const num = localIdx + 6; // internal key, matches worker's answers spec (7..17)
         const val = userAnswers[num] || "";
         const disabled = gradeResult ? "disabled" : "";
-        html += `<span class="gap-num">${num}</span><input type="text" class="gap-input" data-num="${num}" value="${esc(val)}" ${disabled} autocomplete="off" />`;
+        html += `<span class="gap-num">${localIdx}</span><input type="text" class="gap-input" data-num="${num}" value="${esc(val)}" ${disabled} autocomplete="off" />`;
       } else {
         html += esc(part);
       }
@@ -569,9 +569,10 @@
     box.innerHTML = "";
     Object.keys(gradeResult.results).sort((a, b) => Number(a) - Number(b)).forEach(num => {
       const r = gradeResult.results[num];
+      const displayNum = Number(num) - 6;
       box.insertAdjacentHTML("beforeend", `
         <div class="gap-expl-item verdict-${r.verdict}">
-          <div class="gap-expl-num">${num}.</div>
+          <div class="gap-expl-num">${displayNum}.</div>
           <div class="gap-expl-body">${esc(r.explanation)}</div>
         </div>
       `);
