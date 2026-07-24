@@ -573,7 +573,7 @@
       box.insertAdjacentHTML("beforeend", `
         <div class="gap-expl-item verdict-${r.verdict}">
           <div class="gap-expl-num">${displayNum}.</div>
-          <div class="gap-expl-body">${esc(r.explanation)}</div>
+          <div class="gap-expl-body">${esc(lang === "ru" ? r.explanation_ru : r.explanation_lv)}</div>
         </div>
       `);
     });
