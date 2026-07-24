@@ -210,10 +210,19 @@
         <div id="questionsBox"></div>
       </div>
 
+      <div class="panel rise hidden" id="transcriptPanel" style="animation-delay:100ms">
+        <p class="panel-title" data-i="transcriptTitle">Ieraksta teksts</p>
+        <div id="transcriptBox" style="font-size:13.5px;line-height:1.8;color:rgba(255,255,255,.8)"></div>
+      </div>
+
       <div class="actions">
         <button class="btn-primary" id="checkBtn">
           <svg class="i i-md" viewBox="0 0 24 24"><polyline points="20 6 9 17 4 12"/></svg>
           <span data-i="check">Pārbaudīt</span>
+        </button>
+        <button class="btn-ghost hidden" id="transcriptBtn">
+          <svg class="i i-md" viewBox="0 0 24 24"><path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"/><path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"/></svg>
+          <span data-i="showTranscript">Rādīt tekstu</span>
         </button>
         <button class="btn-ghost" id="saveBtn">
           <svg class="i i-md" viewBox="0 0 24 24"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
@@ -260,6 +269,7 @@
       scoreLbl: "Rezultāts", savedOk: "Uzdevums saglabāts profilā",
       pickAll: "Lūdzu, atbildi uz visiem jautājumiem", genErr: "Neizdevās ģenerēt uzdevumu. Mēģini vēlreiz.",
       chatErr: "Neizdevās saņemt atbildi. Mēģini vēlreiz.", explTag: "Paskaidrojums",
+      transcriptTitle: "Ieraksta teksts", showTranscript: "Rādīt tekstu", hideTranscript: "Paslēpt tekstu",
       audioErr: "Neizdevās ielādēt audio.", retryCountdown: "Pagaidi vēl {s} s…",
     },
     ru: {
@@ -272,6 +282,7 @@
       scoreLbl: "Результат", savedOk: "Задание сохранено в профиль",
       pickAll: "Пожалуйста, ответь на все вопросы", genErr: "Не удалось создать задание. Попробуй ещё раз.",
       chatErr: "Не удалось получить ответ. Попробуй ещё раз.", explTag: "Объяснение",
+      transcriptTitle: "Текст записи", showTranscript: "Показать текст", hideTranscript: "Скрыть текст",
       audioErr: "Не удалось загрузить аудио.", retryCountdown: "Подожди ещё {s} с…",
     },
   };
@@ -308,6 +319,8 @@
   /* ================= Генерация ================= */
   async function generate() {
     graded = false; userAnswers = {}; playsUsed = 0;
+    transcriptOpen = false;
+    $("#transcriptPanel").classList.add("hidden");
     $("#content").classList.add("hidden");
     $("#errBox").classList.remove("show");
     $("#loadingBox").classList.remove("hidden");
@@ -365,6 +378,23 @@
   }
 
   $("#regenBtn").addEventListener("click", generate);
+
+  let transcriptOpen = false;
+  $("#transcriptBtn").addEventListener("click", () => {
+    transcriptOpen = !transcriptOpen;
+    const panel = $("#transcriptPanel");
+    panel.classList.toggle("hidden", !transcriptOpen);
+    $("#transcriptBtn span").textContent = transcriptOpen ? dict[lang].hideTranscript : dict[lang].showTranscript;
+    if (transcriptOpen) {
+      const box = $("#transcriptBox");
+      const lines = currentTask.task3.script.split("\n").filter(l => l.trim());
+      box.innerHTML = lines.map(line => {
+        const m = /^(Host|Guest)\s*:\s*(.+)$/i.exec(line.trim());
+        if (!m) return `<p style="margin:0 0 12px">${esc(line)}</p>`;
+        return `<p style="margin:0 0 12px"><b style="color:var(--indigo)">${esc(m[1])}:</b> ${esc(m[2])}</p>`;
+      }).join("");
+    }
+  });
 
   /* ================= Audio player (max 2 plays) ================= */
   function setupAudio() {
@@ -463,6 +493,7 @@
     bindOptions();
     bindExplTriggers();
     $("#checkBtn").classList.toggle("hidden", graded);
+    $("#transcriptBtn").classList.toggle("hidden", !graded);
   }
 
   function bindOptions() {
