@@ -606,7 +606,7 @@
         method: "POST",
         headers: { "Content-Type": "application/json", Authorization: "Bearer " + token },
         body: JSON.stringify({
-          task: { kind: "listening", title: "Klausīšanās — 2. uzdevums", result: { part: 2, score, max: total, userAnswers, answersSpec: currentTask.task2.answers, gradeResult: gradeResult ? gradeResult.results : null } },
+          task: { kind: "listening", title: "Klausīšanās — 2. uzdevums", result: { part: 2, score, max: total, userAnswers, answersSpec: currentTask.task2.answers, gradeResult: gradeResult ? gradeResult.results : null, fullScript: currentTask.task2.fullScript } },
         }),
       });
       const data = await res.json().catch(() => ({}));
