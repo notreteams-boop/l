@@ -398,6 +398,54 @@ footer{border-top:1px solid var(--line-soft);}
 .merr{display:none; color:var(--rose); font-size:13px; background:rgba(251,113,133,.1); border:1px solid rgba(251,113,133,.25); border-radius:10px; padding:9px 12px;}
 .mok{display:none; color:var(--emerald); font-size:13px; background:rgba(52,211,153,.1); border:1px solid rgba(52,211,153,.25); border-radius:10px; padding:9px 12px;}
 .mreg-note{font-size:12.5px; color:var(--ink-mute); line-height:1.5;}
+.mconsent{
+  display:flex; align-items:flex-start; gap:10px;
+  font-size:12.5px; color:var(--ink-dim); line-height:1.5;
+  padding:11px 13px; border-radius:11px; background:rgba(255,255,255,.03); border:1px solid var(--line);
+  transition:border-color .2s, background .2s;
+}
+.mconsent input[type="checkbox"]{
+  flex:0 0 auto; width:17px; height:17px; margin-top:1px;
+  accent-color:var(--indigo2); cursor:pointer;
+}
+.mconsent label{cursor:pointer; user-select:none;}
+.mconsent a{color:var(--indigo2); text-decoration:underline; text-underline-offset:2px;}
+.mconsent a:hover{color:var(--cyan);}
+.mconsent.mconsent-err{border-color:rgba(251,113,133,.5); background:rgba(251,113,133,.06);}
+.mconsent.mconsent-shake{animation:mconsentShake .35s;}
+@keyframes mconsentShake{
+  0%,100%{transform:translateX(0);}
+  25%{transform:translateX(-4px);}
+  75%{transform:translateX(4px);}
+}
+
+/* ================= COOKIE / GDPR BANNER ================= */
+.cookie-banner{
+  position:fixed; left:0; right:0; bottom:0; z-index:900;
+  display:none; padding:16px;
+  background:var(--bg-soft); border-top:1px solid var(--line);
+  box-shadow:0 -20px 60px -20px rgba(0,0,0,.6);
+  animation:cookieIn .4s cubic-bezier(.16,.85,.24,1);
+}
+.cookie-banner.show{display:block;}
+@keyframes cookieIn{from{opacity:0; transform:translateY(100%);} to{opacity:1; transform:translateY(0);}}
+.cookie-banner-inner{
+  max-width:1180px; margin:0 auto;
+  display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px 24px;
+}
+.cookie-banner-text{color:var(--ink-dim); font-size:13.5px; line-height:1.5; flex:1 1 320px;}
+.cookie-banner-actions{display:flex; align-items:center; gap:16px; flex:0 0 auto;}
+.cookie-banner-actions #cbLink{color:var(--indigo2); font-size:13.5px; text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+.cookie-banner-actions #cbLink:hover{color:var(--cyan);}
+.cookie-banner-btn{
+  padding:10px 22px; border-radius:10px; font-size:13.5px; font-weight:700;
+  background:var(--grad-main); color:#04050a; white-space:nowrap;
+}
+.cookie-banner-btn:hover{filter:brightness(1.08);}
+@media (max-width:560px){
+  .cookie-banner-inner{flex-direction:column; align-items:stretch;}
+  .cookie-banner-actions{justify-content:space-between;}
+}
 .mspinner{
   display:inline-block; width:14px; height:14px; border-radius:50%;
   border:2px solid rgba(4,5,10,.3); border-top-color:#04050a; animation:mspin .7s linear infinite;
@@ -764,8 +812,8 @@ footer{border-top:1px solid var(--line-soft);}
     </div>
     <div style="display:flex; gap:26px; flex-wrap:wrap;">
       <a href="#" style="color:var(--ink-dim); font-size:13.5px;" id="ftSupport"></a>
-      <a href="#" style="color:var(--ink-dim); font-size:13.5px;" id="ftPrivacy"></a>
-      <a href="#" style="color:var(--ink-dim); font-size:13.5px;" id="ftTerms"></a>
+      <a href="/l/privacy.html" style="color:var(--ink-dim); font-size:13.5px;" id="ftPrivacy"></a>
+      <a href="/l/terms.html" style="color:var(--ink-dim); font-size:13.5px;" id="ftTerms"></a>
     </div>
     <span style="color:var(--ink-mute); font-size:13px;" id="ftRights"></span>
   </div>
@@ -909,7 +957,12 @@ lv: {
     cta: "Pārbaudi savu līmeni →",
     metaQ: "15 jautājumi", metaT: "~5 minūtes"
   },
-  footer: { support:"Atbalsts", privacy:"Privātuma politika", terms:"Lietošanas noteikumi", rights:"© 2026 English OL" }
+  footer: { support:"Atbalsts", privacy:"Privātuma politika", terms:"Lietošanas noteikumi", rights:"© 2026 English OL" },
+  cookieBanner: {
+    text: "Vietne izmanto sīkdatnes/lokālo krātuvi, kas nepieciešamas darbībai, un apstrādā personas datus saskaņā ar GDPR.",
+    link: "Uzzināt vairāk",
+    accept: "Sapratu"
+  }
 },
 
 ru: {
@@ -1048,7 +1101,12 @@ ru: {
     cta: "Проверить свой уровень →",
     metaQ: "15 вопросов", metaT: "~5 минут"
   },
-  footer: { support:"Поддержка", privacy:"Политика конфиденциальности", terms:"Условия использования", rights:"© 2026 English OL" }
+  footer: { support:"Поддержка", privacy:"Политика конфиденциальности", terms:"Условия использования", rights:"© 2026 English OL" },
+  cookieBanner: {
+    text: "Сайт использует cookie/локальное хранилище, необходимые для работы, и обрабатывает персональные данные согласно GDPR.",
+    link: "Узнать больше",
+    accept: "Понятно"
+  }
 }
 };
 
@@ -1277,6 +1335,11 @@ ru: {
     txt('ftTerms', t.footer.terms);
     txt('ftRights', t.footer.rights);
 
+    // cookie / GDPR banner
+    txt('cbText', t.cookieBanner.text);
+    txt('cbLink', t.cookieBanner.link);
+    txt('cbAcceptBtn', t.cookieBanner.accept);
+
     // login button + lang switch labels
     txt('loginBtn', t.nav.login);
 
@@ -1366,6 +1429,11 @@ ru: {
       b.onclick = ()=>{ showAfter = b.getAttribute('data-state')==='after'; renderBeforeAfter(); };
     });
 
+    $('cbAcceptBtn').onclick = ()=>{
+      try { localStorage.setItem('cookie_consent_seen', '1'); } catch(e) {}
+      $('cookieBanner').classList.remove('show');
+    };
+
     function checkBurgerVisibility(){
       const isMobile = window.innerWidth <= 860;
       $('burger').style.display = isMobile ? 'flex' : 'none';
@@ -1375,11 +1443,21 @@ ru: {
     window.addEventListener('resize', checkBurgerVisibility);
   }
 
+  // ---------- cookie / GDPR banner: показываем один раз, помним выбор ----------
+  function initCookieBanner(){
+    var seen = false;
+    try { seen = localStorage.getItem('cookie_consent_seen') === '1'; } catch(e) {}
+    if (!seen) {
+      setTimeout(()=>{ $('cookieBanner').classList.add('show'); }, 600);
+    }
+  }
+
   document.addEventListener('DOMContentLoaded', ()=>{
     bindNav();
     render();
     animateOnLoad();
     bindAuthModal();
+    initCookieBanner();
   });
 })();
 
@@ -1428,11 +1506,31 @@ ru: {
         <input type="text" id="mRegUser" autocomplete="username" autocapitalize="none" maxlength="20" placeholder="piem. janis123" />
       </div>
       <div class="mreg-note" data-i18n="m.reg.note">Pēc pārbaudes tiksi novirzīts uz Telegram, lai pabeigtu reģistrāciju un saņemtu pieejas datus.</div>
+      <div class="mconsent" id="mConsentBox">
+        <input type="checkbox" id="mRegConsent" />
+        <label for="mRegConsent" id="mRegConsentLabel">
+          <span data-i18n="m.reg.consent.pre">Piekrītu</span>
+          <a href="/l/terms.html" target="_blank" rel="noopener" data-i18n="m.reg.consent.terms">Lietošanas noteikumiem</a>
+          <span data-i18n="m.reg.consent.and">un</span>
+          <a href="/l/privacy.html" target="_blank" rel="noopener" data-i18n="m.reg.consent.privacy">Privātuma politikai</a>
+        </label>
+      </div>
       <button class="mbtn" id="mRegBtn" onclick="doRegister()">
         <span data-i18n="m.reg.btn">Turpināt →</span>
       </button>
       <div class="merr" id="mRegErr"></div>
       <div class="mok" id="mRegOk"></div>
+    </div>
+  </div>
+</div>
+
+<!-- ════ COOKIE / GDPR BANNER ════ -->
+<div class="cookie-banner" id="cookieBanner">
+  <div class="cookie-banner-inner">
+    <span class="cookie-banner-text" id="cbText"></span>
+    <div class="cookie-banner-actions">
+      <a href="/l/privacy.html" target="_blank" rel="noopener" id="cbLink"></a>
+      <button class="cookie-banner-btn" id="cbAcceptBtn"></button>
     </div>
   </div>
 </div>
@@ -1456,6 +1554,9 @@ var MODAL_T = {
     "m.reg.btn": "Turpināt →", "m.reg.redirecting": "Novirzām uz Telegram...",
     "m.fill": "Lūdzu, aizpildi visus laukus.", "m.ok": "Veiksmīgi! Novirzām...",
     "m.err.net": "Savienojuma kļūda.",
+    "m.reg.consent.pre": "Piekrītu", "m.reg.consent.terms": "Lietošanas noteikumiem",
+    "m.reg.consent.and": "un", "m.reg.consent.privacy": "Privātuma politikai",
+    "err.consent_required": "Lai turpinātu, jāpiekrīt Lietošanas noteikumiem un Privātuma politikai.",
     "err.missing_fields": "Nav aizpildīti visi lauki", "err.invalid_credentials": "Nepareizs lietotājvārds vai parole",
     "err.rate_limited": "Pārāk daudz mēģinājumu. Mēģini vēlāk.", "err.subscription_inactive": "Abonements nav aktīvs",
     "err.subscription_expired": "Abonements beidzies", "err.device_limit": "Pārsniegts ierīču limits (maks. 3). Raksti Telegram, lai saņemtu palīdzību.",
@@ -1471,6 +1572,9 @@ var MODAL_T = {
     "m.reg.btn": "Продолжить →", "m.reg.redirecting": "Перенаправляем в Telegram...",
     "m.fill": "Пожалуйста, заполни все поля.", "m.ok": "Успешно! Перенаправляем...",
     "m.err.net": "Ошибка соединения.",
+    "m.reg.consent.pre": "Согласен(-на) с", "m.reg.consent.terms": "Условиями использования",
+    "m.reg.consent.and": "и", "m.reg.consent.privacy": "Политикой конфиденциальности",
+    "err.consent_required": "Чтобы продолжить, нужно согласиться с Условиями использования и Политикой конфиденциальности.",
     "err.missing_fields": "Заполнены не все поля", "err.invalid_credentials": "Неверное имя пользователя или пароль",
     "err.rate_limited": "Слишком много попыток. Попробуй позже.", "err.subscription_inactive": "Подписка не активна",
     "err.subscription_expired": "Подписка истекла", "err.device_limit": "Превышен лимит устройств (макс. 3). Напиши в Telegram для помощи.",
@@ -1519,6 +1623,7 @@ function applyModalLang() {
   var dict = MODAL_T[currentModalLang()];
   document.querySelectorAll("#authModal [data-i18n]").forEach(function(el) {
     var k = el.getAttribute("data-i18n");
+    // textContent не трогает href/атрибуты — безопасно и для ссылок внутри .mconsent
     if (dict[k] !== undefined) el.textContent = dict[k];
   });
 }
@@ -1528,6 +1633,8 @@ function clearModalErrors() {
     var el = document.getElementById(id);
     if (el) { el.style.display="none"; el.textContent=""; }
   });
+  var consentWrap = document.getElementById("mConsentBox");
+  if (consentWrap) consentWrap.classList.remove("mconsent-err");
   var dict = MODAL_T[currentModalLang()];
   var lb = document.getElementById("mLoginBtn");
   if (lb) { lb.disabled = false; lb.innerHTML = "<span>" + dict["m.login.btn"] + "</span>"; }
@@ -1601,6 +1708,16 @@ async function doRegister() {
     showErr("mRegErr", dict["err.username_invalid_format"]);
     return;
   }
+
+  var consentBox = document.getElementById("mRegConsent");
+  var consentWrap = document.getElementById("mConsentBox");
+  if (!consentBox.checked) {
+    showErr("mRegErr", dict["err.consent_required"]);
+    consentWrap.classList.add("mconsent-err", "mconsent-shake");
+    setTimeout(function() { consentWrap.classList.remove("mconsent-shake"); }, 350);
+    return;
+  }
+  consentWrap.classList.remove("mconsent-err");
 
   setBtnLoading("mRegBtn");
   document.getElementById("mRegErr").style.display = "none";
