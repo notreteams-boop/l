@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Lietošanas noteikumi / Условия использования — English OL</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+:root{
+  --bg:#08090b;
+  --bg-soft:#0d0f13;
+  --ink:#eef0f4;
+  --ink-dim:#9aa2b1;
+  --ink-mute:#5f6675;
+  --line:rgba(255,255,255,.08);
+  --line-soft:rgba(255,255,255,.05);
+  --indigo:#6366f1;
+  --indigo2:#818cf8;
+  --cyan:#22d3ee;
+  --emerald:#34d399;
+  --rose:#fb7185;
+  --amber:#fbbf24;
+  --grad-main: linear-gradient(120deg, var(--indigo) 0%, var(--cyan) 100%);
+  --grad-text: linear-gradient(120deg, #a5b4fc 0%, #67e8f9 100%);
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:'Inter',sans-serif; font-size:15.5px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:820px; margin:0 auto; padding:0 24px;}
+a{color:var(--indigo2); text-decoration:underline; text-underline-offset:2px;}
+a:hover{color:var(--cyan);}
+
+/* ---- header ---- */
+header.nav{
+  position:sticky; top:0; z-index:50;
+  background:rgba(8,9,11,.85); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+header.nav .wrap{display:flex; align-items:center; justify-content:space-between; height:64px;}
+.logo-mark{
+  width:30px; height:30px; border-radius:9px; background:var(--grad-main);
+  display:flex; align-items:center; justify-content:center; flex:none;
+}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
+.brand span{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:17px;}
+.grad-text{background:var(--grad-text); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.back-link{display:flex; align-items:center; gap:8px; color:var(--ink-dim); font-size:14px; text-decoration:none;}
+.back-link:hover{color:var(--ink);}
+.seg.lang{display:flex; gap:2px; background:var(--line-soft); border-radius:9px; padding:3px; border:1px solid var(--line);}
+.seg.lang button{
+  padding:6px 12px; border-radius:7px; font-size:12.5px; font-weight:700;
+  color:var(--ink-mute); background:none; border:none; font-family:inherit; cursor:pointer;
+}
+.seg.lang button.active{background:#14151b; color:var(--ink);}
+.header-right{display:flex; align-items:center; gap:16px;}
+
+/* ---- content ---- */
+main{padding:52px 0 90px;}
+.doc-title{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(26px,4vw,36px); margin:0 0 6px;}
+.doc-subtitle{color:var(--ink-dim); font-size:15px; margin:0 0 4px;}
+.doc-updated{color:var(--ink-mute); font-size:13px; margin:0 0 32px;}
+.doc-intro{color:var(--ink-dim); margin-bottom:36px; padding-bottom:32px; border-bottom:1px solid var(--line);}
+h2{
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px;
+  margin:40px 0 14px; color:var(--ink); scroll-margin-top:80px;
+}
+h3{
+  font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px;
+  margin:24px 0 10px; color:var(--ink);
+}
+p{color:var(--ink-dim); margin:0 0 14px;}
+.doc-updated-inline{color:var(--ink-mute); font-size:13px; margin:-6px 0 28px;}
+ul{margin:0 0 14px; padding-left:22px; color:var(--ink-dim);}
+li{margin-bottom:8px;}
+strong{color:var(--ink); font-weight:600;}
+
+.field-table{
+  width:100%; border-collapse:collapse; margin:16px 0 24px;
+  background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:12px; overflow:hidden;
+}
+.field-table td{padding:11px 16px; border-bottom:1px solid var(--line-soft); font-size:14.5px; vertical-align:top;}
+.field-table tr:last-child td{border-bottom:none;}
+.field-table td:first-child{color:var(--ink-mute); width:36%; font-weight:600;}
+.field-table td:last-child{color:var(--ink-dim);}
+.placeholder{color:var(--amber); background:rgba(251,191,36,.1); padding:1px 6px; border-radius:5px; font-size:.92em;}
+
+.data-table{width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px;}
+.data-table th{
+  text-align:left; padding:10px 14px; background:var(--line-soft); color:var(--ink);
+  font-weight:600; border-bottom:1px solid var(--line);
+}
+.data-table td{padding:12px 14px; border-bottom:1px solid var(--line-soft); color:var(--ink-dim); vertical-align:top;}
+.data-table tr:last-child td{border-bottom:none;}
+
+.callout{
+  background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.25);
+  border-radius:14px; padding:18px 20px; margin:20px 0 28px;
+}
+.callout-title{color:var(--amber); font-weight:700; font-size:13.5px; margin-bottom:8px; text-transform:uppercase; letter-spacing:.03em;}
+.callout p{margin:0; color:var(--ink-dim); font-size:14.5px;}
+
+.toc{
+  background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:14px;
+  padding:20px 22px; margin-bottom:40px;
+}
+.toc-title{font-size:12.5px; font-weight:700; color:var(--ink-mute); text-transform:uppercase; letter-spacing:.04em; margin-bottom:12px;}
+.toc ol{margin:0; padding-left:20px; columns:2; column-gap:28px;}
+.toc li{margin-bottom:7px; break-inside:avoid;}
+.toc a{color:var(--ink-dim); text-decoration:none; font-size:14px;}
+.toc a:hover{color:var(--indigo2);}
+
+footer{border-top:1px solid var(--line); padding:32px 0;}
+footer .wrap{display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+footer a{color:var(--ink-dim); font-size:13.5px; text-decoration:none;}
+footer a:hover{color:var(--ink);}
+.foot-rights{color:var(--ink-mute); font-size:13px;}
+
+[data-lang-content]{display:none;}
+[data-lang-content].active{display:block;}
+[data-lang-inline]{display:none;}
+[data-lang-inline].active{display:inline;}
+
+@media (max-width:640px){
+  .toc ol{columns:1;}
+  .field-table td:first-child{width:44%;}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="/l/" class="brand">
+      <div class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 19V6.5C4 5.67 4.67 5 5.5 5H18a1 1 0 0 1 1 1v13" stroke="#04050a" stroke-width="2" stroke-linecap="round"/><path d="M4 19a2 2 0 0 0 2 2h13" stroke="#04050a" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <span>English <span class="grad-text">OL</span></span>
+    </a>
+    <div class="header-right">
+      <a href="/l/" class="back-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12l6-6M5 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-lang-inline data-lang="lv" class="active">Sākums</span>
+        <span data-lang-inline data-lang="ru">Главная</span>
+      </a>
+      <div class="seg lang" id="langSwitch">
+        <button data-lang="lv" class="active">LV</button>
+        <button data-lang="ru">RU</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ═══════════ LATVIAN ═══════════ -->
+<div data-lang-content data-lang="lv" class="active">
+<h1 class="doc-title">Lietošanas noteikumi</h1>
+<p class="doc-subtitle">English OL — mācību platforma centralizētā eksāmena (VISC CE, optimālais līmenis) sagatavošanai</p>
+<nav class="toc"><div class="toc-title">Satura rādītājs</div><ol>
+    <li><a href="#s1-lv">1. Pakalpojuma sniedzējs</a></li>
+    <li><a href="#s2-lv">2. Kas ir Vietne</a></li>
+    <li><a href="#s3-lv">3. Reģistrācija</a></li>
+    <li><a href="#s4-lv">4. Apmaksa (Telegram Stars)</a></li>
+    <li><a href="#s5-lv">5. Konta pārvaldība un dzēšana</a></li>
+    <li><a href="#s6-lv">6. Ierīču un sesiju ierobežojumi</a></li>
+    <li><a href="#s7-lv">7. Mākslīgā intelekta izmantošana</a></li>
+    <li><a href="#s8-lv">8. Atbildības ierobežojums</a></li>
+    <li><a href="#s9-lv">9. Grozījumi Noteikumos</a></li>
+    <li><a href="#s10-lv">10. Piemērojamie tiesību akti</a></li>
+  </ol></nav>
+<p class="doc-updated-inline">Pēdējie grozījumi / Последнее обновление: <span class="placeholder">[DATUMS / ДАТА]</span></p>
+<p>Šie lietošanas noteikumi ("Noteikumi") regulē attiecības starp Tevi ("Lietotājs") un vietnes English OL ("Vietne", "mēs") uzturētāju. Reģistrējoties un/vai veicot apmaksu, Tu apstiprini, ka esi izlasījis un piekrīti šiem Noteikumiem, kā arī mūsu Privātuma politikai.</p>
+<h2 id="s1-lv">1. Pakalpojuma sniedzējs</h2>
+<table class="field-table">
+  <tr><td>Nosaukums</td><td><span class="placeholder">[UZĽĒMUMA NOSAUKUMS — SIA/IK]</span></td></tr>
+  <tr><td>Reģistrācijas numurs</td><td><span class="placeholder">[REĢ. NR.]</span></td></tr>
+  <tr><td>Juridiskā adrese</td><td><span class="placeholder">[ADRESE]</span></td></tr>
+  <tr><td>E-pasts saziņai</td><td><span class="placeholder">[EMAIL]</span></td></tr>
+</table>
+<h2 id="s2-lv">2. Kas ir Vietne</h2>
+<p>Vietne ir mācību platforma, kas palīdz sagatavoties VISC centralizētajam eksāmenam angļu valodā (optimālais līmenis, B2–C1). Vietne piedāvā:</p>
+<ul>
+  <li>bezmaksas ievadtestu līmeņa noteikšanai (nav nepieciešama reģistrācija);</li>
+  <li>Reading (lasīšanas) un Writing (rakstīšanas) uzdevumus ar automātisku, ar mākslīgo intelektu ģenerētu vērtējumu — pieejami tikai reģistrētiem lietotājiem ar aktīvu abonementu.</li>
+</ul>
+<p>Listening un Speaking sadaļas var būt daļēji vai pilnībā nepieejamas — Vietne tiek aktīvi papildināta, un funkciju klāsts var mainīties.</p>
+<h2 id="s3-lv">3. Reģistrācija</h2>
+<p>Reģistrācija notiek divos posmos:</p>
+<ul>
+  <li>Vietnē aizpildi formu ar savu vārdu un vēlamo lietotājvārdu;</li>
+  <li>Tiec novirzīts uz Telegram botu @mismisimsbot, kur veic apmaksu (skat. 4. sadaļu) — tikai pēc veiksmīgas apmaksas tiek izveidots Tavs konts un piešķirta pieeja.</li>
+</ul>
+<p>Reģistrējoties, Tu apliecini, ka sniegtā informācija ir patiesa un ka lietotājvārds/vārds nesatur aizskarošu, nepiedienīgu vai reklāmas saturu. Mēs paturam tiesības noraidīt vai dzēst kontu, kas neatbilst šai prasībai.</p>
+<h2 id="s4-lv">4. Apmaksa (Telegram Stars)</h2>
+<p>Pieeja Vietnes pilnajai funkcionalitātei ir maksas pakalpojums. Apmaksa tiek veikta ar Telegram Stars (Telegram iekšējo valūtu, valūtas kods XTR) tieši Telegram botā.</p>
+<ul>
+  <li>Cena: pašreizējā reģistrācijas cena ir norādīta rēķinā, ko saņem Telegram botā pirms apmaksas apstiprināšanas.</li>
+  <li>Piekļuves ilgums: viena veiksmīga apmaksa piešķir piekļuvi uz 30 dienām no apmaksas brīža.</li>
+  <li>Automātiska atjaunošana: pakalpojums nav abonements ar automātisku maksājumu atkārtošanu. Pēc 30 dienām piekļuve vienkārši beidzas — jauna piekļuve prasa jaunu, atsevišķu apmaksu.</li>
+  <li>Maksājumu apstrādā Telegram: mēs neredzam un neuzglabājam Tavas maksājumu kartes vai bankas kontu datus — tos pārvalda Telegram saskaņā ar to noteikumiem.</li>
+</ul>
+<h3 id="s4.1-lv">4.1 Atteikuma tiesības (14 dienu periods)</h3>
+<p>Saskaņā ar Direktīvu 2011/83/ES par patērētāju tiesībām, Tev kā patērētājam parasti ir tiesības 14 dienu laikā atteikties no digitāla satura/pakalpojuma iegādes bez iemesla norādīšanas.</p>
+<div class="callout"><div class="callout-title">SVARĪGI — piekrītot tūlītējai piekļuvei, Tu zaudē atteikuma tiesības</div><p>Tā kā piekļuve Vietnes saturam tiek piešķirta uzreiz pēc veiksmīgas apmaksas (nevis pēc 14 dienu gaidīšanas), veicot apmaksu Tu skaidri piekrīti, ka pakalpojuma sniegšana sākas nekavējoties, un apliecini, ka esi informēts — tiklīdz pakalpojums ir pilnībā sniegts (t.i., piekļuve piešķirta), Tu zaudē tiesības atteikties no līguma un saņemt atmaksu, izņemot 4.2. punktā minētos gadījumus.</p></div>
+<h3 id="s4.2-lv">4.2 Atmaksa</h3>
+<p>Neskatoties uz 4.1. punktu, mēs izskatām atmaksas pieprasījumus individuāli, pēc pieprasījuma, īpaši gadījumos, kad:</p>
+<ul>
+  <li>apmaksa notikusi, bet konts vai piekļuve netika izveidota tehniskas kļūdas dēļ;</li>
+  <li>apmaksa notikusi divreiz vai kļūdas pēc par nepareizu summu;</li>
+  <li>citi pamatoti un labticīgi gadījumi pēc mūsu ieskatiem.</li>
+</ul>
+<p>Lai pieprasītu atmaksu, raksti administratoram Telegram botā @mismisimsbot vai uz <span class="placeholder">[EMAIL]</span>, norādot lietotājvārdu un maksājuma apstiprinājumu. Atmaksas tiek izskatītas manuāli, parasti 5–7 darba dienu laikā.</p>
+<h2 id="s5-lv">5. Konta pārvaldība un dzēšana</h2>
+<p>Tev jebkurā laikā ir tiesības pieprasīt sava konta un visu ar to saistīto datu dzēšanu — neatkarīgi no tā, vai abonements ir aktīvs.</p>
+<p>Lai to izdarītu, raksti administratoram Telegram botā @mismisimsbot vai uz <span class="placeholder">[EMAIL]</span> ar lūgumu dzēst kontu. Dzēšana ir neatgriezeniska — visas Tavas sesijas tiek pārtrauktas, un dati tiek izdzēsti no sistēmas.</p>
+<p>Mēs paturam tiesības apturēt vai dzēst kontu arī bez iepriekšēja brīdinājuma, ja tiek konstatēts šo Noteikumu pārkāpums (piemēram, aizskarošs saturs, mēģinājums apiet drošības ierobežojumus, konta koplietošana ar mērķi apiet ierīču limitu).</p>
+<h2 id="s6-lv">6. Ierīču un sesiju ierobežojumi</h2>
+<p>Vienam kontam vienlaicīgi var būt aktīvas ne vairāk kā 3 pieteikšanās sesijas (ierīces). Pieteikšanās sesija automātiski beidzas 30 dienu laikā. Tu vari jebkurā brīdī izbeigt sesiju no konkrētas ierīces (funkcija "Iziet").</p>
+<h2 id="s7-lv">7. Mākslīgā intelekta izmantošana</h2>
+<p>Uzdevumi, to vērtēšana un skaidrojumi tiek ģenerēti, izmantojot trešās puses mākslīgā intelekta pakalpojumu (Google Gemini). Neskatoties uz to, ka izmantojam validācijas mehānismus, AI ģenerētais saturs var reizēm saturēt neprecizitātes. Vietne ir domāta kā mācību palīglīdzeklis, nevis oficiāls VISC eksāmena vērtējuma aizstājējs. Galīgo eksāmena rezultātu nosaka tikai oficiālā eksaminācijas iestāde.</p>
+<h2 id="s8-lv">8. Atbildības ierobežojums</h2>
+<p>Vietne tiek nodrošināta "tāda, kāda tā ir". Mēs nesolām, ka izmantošana Vietnē garantē konkrētu rezultātu oficiālajā VISC eksāmenā. Mēs neesam atbildīgi par zaudējumiem, kas radušies Vietnes darbības pārtraukumu, tehnisku kļūdu vai trešo pušu pakalpojumu (Cloudflare, Google, Telegram) nepieejamības dēļ, ciktāl to pieļauj piemērojamie tiesību akti.</p>
+<h2 id="s9-lv">9. Grozījumi Noteikumos</h2>
+<p>Mēs paturam tiesības grozīt šos Noteikumus. Par būtiskiem grozījumiem informēsim ar paziņojumu Vietnē. Turpinot izmantot Vietni pēc izmaiņu publicēšanas, Tu apstiprini piekrišanu atjauninātajiem Noteikumiem.</p>
+<h2 id="s10-lv">10. Piemērojamie tiesību akti un strīdu risināšana</h2>
+<p>Šiem Noteikumiem piemēro Latvijas Republikas tiesību aktus. Strīdus, kurus nevar atrisināt sarunu ceļā, risina Latvijas Republikas tiesas. Ja esi patērētājs, Tev ir tiesības vērsties arī Patērētāju tiesību aizsardzības centrā (www.ptac.gov.lv) vai izmantot ES tiešsaistes strīdu izšķiršanas platformu (ec.europa.eu/consumers/odr).</p>
+
+</div>
+
+<!-- ═══════════ RUSSIAN ═══════════ -->
+<div data-lang-content data-lang="ru">
+<h1 class="doc-title">Условия использования</h1>
+<p class="doc-subtitle">English OL — платформа подготовки к централизованному экзамену по английскому языку (VISC CE, optimālais līmenis)</p>
+<nav class="toc"><div class="toc-title">Содержание</div><ol>
+    <li><a href="#s1-ru">1. Поставщик услуги</a></li>
+    <li><a href="#s2-ru">2. Что представляет собой Сайт</a></li>
+    <li><a href="#s3-ru">3. Регистрация</a></li>
+    <li><a href="#s4-ru">4. Оплата (Telegram Stars)</a></li>
+    <li><a href="#s5-ru">5. Управление аккаунтом и удаление</a></li>
+    <li><a href="#s6-ru">6. Ограничения по устройствам</a></li>
+    <li><a href="#s7-ru">7. Использование ИИ</a></li>
+    <li><a href="#s8-ru">8. Ограничение ответственности</a></li>
+    <li><a href="#s9-ru">9. Изменения в Условиях</a></li>
+    <li><a href="#s10-ru">10. Применимое право</a></li>
+  </ol></nav>
+<p class="doc-updated-inline">Pēdējie grozījumi / Последнее обновление: <span class="placeholder">[DATUMS / ДАТА]</span></p>
+<p>Настоящие условия использования («Условия») регулируют отношения между тобой («Пользователь») и владельцем сайта English OL («Сайт», «мы»). Регистрируясь и/или производя оплату, ты подтверждаешь, что прочитал и согласен с настоящими Условиями, а также с нашей Политикой конфиденциальности.</p>
+<h2 id="s1-ru">1. Поставщик услуги</h2>
+<table class="field-table">
+  <tr><td>Название</td><td><span class="placeholder">[НАЗВАНИЕ КОМПАНИИ — SIA/ИП]</span></td></tr>
+  <tr><td>Регистрационный номер</td><td><span class="placeholder">[РЕГ. №]</span></td></tr>
+  <tr><td>Юридический адрес</td><td><span class="placeholder">[АДРЕС]</span></td></tr>
+  <tr><td>Email для связи</td><td><span class="placeholder">[EMAIL]</span></td></tr>
+</table>
+<h2 id="s2-ru">2. Что представляет собой Сайт</h2>
+<p>Сайт — это учебная платформа, помогающая подготовиться к централизованному экзамену VISC по английскому языку (optimālais līmenis, B2–C1). Сайт предлагает:</p>
+<ul>
+  <li>бесплатный вступительный тест для определения уровня (не требует регистрации);</li>
+  <li>задания Reading (чтение) и Writing (письмо) с автоматической оценкой на основе искусственного интеллекта — доступны только зарегистрированным пользователям с активной подпиской.</li>
+</ul>
+<p>Разделы Listening и Speaking могут быть частично или полностью недоступны — Сайт активно дорабатывается, и набор функций может меняться.</p>
+<h2 id="s3-ru">3. Регистрация</h2>
+<p>Регистрация происходит в два этапа:</p>
+<ul>
+  <li>на Сайте заполняется форма с именем и желаемым логином;</li>
+  <li>происходит переход в Telegram-бота @mismisimsbot, где производится оплата (см. раздел 4) — только после успешной оплаты создаётся аккаунт и предоставляется доступ.</li>
+</ul>
+<p>Регистрируясь, ты подтверждаешь, что предоставленная информация достоверна и что логин/имя не содержат оскорбительного, неприемлемого или рекламного содержания. Мы оставляем за собой право отклонить или удалить аккаунт, не соответствующий этому требованию.</p>
+<h2 id="s4-ru">4. Оплата (Telegram Stars)</h2>
+<p>Доступ к полному функционалу Сайта является платной услугой. Оплата производится с помощью Telegram Stars (внутренней валюты Telegram, код валюты XTR) непосредственно в Telegram-боте.</p>
+<ul>
+  <li>Цена: актуальная цена регистрации указывается в счёте, который приходит в Telegram-боте перед подтверждением оплаты.</li>
+  <li>Срок доступа: одна успешная оплата предоставляет доступ на 30 дней с момента оплаты.</li>
+  <li>Автопродление: услуга не является подпиской с автоматическим повторением платежа. По истечении 30 дней доступ просто заканчивается — для нового доступа требуется новая, отдельная оплата.</li>
+  <li>Платежи обрабатывает Telegram: мы не видим и не храним данные твоей платёжной карты или банковского счёта — ими управляет Telegram согласно своим условиям.</li>
+</ul>
+<h3 id="s4.1-ru">4.1 Право на отказ (период 14 дней)</h3>
+<p>В соответствии с Директивой 2011/83/ЕС о правах потребителей, у тебя как у потребителя обычно есть право в течение 14 дней отказаться от приобретения цифрового контента/услуги без указания причины.</p>
+<div class="callout"><div class="callout-title">ВАЖНО — соглашаясь на немедленный доступ, ты теряешь право на отказ</div><p>Поскольку доступ к содержимому Сайта предоставляется сразу после успешной оплаты (а не после ожидания 14 дней), производя оплату ты явно соглашаешься с тем, что оказание услуги начинается немедленно, и подтверждаешь, что проинформирован — как только услуга полностью оказана (т.е. доступ предоставлен), ты теряешь право отказаться от договора и получить возврат средств, за исключением случаев, указанных в п. 4.2.</p></div>
+<h3 id="s4.2-ru">4.2 Возврат средств</h3>
+<p>Несмотря на п. 4.1, мы рассматриваем запросы на возврат индивидуально, по обращению, особенно в случаях, когда:</p>
+<ul>
+  <li>оплата произведена, но аккаунт или доступ не были созданы из-за технической ошибки;</li>
+  <li>оплата произведена дважды или ошибочно на неверную сумму;</li>
+  <li>другие обоснованные и добросовестные случаи по нашему усмотрению.</li>
+</ul>
+<p>Чтобы запросить возврат, напиши администратору в Telegram-боте @mismisimsbot или на <span class="placeholder">[EMAIL]</span>, указав логин и подтверждение платежа. Запросы на возврат рассматриваются вручную, обычно в течение 5–7 рабочих дней.</p>
+<h2 id="s5-ru">5. Управление аккаунтом и удаление</h2>
+<p>Ты в любой момент вправе запросить удаление своего аккаунта и всех связанных с ним данных — независимо от того, активна ли подписка.</p>
+<p>Для этого напиши администратору в Telegram-боте @mismisimsbot или на <span class="placeholder">[EMAIL]</span> с просьбой удалить аккаунт. Удаление необратимо — все твои сессии завершаются, а данные удаляются из системы.</p>
+<p>Мы оставляем за собой право приостановить или удалить аккаунт также без предварительного предупреждения, если будет установлено нарушение настоящих Условий (например, оскорбительный контент, попытка обойти ограничения безопасности, совместное использование аккаунта с целью обойти лимит устройств).</p>
+<h2 id="s6-ru">6. Ограничения по устройствам и сессиям</h2>
+<p>На одном аккаунте одновременно может быть активно не более 3 сессий входа (устройств). Сессия входа автоматически истекает в течение 30 дней. Ты можешь в любой момент завершить сессию с конкретного устройства (функция «Выйти»).</p>
+<h2 id="s7-ru">7. Использование искусственного интеллекта</h2>
+<p>Задания, их оценка и объяснения генерируются с помощью стороннего сервиса искусственного интеллекта (Google Gemini). Несмотря на то, что мы используем механизмы валидации, сгенерированный AI контент может иногда содержать неточности. Сайт задуман как вспомогательное учебное средство, а не официальная замена оценке экзамена VISC. Итоговый результат экзамена определяет исключительно официальный орган проведения экзамена.</p>
+<h2 id="s8-ru">8. Ограничение ответственности</h2>
+<p>Сайт предоставляется «как есть». Мы не гарантируем, что использование Сайта обеспечит конкретный результат на официальном экзамене VISC. Мы не несём ответственности за убытки, возникшие вследствие перебоев в работе Сайта, технических ошибок или недоступности сторонних сервисов (Cloudflare, Google, Telegram), в той мере, в какой это допускается применимым законодательством.</p>
+<h2 id="s9-ru">9. Изменения в Условиях</h2>
+<p>Мы оставляем за собой право изменять настоящие Условия. О существенных изменениях мы проинформируем объявлением на Сайте. Продолжая пользоваться Сайтом после публикации изменений, ты подтверждаешь согласие с обновлёнными Условиями.</p>
+<h2 id="s10-ru">10. Применимое право и разрешение споров</h2>
+<p>К настоящим Условиям применяется законодательство Латвийской Республики. Споры, которые не удаётся разрешить путём переговоров, рассматриваются судами Латвийской Республики. Если ты являешься потребителем, у тебя также есть право обратиться в Центр защиты прав потребителей (Patērētāju tiesību aizsardzības centrs, www.ptac.gov.lv) или воспользоваться платформой ЕС по онлайн-разрешению споров (ec.europa.eu/consumers/odr).</p>
+
+</div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex; gap:24px; flex-wrap:wrap;">
+      <a href="/l/privacy.html"><span data-lang-inline data-lang="lv" class="active">Privātuma politika</span><span data-lang-inline data-lang="ru">Политика конфиденциальности</span></a>
+      <a href="/l/terms.html"><span data-lang-inline data-lang="lv" class="active">Lietošanas noteikumi</span><span data-lang-inline data-lang="ru">Условия использования</span></a>
+    </div>
+    <span class="foot-rights">© 2026 English OL</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  function setLang(lang){
+    document.querySelectorAll('[data-lang-content]').forEach(function(el){
+      el.classList.toggle('active', el.getAttribute('data-lang') === lang);
+    });
+    document.querySelectorAll('[data-lang-inline]').forEach(function(el){
+      el.classList.toggle('active', el.getAttribute('data-lang') === lang);
+    });
+    document.querySelectorAll('#langSwitch button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    document.documentElement.lang = lang;
+    try { localStorage.setItem('site_lang', lang); } catch(e) {}
+  }
+  document.querySelectorAll('#langSwitch button').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
+  });
+  var saved = null;
+  try { saved = localStorage.getItem('site_lang'); } catch(e) {}
+  if (saved === 'ru') setLang('ru');
+})();
+</script>
+
+</body>
+</html>

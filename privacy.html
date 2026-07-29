@@ -1,0 +1,399 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Privātuma politika / Политика конфиденциальности — English OL</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@500&display=swap');
+
+:root{
+  --bg:#08090b;
+  --bg-soft:#0d0f13;
+  --ink:#eef0f4;
+  --ink-dim:#9aa2b1;
+  --ink-mute:#5f6675;
+  --line:rgba(255,255,255,.08);
+  --line-soft:rgba(255,255,255,.05);
+  --indigo:#6366f1;
+  --indigo2:#818cf8;
+  --cyan:#22d3ee;
+  --emerald:#34d399;
+  --rose:#fb7185;
+  --amber:#fbbf24;
+  --grad-main: linear-gradient(120deg, var(--indigo) 0%, var(--cyan) 100%);
+  --grad-text: linear-gradient(120deg, #a5b4fc 0%, #67e8f9 100%);
+}
+*,*::before,*::after{box-sizing:border-box;}
+html{scroll-behavior:smooth;}
+body{
+  margin:0; background:var(--bg); color:var(--ink);
+  font-family:'Inter',sans-serif; font-size:15.5px; line-height:1.65;
+  -webkit-font-smoothing:antialiased;
+}
+.wrap{max-width:820px; margin:0 auto; padding:0 24px;}
+a{color:var(--indigo2); text-decoration:underline; text-underline-offset:2px;}
+a:hover{color:var(--cyan);}
+
+/* ---- header ---- */
+header.nav{
+  position:sticky; top:0; z-index:50;
+  background:rgba(8,9,11,.85); backdrop-filter:blur(10px);
+  border-bottom:1px solid var(--line);
+}
+header.nav .wrap{display:flex; align-items:center; justify-content:space-between; height:64px;}
+.logo-mark{
+  width:30px; height:30px; border-radius:9px; background:var(--grad-main);
+  display:flex; align-items:center; justify-content:center; flex:none;
+}
+.brand{display:flex; align-items:center; gap:10px; text-decoration:none; color:var(--ink);}
+.brand span{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:17px;}
+.grad-text{background:var(--grad-text); -webkit-background-clip:text; background-clip:text; color:transparent;}
+.back-link{display:flex; align-items:center; gap:8px; color:var(--ink-dim); font-size:14px; text-decoration:none;}
+.back-link:hover{color:var(--ink);}
+.seg.lang{display:flex; gap:2px; background:var(--line-soft); border-radius:9px; padding:3px; border:1px solid var(--line);}
+.seg.lang button{
+  padding:6px 12px; border-radius:7px; font-size:12.5px; font-weight:700;
+  color:var(--ink-mute); background:none; border:none; font-family:inherit; cursor:pointer;
+}
+.seg.lang button.active{background:#14151b; color:var(--ink);}
+.header-right{display:flex; align-items:center; gap:16px;}
+
+/* ---- content ---- */
+main{padding:52px 0 90px;}
+.doc-title{font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:clamp(26px,4vw,36px); margin:0 0 6px;}
+.doc-subtitle{color:var(--ink-dim); font-size:15px; margin:0 0 4px;}
+.doc-updated{color:var(--ink-mute); font-size:13px; margin:0 0 32px;}
+.doc-intro{color:var(--ink-dim); margin-bottom:36px; padding-bottom:32px; border-bottom:1px solid var(--line);}
+h2{
+  font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:20px;
+  margin:40px 0 14px; color:var(--ink); scroll-margin-top:80px;
+}
+h3{
+  font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:16px;
+  margin:24px 0 10px; color:var(--ink);
+}
+p{color:var(--ink-dim); margin:0 0 14px;}
+.doc-updated-inline{color:var(--ink-mute); font-size:13px; margin:-6px 0 28px;}
+ul{margin:0 0 14px; padding-left:22px; color:var(--ink-dim);}
+li{margin-bottom:8px;}
+strong{color:var(--ink); font-weight:600;}
+
+.field-table{
+  width:100%; border-collapse:collapse; margin:16px 0 24px;
+  background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:12px; overflow:hidden;
+}
+.field-table td{padding:11px 16px; border-bottom:1px solid var(--line-soft); font-size:14.5px; vertical-align:top;}
+.field-table tr:last-child td{border-bottom:none;}
+.field-table td:first-child{color:var(--ink-mute); width:36%; font-weight:600;}
+.field-table td:last-child{color:var(--ink-dim);}
+.placeholder{color:var(--amber); background:rgba(251,191,36,.1); padding:1px 6px; border-radius:5px; font-size:.92em;}
+
+.data-table{width:100%; border-collapse:collapse; margin:16px 0 24px; font-size:14px;}
+.data-table th{
+  text-align:left; padding:10px 14px; background:var(--line-soft); color:var(--ink);
+  font-weight:600; border-bottom:1px solid var(--line);
+}
+.data-table td{padding:12px 14px; border-bottom:1px solid var(--line-soft); color:var(--ink-dim); vertical-align:top;}
+.data-table tr:last-child td{border-bottom:none;}
+
+.callout{
+  background:rgba(251,191,36,.08); border:1px solid rgba(251,191,36,.25);
+  border-radius:14px; padding:18px 20px; margin:20px 0 28px;
+}
+.callout-title{color:var(--amber); font-weight:700; font-size:13.5px; margin-bottom:8px; text-transform:uppercase; letter-spacing:.03em;}
+.callout p{margin:0; color:var(--ink-dim); font-size:14.5px;}
+
+.toc{
+  background:rgba(255,255,255,.02); border:1px solid var(--line); border-radius:14px;
+  padding:20px 22px; margin-bottom:40px;
+}
+.toc-title{font-size:12.5px; font-weight:700; color:var(--ink-mute); text-transform:uppercase; letter-spacing:.04em; margin-bottom:12px;}
+.toc ol{margin:0; padding-left:20px; columns:2; column-gap:28px;}
+.toc li{margin-bottom:7px; break-inside:avoid;}
+.toc a{color:var(--ink-dim); text-decoration:none; font-size:14px;}
+.toc a:hover{color:var(--indigo2);}
+
+footer{border-top:1px solid var(--line); padding:32px 0;}
+footer .wrap{display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;}
+footer a{color:var(--ink-dim); font-size:13.5px; text-decoration:none;}
+footer a:hover{color:var(--ink);}
+.foot-rights{color:var(--ink-mute); font-size:13px;}
+
+[data-lang-content]{display:none;}
+[data-lang-content].active{display:block;}
+[data-lang-inline]{display:none;}
+[data-lang-inline].active{display:inline;}
+
+@media (max-width:640px){
+  .toc ol{columns:1;}
+  .field-table td:first-child{width:44%;}
+}
+</style>
+</head>
+<body>
+
+<header class="nav">
+  <div class="wrap">
+    <a href="/l/" class="brand">
+      <div class="logo-mark">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none"><path d="M4 19V6.5C4 5.67 4.67 5 5.5 5H18a1 1 0 0 1 1 1v13" stroke="#04050a" stroke-width="2" stroke-linecap="round"/><path d="M4 19a2 2 0 0 0 2 2h13" stroke="#04050a" stroke-width="2" stroke-linecap="round"/></svg>
+      </div>
+      <span>English <span class="grad-text">OL</span></span>
+    </a>
+    <div class="header-right">
+      <a href="/l/" class="back-link">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none"><path d="M19 12H5M5 12l6-6M5 12l6 6" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <span data-lang-inline data-lang="lv" class="active">Sākums</span>
+        <span data-lang-inline data-lang="ru">Главная</span>
+      </a>
+      <div class="seg lang" id="langSwitch">
+        <button data-lang="lv" class="active">LV</button>
+        <button data-lang="ru">RU</button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<main class="wrap">
+
+<!-- ═══════════ LATVIAN ═══════════ -->
+<div data-lang-content data-lang="lv" class="active">
+<h1 class="doc-title">Privātuma politika</h1>
+<p class="doc-subtitle">English OL — mācību platforma centralizētā eksāmena (VISC CE, optimālais līmenis) sagatavošanai</p>
+<nav class="toc"><div class="toc-title">Satura rādītājs</div><ol>
+    <li><a href="#s1-lv">1. Pārzinis</a></li>
+    <li><a href="#s2-lv">2. Kādus datus mēs vācam</a></li>
+    <li><a href="#s3-lv">3. Juridiskais pamats</a></li>
+    <li><a href="#s4-lv">4. Datu apstrādātāji</a></li>
+    <li><a href="#s5-lv">5. Glabāšanas termiņi</a></li>
+    <li><a href="#s6-lv">6. Sīkdatnes</a></li>
+    <li><a href="#s7-lv">7. Tavas tiesības</a></li>
+    <li><a href="#s8-lv">8. Nepilngadīgo dati</a></li>
+    <li><a href="#s9-lv">9. Datu drošība</a></li>
+    <li><a href="#s10-lv">10. Izmaiņas politikā</a></li>
+  </ol></nav>
+<p class="doc-updated-inline">Pēdējie grozījumi / Последнее обновление: <span class="placeholder">[DATUMS / ДАТА]</span></p>
+<p>Šī privātuma politika izskaidro, kādus personas datus vietne English OL (turpmāk — "Vietne", "mēs") vāc, kā tos izmanto, kam nodod un kā Tu vari īstenot savas tiesības saskaņā ar Vispārīgo datu aizsardzības regulu (ES) 2016/679 ("GDPR").</p>
+<p>Vietne ir paredzēta skolēniem, kuri gatavojas VISC centralizētajam eksāmenam angļu valodā. Ja Tev vēl nav 18 gadu, iesakām šo dokumentu izlasīt kopā ar vecāku vai aizbildni — it īpaši sadaļu par maksas reģistrāciju.</p>
+<h2 id="s1-lv">1. Pārzinis (kas atbild par Taviem datiem)</h2>
+<p>Datu pārzinis GDPR izpratnē ir:</p>
+<table class="field-table">
+  <tr><td>Nosaukums</td><td><span class="placeholder">[UZĽĒMUMA NOSAUKUMS — SIA/IK]</span></td></tr>
+  <tr><td>Reģistrācijas numurs</td><td><span class="placeholder">[REĢ. NR.]</span></td></tr>
+  <tr><td>Juridiskā adrese</td><td><span class="placeholder">[ADRESE]</span></td></tr>
+  <tr><td>E-pasts saziņai / datu aizsardzības jautājumiem</td><td><span class="placeholder">[EMAIL]</span></td></tr>
+</table>
+<p>Ja Tev ir jautājumi par saviem datiem, raksti uz e-pastu augšā vai sazinies ar administratoru Telegram botā, ar kuru veici reģistrāciju.</p>
+<h2 id="s2-lv">2. Kādus datus mēs vācam</h2>
+<p>Vācam tikai tos datus, kas nepieciešami platformas darbībai. Konkrēti:</p>
+<h3 id="s2.1-lv">2.1 Dati, ko sniedz Tu pats reģistrējoties</h3>
+<ul>
+  <li>Vārds (displayName) — kā vēlies, lai Tevi redz citi lietotāji (piemēram, līderu sarakstā).</li>
+  <li>Lietotājvārds (username) — Tavs pieteikšanās identifikators, redzams arī citiem lietotājiem.</li>
+  <li>Parole — tiek uzglabāta tikai kā kriptogrāfisks jaukājums (SHA-256 ar sāli), nekad kā vienkāršs teksts. Mēs paši nevaram redzēt Tavu paroli.</li>
+  <li>Ievadtesta rezultāti un kļūdas (izvēles) — ja pirms reģistrācijas izpildīji bezmaksas ievadtestu, ar Tavu piekrišanu (formas aizpildīšanu) rezultāts un konkrētās kļūdainās atbildes tiek saglabātas Tavā profilā, lai varētu tās vēlāk parādīt. Šis solis nav obligāts — vari reģistrēties arī bez testa izpildes.</li>
+</ul>
+<h3 id="s2.2-lv">2.2 Dati, kas rodas, izmantojot Telegram botu (@mismisimsbot)</h3>
+<ul>
+  <li>Telegram chat ID — tehnisks identifikators, kas ļauj botam sazināties ar Tavu Telegram kontu (nosūtīt paroli, apstiprinājumus u.tml.).</li>
+  <li>Maksājuma identifikators (Telegram Stars) — apstiprinājums, ka maksājums par reģistrāciju ir veikts. Mēs neredzam un neuzglabājam Tavus bankas vai maksājumu kartes datus — tos apstrādā Telegram.</li>
+</ul>
+<h3 id="s2.3-lv">2.3 Tehniskie dati (vācas automātiski)</h3>
+<ul>
+  <li>IP adrese — īslaicīgi izmanto, lai novērstu ļaunprātīgu piekļuves mēģinājumu pārpalikumu (piemēram, pārmērīgus pieteikšanās mēģinājumus).</li>
+  <li>Pārlūkprogrammas/ierīces veids (User-Agent) — izmanto, lai Tu varētu redzēt un pārvaldīt savas aktīvās pieteikšanās sesijas (līdz 3 ierīcēm vienlaicīgi).</li>
+</ul>
+<h3 id="s2.4-lv">2.4 Mācību saturs, ko Tu ievadi (Writing sadaļa)</h3>
+<p>Ja izpildi Writing uzdevumus (e-pasta vēstule vai eseja), Tavs sarakstītais teksts tiek nosūtīts AI pakalpojumam (skat. 4. sadaļu), lai to izvērtētu un sniegtu atgriezenisko saiti. Neievadi šajos tekstos sensitīvu personisku informāciju (piemēram, veselības datus, citu cilvēku datus), kas nav nepieciešama uzdevuma izpildei — pat ja uzdevums lūdz rakstīt par personisko pieredzi, izvēlies izdomātus vai vispārinātus piemērus.</p>
+<h2 id="s3-lv">3. Kāpēc mēs apstrādājam Tavus datus (juridiskais pamats)</h2>
+<table class="data-table">
+<tr><th>Datu kategorija</th><th>Juridiskais pamats (GDPR 6. pants)</th></tr>
+  <tr><td>Vārds, lietotājvārds, parole</td><td>Līguma izpilde (1)(b) — nepieciešams, lai sniegtu Tev piekļuvi apmaksātajam pakalpojumam</td></tr>
+  <tr><td>Telegram chat ID, maksājuma ID</td><td>Līguma izpilde (1)(b) — reģistrācijas un maksājuma apstrāde</td></tr>
+  <tr><td>Ievadtesta rezultāti un kļūdas</td><td>Piekrišana (1)(a) — šis solis nav obligāts, sniedz to brīvprātīgi</td></tr>
+  <tr><td>IP adrese, ierīces tips</td><td>Leģitīmās intereses (1)(f) — platformas drošība, ļaunprātīgas izmantošanas novēršana</td></tr>
+  <tr><td>Writing uzdevumu teksti</td><td>Līguma izpilde (1)(b) — pakalpojuma (uzdevumu vērtēšanas) būtiska daļa</td></tr>
+</table>
+<h2 id="s4-lv">4. Kam nododam Tavus datus (datu apstrādātāji)</h2>
+<p>Mēs nepārdodam Tavus datus un neizmantojam tos reklāmas nolūkos. Datu apstrādei izmantojam šādus ārpakalpojumu sniedzējus:</p>
+<table class="data-table">
+<tr><th>Pakalpojums</th><th>Kāpēc un kādi dati tiek nodoti</th></tr>
+  <tr><td>Cloudflare, Inc.</td><td>Vietnes un servera (Workers) hostings, datubāze (KV Namespace). Šeit fiziski tiek glabāti visi Tavi konta dati.</td></tr>
+  <tr><td>Google (Gemini API)</td><td>Reading un Writing uzdevumu ģenerēšana un pārbaude ar mākslīgo intelektu. Writing uzdevumos Tavs ievadītais teksts tiek nosūtīts izvērtēšanai.</td></tr>
+  <tr><td>Telegram FZ-LLC</td><td>Reģistrācijas pabeigšana, maksājumu apstrāde (Telegram Stars), paziņojumi.</td></tr>
+</table>
+<p>Ar šiem pakalpojumu sniedzējiem esam noslēguši vai izmantojam viņu standarta datu apstrādes nosacījumus. Ja pakalpojumu sniedzējs atrodas ārpus ES/EEZ, datu nodošana notiek, pamatojoties uz Eiropas Komisijas atzītiem aizsardzības mehānismiem (piemēram, standarta līguma klauzulām).</p>
+<h2 id="s5-lv">5. Cik ilgi glabājam Tavus datus</h2>
+<ul>
+  <li>Konta dati (vārds, lietotājvārds, parole) — kamēr konts pastāv. Ja Tavs abonements beidzas un netiek atjaunots, konts un dati netiek automātiski dzēsti — tos var dzēst pēc Tava pieprasījuma (skat. 7. sadaļu) vai administrators var tos dzēst manuāli.</li>
+  <li>Pieteikšanās sesijas — automātiski beidzas 30 dienu laikā no izveides.</li>
+  <li>Reģistrācijas pieprasījums (pirms apmaksas) — tiek dzēsts automātiski pēc 15 minūtēm, ja apmaksa netiek pabeigta.</li>
+  <li>AI atbilžu kešatmiņa (identiski jautājumi/uzdevumi) — līdz 90 dienām, tehniskiem nolūkiem (ātrāka atbilde atkārtotiem pieprasījumiem).</li>
+</ul>
+<h2 id="s6-lv">6. Sīkdatnes un lokālā krātuve</h2>
+<p>Vietne neizmanto sīkdatnes (cookies) reklāmas vai analītikas nolūkos un nepārsūta datus trešajām personām izsekošanas nolūkā.</p>
+<p>Vietne izmanto pārlūkprogrammas lokālo krātuvi (localStorage/sessionStorage), lai:</p>
+<ul>
+  <li>saglabātu Tavu pieteikšanās sesiju (lai nebūtu jāpiesakās atkārtoti katrā lapā);</li>
+  <li>attēlotu Tavu vārdu un iepriekšējo progresu bez atkārtotas datu ielādes no servera.</li>
+</ul>
+<p>Šī informācija ir tehniski nepieciešama pakalpojuma darbībai, tāpēc saskaņā ar ES E-privātuma direktīvas 5(3). pantu tās izmantošanai nav nepieciešama Tava atsevišķa piekrišana. Informācija tiek dzēsta, kad izej no konta (poga "Iziet") vai notīrot pārlūkprogrammas datus.</p>
+<h2 id="s7-lv">7. Tavas tiesības</h2>
+<p>Saskaņā ar GDPR Tev ir šādas tiesības attiecībā uz saviem datiem:</p>
+<ul>
+  <li>Piekļuve — uzzināt, kādus datus par Tevi glabājam.</li>
+  <li>Labošana — pieprasīt izlabot neprecīzus datus.</li>
+  <li>Dzēšana ("tiesības tikt aizmirstam") — pieprasīt sava konta un datu pilnīgu dzēšanu.</li>
+  <li>Piekrišanas atsaukšana — attiecībā uz datiem, kas apstrādāti ar Tavu piekrišanu (piemēram, ievadtesta rezultāti).</li>
+  <li>Sūdzības iesniegšana — Datu valsts inspekcijai (www.dvi.gov.lv), ja uzskati, ka Tavas tiesības ir pārkāptas.</li>
+</ul>
+<p>Lai īstenotu šīs tiesības, raksti mums uz <span class="placeholder">[EMAIL]</span> vai sazinies ar administratoru caur Telegram botu @mismisimsbot. Atbildēsim ne vēlāk kā 30 dienu laikā.</p>
+<h2 id="s8-lv">8. Nepilngadīgo dati</h2>
+<p>Ievērojot to, ka daļa lietotāju gatavojas skolas eksāmenam un var būt jaunāki par 18 gadiem, mēs apzināti vācam pēc iespējas mazāk datu — nelūdzam dzimšanas datumu, adresi vai citu identificējošu informāciju, kas nav tieši nepieciešama pakalpojuma sniegšanai. Ja esi jaunāks par 16 gadiem un reģistrējies patstāvīgi, iesakām to darīt kopā ar vecāka vai aizbildņa piekrišanu, jo reģistrācija ir maksas pakalpojums.</p>
+<h2 id="s9-lv">9. Datu drošība</h2>
+<p>Paroles tiek glabātas tikai kā kriptogrāfiski jaukājumi (SHA-256 ar individuālu sāli katram lietotājam) — nevis vienkāršā tekstā. Piekļuve administratora funkcijām ir ierobežota ar konkrētu Telegram kontu. Ja rodas aizdomas par datu drošības incidentu, sazinies ar mums nekavējoties uz <span class="placeholder">[EMAIL]</span>.</p>
+<h2 id="s10-lv">10. Izmaiņas šajā politikā</h2>
+<p>Ja mainīsim šo privātuma politiku būtiski (piemēram, sāksim izmantot analītikas rīkus vai jaunus datu apstrādātājus), informēsim Tevi ar paziņojumu vietnē pirms izmaiņu stāšanās spēkā.</p>
+
+</div>
+
+<!-- ═══════════ RUSSIAN ═══════════ -->
+<div data-lang-content data-lang="ru">
+<h1 class="doc-title">Политика конфиденциальности</h1>
+<p class="doc-subtitle">English OL — платформа подготовки к централизованному экзамену по английскому языку (VISC CE, optimālais līmenis)</p>
+<nav class="toc"><div class="toc-title">Содержание</div><ol>
+    <li><a href="#s1-ru">1. Контроллер данных</a></li>
+    <li><a href="#s2-ru">2. Какие данные собираем</a></li>
+    <li><a href="#s3-ru">3. Правовое основание</a></li>
+    <li><a href="#s4-ru">4. Обработчики данных</a></li>
+    <li><a href="#s5-ru">5. Сроки хранения</a></li>
+    <li><a href="#s6-ru">6. Cookie</a></li>
+    <li><a href="#s7-ru">7. Твои права</a></li>
+    <li><a href="#s8-ru">8. Данные несовершеннолетних</a></li>
+    <li><a href="#s9-ru">9. Безопасность данных</a></li>
+    <li><a href="#s10-ru">10. Изменения в политике</a></li>
+  </ol></nav>
+<p class="doc-updated-inline">Pēdējie grozījumi / Последнее обновление: <span class="placeholder">[DATUMS / ДАТА]</span></p>
+<p>Настоящая политика конфиденциальности объясняет, какие персональные данные собирает сайт English OL (далее — «Сайт», «мы»), как их использует, кому передаёт и как ты можешь реализовать свои права в соответствии с Общим регламентом по защите данных (ЕС) 2016/679 («GDPR»).</p>
+<p>Сайт предназначен для школьников, готовящихся к централизованному экзамену VISC по английскому языку. Если тебе ещё нет 18 лет, рекомендуем прочитать этот документ вместе с родителем или опекуном — особенно раздел о платной регистрации.</p>
+<h2 id="s1-ru">1. Кто отвечает за твои данные (контроллер)</h2>
+<p>Контроллером данных в понимании GDPR является:</p>
+<table class="field-table">
+  <tr><td>Название</td><td><span class="placeholder">[НАЗВАНИЕ КОМПАНИИ — SIA/ИП]</span></td></tr>
+  <tr><td>Регистрационный номер</td><td><span class="placeholder">[РЕГ. №]</span></td></tr>
+  <tr><td>Юридический адрес</td><td><span class="placeholder">[АДРЕС]</span></td></tr>
+  <tr><td>Email для связи / вопросов по защите данных</td><td><span class="placeholder">[EMAIL]</span></td></tr>
+</table>
+<p>Если у тебя есть вопросы о своих данных, напиши на email выше или свяжись с администратором через Telegram-бота, через который ты регистрировался.</p>
+<h2 id="s2-ru">2. Какие данные мы собираем</h2>
+<p>Мы собираем только те данные, которые необходимы для работы платформы. А именно:</p>
+<h3 id="s2.1-ru">2.1 Данные, которые ты предоставляешь при регистрации</h3>
+<ul>
+  <li>Имя (displayName) — как хочешь, чтобы тебя видели другие пользователи (например, в списке лидеров).</li>
+  <li>Логин (username) — твой идентификатор для входа, виден также другим пользователям.</li>
+  <li>Пароль — хранится только как криптографический хэш (SHA-256 с солью), никогда в виде обычного текста. Мы сами не можем увидеть твой пароль.</li>
+  <li>Результаты вступительного теста и ошибки (опционально) — если перед регистрацией ты прошёл бесплатный вступительный тест, с твоего согласия (заполнением формы) результат и конкретные неправильные ответы сохраняются в твоём профиле, чтобы позже их можно было показать. Этот шаг не обязателен — можно зарегистрироваться и без прохождения теста.</li>
+</ul>
+<h3 id="s2.2-ru">2.2 Данные, возникающие при использовании Telegram-бота (@mismisimsbot)</h3>
+<ul>
+  <li>Telegram chat ID — технический идентификатор, позволяющий боту связываться с твоим Telegram-аккаунтом (отправить пароль, подтверждения и т.п.).</li>
+  <li>Идентификатор платежа (Telegram Stars) — подтверждение того, что оплата за регистрацию произведена. Мы не видим и не храним данные твоей банковской карты — их обрабатывает Telegram.</li>
+</ul>
+<h3 id="s2.3-ru">2.3 Технические данные (собираются автоматически)</h3>
+<ul>
+  <li>IP-адрес — используется временно для предотвращения злоупотреблений (например, чрезмерного количества попыток входа).</li>
+  <li>Тип браузера/устройства (User-Agent) — используется, чтобы ты мог видеть и управлять своими активными сессиями входа (до 3 устройств одновременно).</li>
+</ul>
+<h3 id="s2.4-ru">2.4 Учебный текст, который ты вводишь (раздел Writing)</h3>
+<p>Если ты выполняешь задания Writing (письмо или эссе), написанный тобой текст отправляется в AI-сервис (см. раздел 4) для проверки и обратной связи. Не указывай в этих текстах чувствительную личную информацию (например, данные о здоровье, данные других людей), которая не требуется для выполнения задания — даже если задание просит написать о личном опыте, выбирай вымышленные или обобщённые примеры.</p>
+<h2 id="s3-ru">3. Почему мы обрабатываем твои данные (правовое основание)</h2>
+<table class="data-table">
+<tr><th>Категория данных</th><th>Правовое основание (ст. 6 GDPR)</th></tr>
+  <tr><td>Имя, логин, пароль</td><td>Исполнение договора (1)(b) — необходимо для предоставления доступа к платной услуге</td></tr>
+  <tr><td>Telegram chat ID, ID платежа</td><td>Исполнение договора (1)(b) — обработка регистрации и платежа</td></tr>
+  <tr><td>Результаты теста и ошибки</td><td>Согласие (1)(a) — этот шаг не обязателен, предоставляется добровольно</td></tr>
+  <tr><td>IP-адрес, тип устройства</td><td>Законный интерес (1)(f) — безопасность платформы, предотвращение злоупотреблений</td></tr>
+  <tr><td>Тексты заданий Writing</td><td>Исполнение договора (1)(b) — неотъемлемая часть услуги (проверки заданий)</td></tr>
+</table>
+<h2 id="s4-ru">4. Кому мы передаём твои данные (обработчики данных)</h2>
+<p>Мы не продаём твои данные и не используем их в рекламных целях. Для обработки данных мы используем следующих внешних поставщиков услуг:</p>
+<table class="data-table">
+<tr><th>Сервис</th><th>Зачем и какие данные передаются</th></tr>
+  <tr><td>Cloudflare, Inc.</td><td>Хостинг сайта и сервера (Workers), база данных (KV Namespace). Здесь физически хранятся все данные твоего аккаунта.</td></tr>
+  <tr><td>Google (Gemini API)</td><td>Генерация и проверка заданий Reading и Writing с помощью искусственного интеллекта. В заданиях Writing введённый тобой текст отправляется на проверку.</td></tr>
+  <tr><td>Telegram FZ-LLC</td><td>Завершение регистрации, обработка платежей (Telegram Stars), уведомления.</td></tr>
+</table>
+<p>С этими поставщиками услуг заключены или используются их стандартные условия обработки данных. Если поставщик услуг находится за пределами ЕС/ЕЭЗ, передача данных происходит на основании признанных Европейской комиссией механизмов защиты (например, стандартных договорных положений).</p>
+<h2 id="s5-ru">5. Как долго мы храним твои данные</h2>
+<ul>
+  <li>Данные аккаунта (имя, логин, пароль) — пока аккаунт существует. Если твоя подписка истекает и не продлевается, аккаунт и данные автоматически не удаляются — их можно удалить по твоему запросу (см. раздел 7) или администратор может удалить их вручную.</li>
+  <li>Сессии входа — автоматически истекают через 30 дней с момента создания.</li>
+  <li>Заявка на регистрацию (до оплаты) — автоматически удаляется через 15 минут, если оплата не завершена.</li>
+  <li>Кэш ответов AI (идентичные вопросы/задания) — до 90 дней, для технических целей (более быстрый ответ на повторные запросы).</li>
+</ul>
+<h2 id="s6-ru">6. Cookie и локальное хранилище</h2>
+<p>Сайт не использует cookie-файлы в рекламных или аналитических целях и не передаёт данные третьим лицам для отслеживания.</p>
+<p>Сайт использует локальное хранилище браузера (localStorage/sessionStorage), чтобы:</p>
+<ul>
+  <li>сохранить твою сессию входа (чтобы не нужно было входить заново на каждой странице);</li>
+  <li>отображать твоё имя и предыдущий прогресс без повторной загрузки данных с сервера.</li>
+</ul>
+<p>Эта информация технически необходима для работы сервиса, поэтому согласно ст. 5(3) Директивы ЕС о конфиденциальности в электронных коммуникациях её использование не требует твоего отдельного согласия. Информация удаляется при выходе из аккаунта (кнопка «Выйти») или при очистке данных браузера.</p>
+<h2 id="s7-ru">7. Твои права</h2>
+<p>В соответствии с GDPR у тебя есть следующие права в отношении своих данных:</p>
+<ul>
+  <li>Доступ — узнать, какие данные о тебе мы храним.</li>
+  <li>Исправление — запросить исправление неточных данных.</li>
+  <li>Удаление («право быть забытым») — запросить полное удаление своего аккаунта и данных.</li>
+  <li>Отзыв согласия — в отношении данных, обработанных с твоего согласия (например, результаты вступительного теста).</li>
+  <li>Подача жалобы — в Государственную инспекцию данных Латвии (Datu valsts inspekcija, www.dvi.gov.lv), если считаешь, что твои права нарушены.</li>
+</ul>
+<p>Чтобы реализовать эти права, напиши нам на <span class="placeholder">[EMAIL]</span> или свяжись с администратором через Telegram-бота @mismisimsbot. Ответим не позднее чем в течение 30 дней.</p>
+<h2 id="s8-ru">8. Данные несовершеннолетних</h2>
+<p>Учитывая, что часть пользователей готовится к школьному экзамену и может быть младше 18 лет, мы сознательно собираем как можно меньше данных — не запрашиваем дату рождения, адрес или другую идентифицирующую информацию, не являющуюся напрямую необходимой для оказания услуги. Если тебе меньше 16 лет и ты регистрируешься самостоятельно, рекомендуем делать это с согласия родителя или опекуна, так как регистрация является платной услугой.</p>
+<h2 id="s9-ru">9. Безопасность данных</h2>
+<p>Пароли хранятся только в виде криптографических хэшей (SHA-256 с индивидуальной солью для каждого пользователя) — никогда в виде обычного текста. Доступ к функциям администратора ограничен конкретным Telegram-аккаунтом. Если у тебя есть подозрения об инциденте безопасности данных, немедленно свяжись с нами по адресу <span class="placeholder">[EMAIL]</span>.</p>
+<h2 id="s10-ru">10. Изменения в этой политике</h2>
+<p>Если мы существенно изменим эту политику конфиденциальности (например, начнём использовать инструменты аналитики или новых обработчиков данных), мы уведомим тебя объявлением на сайте до вступления изменений в силу.</p>
+
+</div>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <div style="display:flex; gap:24px; flex-wrap:wrap;">
+      <a href="/l/privacy.html"><span data-lang-inline data-lang="lv" class="active">Privātuma politika</span><span data-lang-inline data-lang="ru">Политика конфиденциальности</span></a>
+      <a href="/l/terms.html"><span data-lang-inline data-lang="lv" class="active">Lietošanas noteikumi</span><span data-lang-inline data-lang="ru">Условия использования</span></a>
+    </div>
+    <span class="foot-rights">© 2026 English OL</span>
+  </div>
+</footer>
+
+<script>
+(function(){
+  function setLang(lang){
+    document.querySelectorAll('[data-lang-content]').forEach(function(el){
+      el.classList.toggle('active', el.getAttribute('data-lang') === lang);
+    });
+    document.querySelectorAll('[data-lang-inline]').forEach(function(el){
+      el.classList.toggle('active', el.getAttribute('data-lang') === lang);
+    });
+    document.querySelectorAll('#langSwitch button').forEach(function(b){
+      b.classList.toggle('active', b.getAttribute('data-lang') === lang);
+    });
+    document.documentElement.lang = lang;
+    try { localStorage.setItem('site_lang', lang); } catch(e) {}
+  }
+  document.querySelectorAll('#langSwitch button').forEach(function(b){
+    b.addEventListener('click', function(){ setLang(b.getAttribute('data-lang')); });
+  });
+  var saved = null;
+  try { saved = localStorage.getItem('site_lang'); } catch(e) {}
+  if (saved === 'ru') setLang('ru');
+})();
+</script>
+
+</body>
+</html>
