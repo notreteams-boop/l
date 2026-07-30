@@ -355,6 +355,22 @@ footer{border-top:1px solid var(--line-soft);}
   position:absolute; border-radius:50%; filter:blur(90px); opacity:.35; pointer-events:none;
 }
 
+/* мягкий переход hero → следующая секция: гасим и blob-хвост, и край карточки шагов */
+.hero-fade-out{
+  position:absolute; left:0; right:0; bottom:0; height:300px;
+  background:linear-gradient(to bottom, transparent 0%, rgba(8,9,11,.5) 40%, var(--bg) 80%);
+  pointer-events:none; z-index:1;
+}
+@media (max-width:860px){
+  /* в одноколоночной раскладке hero заметно выше — растягиваем зону смягчения и
+     прижимаем нижний cyan-blob ближе к центру, чтобы не вылезал в карточку шагов ниже */
+  .hero-fade-out{height:340px;}
+  .blob-bottom{
+    bottom:40px !important; left:50% !important; right:auto !important; transform:translateX(-50%);
+    width:340px !important; height:340px !important; opacity:.14 !important;
+  }
+}
+
 /* ================= AUTH MODAL ================= */
 .modal-ov{
   position:fixed; inset:0; z-index:999; display:none;
@@ -434,17 +450,21 @@ footer{border-top:1px solid var(--line-soft);}
   display:flex; flex-wrap:wrap; align-items:center; justify-content:space-between; gap:14px 24px;
 }
 .cookie-banner-text{color:var(--ink-dim); font-size:13.5px; line-height:1.5; flex:1 1 320px;}
-.cookie-banner-actions{display:flex; align-items:center; gap:16px; flex:0 0 auto;}
-.cookie-banner-actions #cbLink{color:var(--indigo2); font-size:13.5px; text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
-.cookie-banner-actions #cbLink:hover{color:var(--cyan);}
+.cookie-banner-text a{color:var(--indigo2); text-decoration:underline; text-underline-offset:2px; white-space:nowrap;}
+.cookie-banner-text a:hover{color:var(--cyan);}
 .cookie-banner-btn{
   padding:10px 22px; border-radius:10px; font-size:13.5px; font-weight:700;
-  background:var(--grad-main); color:#04050a; white-space:nowrap;
+  background:var(--grad-main); color:#04050a; white-space:nowrap; flex:0 0 auto;
 }
 .cookie-banner-btn:hover{filter:brightness(1.08);}
 @media (max-width:560px){
-  .cookie-banner-inner{flex-direction:column; align-items:stretch;}
-  .cookie-banner-actions{justify-content:space-between;}
+  .cookie-banner{padding:14px 16px calc(14px + env(safe-area-inset-bottom, 0px));}
+  .cookie-banner-inner{flex-wrap:nowrap; align-items:center; gap:12px;}
+  .cookie-banner-text{
+    flex:1 1 auto; min-width:0; font-size:12.5px; line-height:1.4;
+    display:-webkit-box; -webkit-line-clamp:3; -webkit-box-orient:vertical; overflow:hidden;
+  }
+  .cookie-banner-btn{padding:9px 16px; font-size:12.5px;}
 }
 .mspinner{
   display:inline-block; width:14px; height:14px; border-radius:50%;
@@ -505,9 +525,9 @@ footer{border-top:1px solid var(--line-soft);}
 <!-- ================= HERO ================= -->
 <section style="position:relative; padding:76px 0 40px; overflow:hidden;">
   <div class="blob" style="width:520px; height:520px; background:var(--indigo); top:-160px; right:-120px;"></div>
-  <div class="blob" style="width:420px; height:420px; background:var(--cyan); bottom:-180px; left:-140px; opacity:.2;"></div>
+  <div class="blob blob-bottom" style="width:420px; height:420px; background:var(--cyan); bottom:-180px; left:-140px; opacity:.2;"></div>
 
-  <div class="wrap hero-grid" style="position:relative; display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;">
+  <div class="wrap hero-grid" style="position:relative; z-index:2; display:grid; grid-template-columns:1.05fr .95fr; gap:56px; align-items:center;">
     <div>
       <span class="eyebrow" id="heroEyebrow" style="margin-bottom:22px; display:inline-flex;"></span>
       <h1 class="disp" style="font-size:clamp(34px,4.6vw,54px); margin-top:18px;">
@@ -540,7 +560,7 @@ footer{border-top:1px solid var(--line-soft);}
     </div>
 
     <!-- how-it-works steps -->
-    <div class="glass-strong float" style="padding:30px 28px;">
+    <div class="glass-strong float" style="padding:30px 28px; box-shadow:0 40px 90px -30px rgba(0,0,0,.45);">
       <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:22px;">
         <div>
           <div style="font-size:12px; color:var(--ink-mute);" id="dashTitle"></div>
@@ -554,6 +574,7 @@ footer{border-top:1px solid var(--line-soft);}
       <div id="stepsList" style="display:flex; flex-direction:column;"></div>
     </div>
   </div>
+  <div class="hero-fade-out"></div>
 </section>
 
 <!-- ================= LEVEL TEST CTA ================= -->
@@ -1336,8 +1357,7 @@ ru: {
     txt('ftRights', t.footer.rights);
 
     // cookie / GDPR banner
-    txt('cbText', t.cookieBanner.text);
-    txt('cbLink', t.cookieBanner.link);
+    $('cbText').innerHTML = t.cookieBanner.text + ' <a href="/l/privacy.html" target="_blank" rel="noopener">' + t.cookieBanner.link + '</a>';
     txt('cbAcceptBtn', t.cookieBanner.accept);
 
     // login button + lang switch labels
@@ -1528,10 +1548,7 @@ ru: {
 <div class="cookie-banner" id="cookieBanner">
   <div class="cookie-banner-inner">
     <span class="cookie-banner-text" id="cbText"></span>
-    <div class="cookie-banner-actions">
-      <a href="/l/privacy.html" target="_blank" rel="noopener" id="cbLink"></a>
-      <button class="cookie-banner-btn" id="cbAcceptBtn"></button>
-    </div>
+    <button class="cookie-banner-btn" id="cbAcceptBtn"></button>
   </div>
 </div>
 
@@ -1810,4 +1827,4 @@ function bindAuthModal() {
 }
 </script>
 </body>
-</html>
+                                                                </html>
