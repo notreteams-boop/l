@@ -122,7 +122,12 @@
       <p class="sub" data-i="sub">Katrs uzdevums tiek ģenerēts ar AI valsts eksāmena līmenī. Ieraksts skan 2 reizes.</p>
     </div>
 
-    <div class="grid">
+    <div class="seg level-seg rise" style="animation-delay:20ms; margin-bottom:22px;">
+      <div class="seg-item active" data-level="optimalais" data-i="levelOpt">Optimālais līmenis</div>
+      <div class="seg-item" data-level="augstakais" data-i="levelAdv">Augstākais līmenis</div>
+    </div>
+
+    <div class="grid" id="gridOptimalais">
       <a class="task-card rise" href="/l/ktask1.html" style="animation-delay:40ms">
         <div class="task-num">1</div>
         <div class="task-name" data-i="t1name">1. uzdevums</div>
@@ -154,6 +159,38 @@
       </a>
     </div>
 
+    <div class="grid hidden" id="gridAugstakais">
+      <a class="task-card rise" href="/l/listening-adv.html" style="animation-delay:40ms">
+        <div class="task-num">1</div>
+        <div class="task-name" data-i="a1name">1. uzdevums</div>
+        <div class="task-desc" data-i="a1desc">Raidieraksts: 8 jautājumi ar atbilžu variantiem A/B/C.</div>
+        <div class="task-foot">
+          <span class="task-pts" data-i="a1pts">8 punkti</span>
+          <span class="task-arrow"><svg class="i i-md" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
+        </div>
+      </a>
+
+      <a class="task-card rise" href="/l/listening-adv2.html" style="animation-delay:80ms">
+        <div class="task-num">2</div>
+        <div class="task-name" data-i="a2name">2. uzdevums</div>
+        <div class="task-desc" data-i="a2desc">Intervija: 7 jautājumi ar atbilžu variantiem A/B/C/D.</div>
+        <div class="task-foot">
+          <span class="task-pts" data-i="a2pts">7 punkti</span>
+          <span class="task-arrow"><svg class="i i-md" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
+        </div>
+      </a>
+
+      <a class="task-card rise" href="/l/listening-adv3.html" style="animation-delay:120ms">
+        <div class="task-num">3</div>
+        <div class="task-name" data-i="a3name">3. uzdevums</div>
+        <div class="task-desc" data-i="a3desc">Aizpildi piezīmes: intervija, 10 tukšumi (ne vairāk kā 3 vārdi).</div>
+        <div class="task-foot">
+          <span class="task-pts" data-i="a3pts">10 punkti</span>
+          <span class="task-arrow"><svg class="i i-md" viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6" /></svg></span>
+        </div>
+      </a>
+    </div>
+
     <div class="info-panel rise" style="animation-delay:160ms">
       <svg class="i i-md" viewBox="0 0 24 24"><circle cx="12" cy="12" r="10"/><path d="M12 16v-4M12 8h.01"/></svg>
       <p data-i="infoText">Katru ierakstu vari noklausīties ne vairāk kā 2 reizes — tāpat kā īstajā eksāmenā. Neskaidrību gadījumā izmanto tērzēšanu (••• pogu) jebkurā uzdevumā.</p>
@@ -169,6 +206,10 @@
       t1name: "1. uzdevums", t1desc: "Sasaiste: 6 runātāji un 8 apgalvojumi (A–H), 2 no tiem lieki.", t1pts: "6 punkti",
       t2name: "2. uzdevums", t2desc: "Aizpildi tukšumus: lekcijas stila ieraksts, 11 tukšumi ar vārdiem/skaitļiem.", t2pts: "11 punkti",
       t3name: "3. uzdevums", t3desc: "Intervija/dialogs: 8 jautājumi ar atbilžu variantiem A/B/C.", t3pts: "8 punkti",
+      levelOpt: "Optimālais līmenis", levelAdv: "Augstākais līmenis",
+      a1name: "1. uzdevums", a1desc: "Raidieraksts: 8 jautājumi ar atbilžu variantiem A/B/C.", a1pts: "8 punkti",
+      a2name: "2. uzdevums", a2desc: "Intervija: 7 jautājumi ar atbilžu variantiem A/B/C/D.", a2pts: "7 punkti",
+      a3name: "3. uzdevums", a3desc: "Aizpildi piezīmes: intervija, 10 tukšumi (ne vairāk kā 3 vārdi).", a3pts: "10 punkti",
       infoText: "Katru ierakstu vari noklausīties ne vairāk kā 2 reizes — tāpat kā īstajā eksāmenā. Neskaidrību gadījumā izmanto tērzēšanu (••• pogu) jebkurā uzdevumā.",
     },
     ru: {
@@ -177,6 +218,10 @@
       t1name: "Задание 1", t1desc: "Сопоставление: 6 говорящих и 8 утверждений (A–H), 2 из них лишние.", t1pts: "6 баллов",
       t2name: "Задание 2", t2desc: "Заполни пропуски: запись в стиле лекции, 11 пропусков словами/цифрами.", t2pts: "11 баллов",
       t3name: "Задание 3", t3desc: "Интервью/диалог: 8 вопросов с вариантами ответа A/B/C.", t3pts: "8 баллов",
+      levelOpt: "Оптимальный уровень", levelAdv: "Углублённый уровень",
+      a1name: "Задание 1", a1desc: "Подкаст: 8 вопросов с вариантами ответа A/B/C.", a1pts: "8 баллов",
+      a2name: "Задание 2", a2desc: "Интервью: 7 вопросов с вариантами ответа A/B/C/D.", a2pts: "7 баллов",
+      a3name: "Задание 3", a3desc: "Заполни заметки: интервью, 10 пропусков (не более 3 слов).", a3pts: "10 баллов",
       infoText: "Каждую запись можно прослушать не более 2 раз — как на настоящем экзамене. Если что-то неясно — используй чат (кнопка •••) в любом задании.",
     },
   };
@@ -193,6 +238,15 @@
       lang = el.getAttribute("data-lang");
       document.querySelectorAll(".seg-item[data-lang]").forEach(s => s.classList.toggle("active", s === el));
       applyLang();
+    });
+  });
+
+  document.querySelectorAll(".level-seg .seg-item[data-level]").forEach(el => {
+    el.addEventListener("click", () => {
+      const level = el.getAttribute("data-level");
+      document.querySelectorAll(".level-seg .seg-item[data-level]").forEach(s => s.classList.toggle("active", s === el));
+      document.getElementById("gridOptimalais").classList.toggle("hidden", level !== "optimalais");
+      document.getElementById("gridAugstakais").classList.toggle("hidden", level !== "augstakais");
     });
   });
 
