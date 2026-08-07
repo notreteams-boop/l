@@ -889,7 +889,7 @@ lv: {
       { t:"Sausa teorija nogurdina", d:"Bezgalīgas teksta sienas liek pamest mācīšanos pusceļā — vajag īsu un konkrētu formātu." },
     ],
     outro: "English OL izceļ katru kļūdu un paskaidro to vienkāršā valodā — tieši tā, kā trūkst vairumam skolēnu.",
-    cta: "Sākt bez maksas"
+    cta: "Reģistrēties"
   },
   beforeafter: {
     eyebrow: "Esejas pārbaude dzīvē",
@@ -972,9 +972,9 @@ lv: {
     ]
   },
   levelTest: {
-    eyebrow: "Bez maksas · 5 minūtes",
+    eyebrow: "5 minūtes",
     title: "Nezini, kāds ir tavs līmenis?",
-    sub: "Izpildi īsu 15 jautājumu testu un uzzini savu aptuveno CEFR līmeni un iespējamo procentuālo rezultātu eksāmenā — pilnīgi bez maksas.",
+    sub: "Izpildi īsu 15 jautājumu testu un uzzini savu aptuveno CEFR līmeni un iespējamo procentuālo rezultātu eksāmenā.",
     cta: "Pārbaudi savu līmeni →",
     metaQ: "15 jautājumi", metaT: "~5 minūtes"
   },
@@ -1033,7 +1033,7 @@ ru: {
       { t:"Сухая теория утомляет", d:"Бесконечные стены текста заставляют бросать учёбу на полпути — нужен короткий и конкретный формат." },
     ],
     outro: "English OL выделяет каждую ошибку и объясняет её простым языком — именно того, чего не хватает большинству учеников.",
-    cta: "Начать бесплатно"
+    cta: "Регистрация"
   },
   beforeafter: {
     eyebrow: "Проверка эссе в деле",
@@ -1116,9 +1116,9 @@ ru: {
     ]
   },
   levelTest: {
-    eyebrow: "Бесплатно · 5 минут",
+    eyebrow: "5 минут",
     title: "Не знаешь свой уровень?",
-    sub: "Пройди короткий тест из 15 вопросов и узнай свой примерный уровень CEFR и предполагаемый процент на экзамене — совершенно бесплатно.",
+    sub: "Пройди короткий тест из 15 вопросов и узнай свой примерный уровень CEFR и предполагаемый процент на экзамене.",
     cta: "Проверить свой уровень →",
     metaQ: "15 вопросов", metaT: "~5 минут"
   },
@@ -1159,7 +1159,7 @@ ru: {
     txt('heroT3', t.hero.title3);
     txt('heroSub', t.hero.sub);
     txt('seatsLabel', t.hero.seatsLabel);
-    txt('seatsVal', t.hero.seats);
+    renderSeats(); // реальное число вместо статичного t.hero.seats
     txt('priceFrom', t.hero.priceFrom);
     txt('priceVal', t.hero.priceVal);
     txt('priceUnit', t.hero.priceUnit);
@@ -1423,10 +1423,42 @@ ru: {
     document.querySelectorAll('.reveal').forEach(el=>revealObserver.observe(el));
   }
 
+  // ---------- real registered-users count for the seats block ----------
+  // Тот же воркер, что используется для login/register-check ниже в файле.
+  // Продублировано здесь как константа, чтобы не зависеть от порядка <script>-тегов.
+  // GET /public-stats — публичный эндпоинт без авторизации, добавлен в auth-worker
+  // специально для этого блока (отдаёт только { registered: N }, без личных данных).
+  const STATS_WORKER_URL = "https://auth-worker.gegeodin.workers.dev/";
+  const SEATS_CAPACITY = 100; // "из скольки" мест показываем — знаменатель дроби и 100% для полоски
+  let seatsRegistered = null; // реальное число, придёт из /public-stats
+
+  async function fetchSeatsCount(){
+    try {
+      const res = await fetch(STATS_WORKER_URL + "public-stats");
+      if (!res.ok) return;
+      const data = await res.json();
+      // Формат ответа воркера: { "registered": 47 }
+      if (typeof data.registered === 'number') {
+        seatsRegistered = data.registered;
+      }
+    } catch(e) {
+      // сеть недоступна / воркер не ответил — молча остаёмся на фолбэке ниже
+    }
+  }
+
+  function renderSeats(){
+    const capacity = SEATS_CAPACITY;
+    const count = (seatsRegistered !== null) ? Math.min(seatsRegistered, capacity) : 83; // фолбэк, если /public-stats недоступен
+    const pct = Math.max(0, Math.min(100, Math.round((count / capacity) * 100)));
+    txt('seatsVal', count + ' / ' + capacity);
+    const bar = $('seatsBar');
+    if (bar) bar.style.width = pct + '%';
+  }
+
   // ---------- animated bars / seats / gauge on load ----------
   function animateOnLoad(){
     setTimeout(()=>{
-      $('seatsBar').style.width = '83%';
+      renderSeats();
       document.querySelectorAll('#anBars i').forEach(i=>{ i.style.height = i.getAttribute('data-h')+'%'; });
     }, 400);
   }
@@ -1478,6 +1510,9 @@ ru: {
     animateOnLoad();
     bindAuthModal();
     initCookieBanner();
+    // подтягиваем реальное число зарегистрированных и перерисовываем блок мест,
+    // как только оно придёт (не блокируем первый рендер страницы ожиданием сети)
+    fetchSeatsCount().then(renderSeats);
   });
 })();
 
@@ -1786,7 +1821,7 @@ function bindAuthModal() {
   if (loginBtn) loginBtn.onclick = function() { openModal("login"); };
 
   // heroCta ("Reģistrēties") ведёт сразу на регистрацию.
-  // survCta ("Sākt bez maksas") — это <a href="#pricing">, просто скроллит к тарифам,
+  // survCta ("Reģistrēties") — это <a href="#pricing">, просто скроллит к тарифам,
   // модалку открывать не нужно — сначала человек должен увидеть цены.
   var heroCta = document.getElementById("heroCta");
   if (heroCta) heroCta.addEventListener("click", function() { openModal("register"); });
@@ -1827,4 +1862,4 @@ function bindAuthModal() {
 }
 </script>
 </body>
-                                                                </html>
+</html>
