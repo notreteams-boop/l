@@ -855,7 +855,7 @@ lv: {
     priceFrom: "sākot no",
     priceVal: "6.99 €",
     priceUnit: "/ mēnesī",
-    urgency: "Atlikušas tikai 17 vietas",
+    urgency: "Atlikušas tikai {n} vietas",
     cta: "Reģistrēties",
     ctaSub: "Pieejams no jebkuras ierīces",
   },
@@ -999,7 +999,7 @@ ru: {
     priceFrom: "от",
     priceVal: "6.99 €",
     priceUnit: "/ месяц",
-    urgency: "Осталось только 17 мест",
+    urgency: "Осталось только {n} мест",
     cta: "Регистрация",
     ctaSub: "Доступно с любого устройства",
   },
@@ -1163,7 +1163,6 @@ ru: {
     txt('priceFrom', t.hero.priceFrom);
     txt('priceVal', t.hero.priceVal);
     txt('priceUnit', t.hero.priceUnit);
-    txt('urgency', '⚡ ' + t.hero.urgency);
     txt('heroCtaTxt', t.hero.cta);
     txt('heroCtaSub', t.hero.ctaSub);
 
@@ -1453,6 +1452,10 @@ ru: {
     txt('seatsVal', count + ' / ' + capacity);
     const bar = $('seatsBar');
     if (bar) bar.style.width = pct + '%';
+    // urgency-текст ("Осталось только N мест") — та же реальная цифра, остаток из capacity
+    const remaining = Math.max(0, capacity - count);
+    const urgencyTpl = T[lang].hero.urgency; // содержит плейсхолдер {n}
+    txt('urgency', '⚡ ' + urgencyTpl.replace('{n}', remaining));
   }
 
   // ---------- animated bars / seats / gauge on load ----------
@@ -1862,4 +1865,4 @@ function bindAuthModal() {
 }
 </script>
 </body>
-</html>
+                                                                              </html>
