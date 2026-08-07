@@ -68,7 +68,7 @@
   h1 { font-size: 36px; line-height: 1.05; letter-spacing: -.03em; margin: 0 0 10px; font-weight: 800; }
   .sub { color: rgba(255,255,255,.6); font-size: 16px; margin: 0 0 32px; }
 
-  .grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+  .grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
   @media (max-width: 860px) { .grid { grid-template-columns: 1fr; } }
 
   .task-card { position: relative; background: linear-gradient(180deg, rgba(255,255,255,.02), transparent), var(--card); border: 1px solid var(--bd); border-radius: var(--r); padding: 26px; display: flex; flex-direction: column; gap: 14px; transition: transform .22s, border-color .22s, box-shadow .22s; }
@@ -84,6 +84,7 @@
   .info-panel { margin-top: 28px; background: var(--card2); border: 1px solid var(--bd); border-radius: var(--r); padding: 20px 24px; display: flex; gap: 16px; align-items: flex-start; }
   .info-panel svg { flex-shrink: 0; color: var(--violet); margin-top: 2px; }
   .info-panel p { margin: 0; font-size: 13.5px; line-height: 1.6; color: var(--td); }
+  .hidden { display: none !important; }
 </style>
 </head>
 <body style="visibility: hidden">
