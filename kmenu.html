@@ -73,7 +73,10 @@
 
   .task-card { position: relative; background: linear-gradient(180deg, rgba(255,255,255,.02), transparent), var(--card); border: 1px solid var(--bd); border-radius: var(--r); padding: 26px; display: flex; flex-direction: column; gap: 14px; transition: transform .22s, border-color .22s, box-shadow .22s; }
   .task-card:hover { transform: translateY(-4px); border-color: var(--bdh); box-shadow: 0 24px 60px -24px rgba(86,212,255,.25); }
-  .task-num { width: 44px; height: 44px; border-radius: 14px; background: rgba(124,140,255,.14); border: 1px solid rgba(124,140,255,.32); color: var(--indigo); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 17px; }
+  .task-num { width: 44px; height: 44px; border-radius: 14px; background: linear-gradient(135deg, color-mix(in oklab, var(--ta, #7c8cff) 22%, transparent), color-mix(in oklab, var(--tb, #7c8cff) 12%, transparent)); border: 1px solid color-mix(in oklab, var(--ta, #7c8cff) 38%, transparent); color: var(--ta, #7c8cff); display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 17px; }
+  .t-1 { --ta: #a78bfa; --tb: #7c8cff; }
+  .t-2 { --ta: #6cf0e0; --tb: #56d4ff; }
+  .t-3 { --ta: #fbbf24; --tb: #f87171; }
   .task-name { font-size: 19px; font-weight: 800; letter-spacing: -.01em; }
   .task-desc { font-size: 13.5px; line-height: 1.55; color: var(--td); flex: 1; }
   .task-foot { display: flex; align-items: center; justify-content: space-between; margin-top: 4px; }
@@ -129,7 +132,7 @@
     </div>
 
     <div class="grid" id="gridOptimalais">
-      <a class="task-card rise" href="/l/ktask1.html" style="animation-delay:40ms">
+      <a class="task-card rise t-1" href="/l/ktask1.html" style="animation-delay:40ms">
         <div class="task-num">1</div>
         <div class="task-name" data-i="t1name">1. uzdevums</div>
         <div class="task-desc" data-i="t1desc">Sasaiste: 6 runātāji un 8 apgalvojumi (A–H), 2 no tiem lieki.</div>
@@ -139,7 +142,7 @@
         </div>
       </a>
 
-      <a class="task-card rise" href="/l/ktask2.html" style="animation-delay:80ms">
+      <a class="task-card rise t-2" href="/l/ktask2.html" style="animation-delay:80ms">
         <div class="task-num">2</div>
         <div class="task-name" data-i="t2name">2. uzdevums</div>
         <div class="task-desc" data-i="t2desc">Aizpildi tukšumus: lekcijas stila ieraksts, 11 tukšumi ar vārdiem/skaitļiem.</div>
@@ -149,7 +152,7 @@
         </div>
       </a>
 
-      <a class="task-card rise" href="/l/ktask3.html" style="animation-delay:120ms">
+      <a class="task-card rise t-3" href="/l/ktask3.html" style="animation-delay:120ms">
         <div class="task-num">3</div>
         <div class="task-name" data-i="t3name">3. uzdevums</div>
         <div class="task-desc" data-i="t3desc">Intervija/dialogs: 8 jautājumi ar atbilžu variantiem A/B/C.</div>
@@ -161,7 +164,7 @@
     </div>
 
     <div class="grid hidden" id="gridAugstakais">
-      <a class="task-card rise" href="/l/listening-adv.html" style="animation-delay:40ms">
+      <a class="task-card rise t-1" href="/l/listening-adv.html" style="animation-delay:40ms">
         <div class="task-num">1</div>
         <div class="task-name" data-i="a1name">1. uzdevums</div>
         <div class="task-desc" data-i="a1desc">Raidieraksts: 8 jautājumi ar atbilžu variantiem A/B/C.</div>
@@ -171,7 +174,7 @@
         </div>
       </a>
 
-      <a class="task-card rise" href="/l/listening-adv2.html" style="animation-delay:80ms">
+      <a class="task-card rise t-2" href="/l/listening-adv2.html" style="animation-delay:80ms">
         <div class="task-num">2</div>
         <div class="task-name" data-i="a2name">2. uzdevums</div>
         <div class="task-desc" data-i="a2desc">Intervija: 7 jautājumi ar atbilžu variantiem A/B/C/D.</div>
@@ -181,7 +184,7 @@
         </div>
       </a>
 
-      <a class="task-card rise" href="/l/listening-adv3.html" style="animation-delay:120ms">
+      <a class="task-card rise t-3" href="/l/listening-adv3.html" style="animation-delay:120ms">
         <div class="task-num">3</div>
         <div class="task-name" data-i="a3name">3. uzdevums</div>
         <div class="task-desc" data-i="a3desc">Aizpildi piezīmes: intervija, 10 tukšumi (ne vairāk kā 3 vārdi).</div>
