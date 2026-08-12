@@ -1,0 +1,654 @@
+<!DOCTYPE html>
+<html lang="lv">
+<head>
+<!-- !! DROŠĪBA: auth.js — OBLIGĀTI PIRMĀ RINDA !! -->
+<script src="/l/auth.js"></script>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>English OL — Duelis</title>
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+<link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;600;700;800&family=JetBrains+Mono:wght@500;600;700&display=swap" rel="stylesheet" />
+<style>
+:root{ --bg:#08080b; --card:#101017; --card2:#14141c; --bd:rgba(255,255,255,.06); --bdh:rgba(255,255,255,.12); --t:#f4f5f7; --td:#a4a7b3; --tm:#6a6d7a; --cyan:#6cf0e0; --indigo:#7c8cff; --violet:#a78bfa; --amber:#fbbf24; --green:#34d399; --red:#f87171; --grad:linear-gradient(135deg,#7c8cff 0%,#56d4ff 55%,#6cf0e0 100%); --r:18px; }
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:var(--bg);color:var(--t);min-height:100%}
+body{font-family:"Manrope",-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif;letter-spacing:-.01em;-webkit-font-smoothing:antialiased}
+.mono{font-family:"JetBrains Mono",ui-monospace,monospace;letter-spacing:0}
+a,button{font-family:inherit}
+button{cursor:pointer;border:0;background:transparent;color:inherit}
+.ambient{position:fixed;inset:0;z-index:0;pointer-events:none; background: radial-gradient(600px 400px at 12% -5%,rgba(124,140,255,.14),transparent 60%), radial-gradient(700px 500px at 105% 10%,rgba(108,240,224,.08),transparent 60%), radial-gradient(800px 600px at 50% 110%,rgba(86,212,255,.06),transparent 60%);}
+main{position:relative;z-index:2;max-width:640px;margin:0 auto;padding:20px 16px 60px}
+
+.topbar{display:flex;align-items:center;justify-content:space-between;padding:8px 0 20px}
+.back-link{display:inline-flex;align-items:center;gap:6px;color:var(--td);text-decoration:none;font-size:14px;font-weight:600}
+.back-link:hover{color:var(--t)}
+.i{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+h1{font-size:22px;font-weight:800;margin:0}
+
+.card{position:relative;background:linear-gradient(180deg,rgba(255,255,255,.02),transparent),var(--card);border:1px solid var(--bd);border-radius:var(--r);padding:24px;transition:border-color .24s}
+.sub{color:var(--td);font-size:14px;line-height:1.5}
+
+.tabs{display:flex;gap:4px;background:rgba(255,255,255,.04);border:1px solid var(--bd);border-radius:999px;padding:3px;margin-bottom:20px}
+.tab{flex:1;text-align:center;padding:9px 14px;border-radius:999px;font-size:13px;font-weight:700;color:var(--td);transition:.18s}
+.tab.active{color:#0b0b12;background:var(--grad)}
+
+#lobbyScreen{display:flex;flex-direction:column;gap:16px}
+.rating-hero{display:flex;align-items:center;gap:18px;padding:26px 24px}
+.rating-badge{position:relative;width:72px;height:72px;border-radius:50%;display:flex;align-items:center;justify-content:center;flex:none;background:conic-gradient(from -90deg, var(--indigo), var(--cyan) var(--pct,50%), rgba(255,255,255,.08) var(--pct,50%));}
+.rating-badge::after{content:"";position:absolute;inset:5px;border-radius:50%;background:var(--card2)}
+.rating-badge .val{position:relative;z-index:1;font-size:16px;font-weight:800;font-family:"JetBrains Mono",monospace}
+.tier-name{font-size:18px;font-weight:800}
+.tier-sub{color:var(--td);font-size:13px;margin-top:2px}
+.stat-row{display:flex;gap:18px;margin-top:10px}
+.stat-row .s{font-size:12px;color:var(--tm)}
+.stat-row .s b{color:var(--t);font-family:"JetBrains Mono",monospace;font-weight:700}
+
+.play-btn{width:100%;padding:20px;border-radius:16px;background:var(--grad);color:#0b0b12;font-size:17px;font-weight:800;display:flex;align-items:center;justify-content:center;gap:10px;box-shadow:0 8px 24px -8px rgba(108,240,224,.35);transition:transform .18s}
+.play-btn:active{transform:scale(.98)}
+.play-btn:disabled{opacity:.5;pointer-events:none}
+
+.rules-list{display:flex;flex-direction:column;gap:10px;margin-top:4px}
+.rule-item{display:flex;gap:12px;align-items:flex-start;font-size:13.5px;color:var(--td);line-height:1.5}
+.rule-item svg{flex:none;margin-top:2px;color:var(--cyan)}
+
+#searchingScreen{display:none;flex-direction:column;align-items:center;justify-content:center;gap:20px;padding:60px 20px;text-align:center}
+.pulse-ring{width:90px;height:90px;border-radius:50%;border:3px solid var(--indigo);display:flex;align-items:center;justify-content:center;position:relative}
+.pulse-ring::before,.pulse-ring::after{content:"";position:absolute;inset:0;border-radius:50%;border:3px solid var(--cyan);opacity:0;animation:pulseRing 2s ease-out infinite}
+.pulse-ring::after{animation-delay:1s}
+@keyframes pulseRing{0%{transform:scale(1);opacity:.6}100%{transform:scale(1.8);opacity:0}}
+.cancel-btn{color:var(--td);font-size:14px;font-weight:600;text-decoration:underline;text-underline-offset:3px}
+
+#gameScreen{display:none;flex-direction:column;gap:16px}
+.vs-bar{display:flex;align-items:center;gap:12px}
+.player-chip{flex:1;display:flex;align-items:center;gap:10px;padding:10px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--bd)}
+.player-chip.me{border-color:rgba(108,240,224,.3)}
+.player-chip .name{font-size:13px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.player-chip .score{margin-left:auto;font-family:"JetBrains Mono",monospace;font-weight:800;font-size:16px;color:var(--cyan)}
+.vs-label{flex:none;font-size:11px;font-weight:800;color:var(--tm)}
+
+.progress-dots{display:flex;gap:5px;justify-content:center}
+.progress-dots span{width:7px;height:7px;border-radius:50%;background:rgba(255,255,255,.15)}
+.progress-dots span.done{background:var(--indigo)}
+.progress-dots span.current{background:var(--cyan);box-shadow:0 0 8px var(--cyan)}
+
+.timer-wrap{display:flex;justify-content:center;margin:6px 0}
+.timer-ring{position:relative;width:64px;height:64px}
+.timer-ring svg{transform:rotate(-90deg);width:100%;height:100%}
+.timer-ring circle{fill:none;stroke-width:5}
+.timer-ring .bg{stroke:rgba(255,255,255,.08)}
+.timer-ring .fg{stroke:var(--cyan);stroke-linecap:round;transition:stroke-dashoffset 1s linear,stroke .3s}
+.timer-ring .fg.urgent{stroke:var(--red)}
+.timer-num{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;font-family:"JetBrains Mono",monospace;font-weight:800;font-size:20px}
+
+.question-card{padding:26px 22px;text-align:center}
+.q-eyebrow{font-size:11px;font-weight:700;letter-spacing:.06em;color:var(--tm);text-transform:uppercase;margin-bottom:10px}
+.q-text{font-size:19px;font-weight:700;line-height:1.4}
+
+.options-grid{display:flex;flex-direction:column;gap:10px}
+.opt-btn{padding:16px 18px;border-radius:14px;background:var(--card2);border:1.5px solid var(--bd);text-align:left;font-size:15px;font-weight:600;transition:.15s;display:flex;align-items:center;gap:10px}
+.opt-btn:active{transform:scale(.98)}
+.opt-btn.selected{border-color:var(--indigo);background:rgba(124,140,255,.1)}
+.opt-btn.correct{border-color:var(--green);background:rgba(52,211,153,.12);color:var(--green)}
+.opt-btn.wrong{border-color:var(--red);background:rgba(248,113,113,.1);color:var(--red)}
+.opt-btn:disabled{pointer-events:none}
+.opt-letter{width:26px;height:26px;border-radius:8px;background:rgba(255,255,255,.06);display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:800;flex:none}
+
+.waiting-note{text-align:center;font-size:13px;color:var(--tm);display:flex;align-items:center;justify-content:center;gap:8px}
+.dot-flash{display:inline-flex;gap:3px}
+.dot-flash span{width:4px;height:4px;border-radius:50%;background:var(--tm);animation:dotFlash 1.4s infinite}
+.dot-flash span:nth-child(2){animation-delay:.2s}
+.dot-flash span:nth-child(3){animation-delay:.4s}
+@keyframes dotFlash{0%,80%,100%{opacity:.25}40%{opacity:1}}
+
+#resultScreen{display:none;flex-direction:column;gap:16px;text-align:center}
+.result-hero{padding:36px 24px}
+.result-icon{width:64px;height:64px;margin:0 auto 14px;border-radius:50%;display:flex;align-items:center;justify-content:center}
+.result-icon.win{background:rgba(52,211,153,.15);color:var(--green)}
+.result-icon.loss{background:rgba(248,113,113,.15);color:var(--red)}
+.result-icon.draw{background:rgba(251,191,36,.15);color:var(--amber)}
+.result-title{font-size:26px;font-weight:800}
+.result-sub{color:var(--td);font-size:14px;margin-top:6px}
+.score-compare{display:flex;align-items:center;justify-content:center;gap:20px;margin-top:22px}
+.score-compare .num{font-size:34px;font-weight:800;font-family:"JetBrains Mono",monospace}
+.score-compare .lbl{font-size:11px;color:var(--tm);margin-top:2px;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.score-compare .vs{color:var(--tm);font-size:13px;font-weight:700}
+.rating-delta{display:inline-flex;align-items:center;gap:6px;margin-top:18px;padding:8px 16px;border-radius:999px;background:var(--card2);border:1px solid var(--bd);font-size:14px;font-weight:700}
+.rating-delta.up{color:var(--green)}
+.rating-delta.down{color:var(--red)}
+.result-actions{display:flex;gap:10px}
+.btn-secondary{flex:1;padding:14px;border-radius:14px;background:var(--card2);border:1px solid var(--bd);font-size:14px;font-weight:700;color:var(--t)}
+
+#lbScreen{display:none;flex-direction:column;gap:12px}
+.lb-row{display:flex;align-items:center;gap:12px;padding:12px 14px;border-radius:14px;background:var(--card2);border:1px solid var(--bd)}
+.lb-row.me{border-color:rgba(108,240,224,.35)}
+.lb-rank{width:26px;text-align:center;font-weight:800;font-family:"JetBrains Mono",monospace;color:var(--tm);flex:none}
+.lb-rank.top1{color:var(--amber)}
+.lb-name{flex:1;font-size:14px;font-weight:700;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.lb-tier{font-size:11px;color:var(--tm);font-weight:600}
+.lb-rating{font-family:"JetBrains Mono",monospace;font-weight:800;color:var(--cyan);flex:none}
+.empty-lb{text-align:center;padding:40px 20px;color:var(--tm);font-size:14px}
+
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%) translateY(100px);background:var(--card2);border:1px solid var(--bd);border-radius:14px;padding:14px 20px;font-size:14px;font-weight:600;z-index:100;transition:transform .3s;max-width:90vw;text-align:center}
+.toast.show{transform:translateX(-50%) translateY(0)}
+</style>
+</head>
+<body>
+<div class="ambient"></div>
+
+<main>
+  <div class="topbar">
+    <a href="/l/" class="back-link">
+      <svg class="i" viewBox="0 0 24 24"><path d="M19 12H5"/><path d="M12 19l-7-7 7-7"/></svg>
+      <span data-i="back">Sākumlapa</span>
+    </a>
+    <h1 data-i="pageTitle">⚔️ Duelis</h1>
+    <span style="width:70px"></span>
+  </div>
+
+  <div class="tabs" id="mainTabs">
+    <div class="tab active" data-tab="play" data-i="tabPlay">Spēlēt</div>
+    <div class="tab" data-tab="leaders" data-i="tabLeaders">Līderi</div>
+  </div>
+
+  <!-- ============ LOBBY ============ -->
+  <div id="lobbyScreen">
+    <div class="card rating-hero">
+      <div class="rating-badge" id="ratingBadge" style="--pct:50%">
+        <span class="val mono" id="ratingVal">800</span>
+      </div>
+      <div>
+        <div class="tier-name" id="tierName">—</div>
+        <div class="tier-sub" data-i="ratingLbl">Tavs dueļu reitings</div>
+        <div class="stat-row">
+          <span class="s" data-i="wins">Uzvaras: <b id="statWins">0</b></span>
+          <span class="s" data-i="losses">Zaudējumi: <b id="statLosses">0</b></span>
+          <span class="s" data-i="draws">Neizšķirti: <b id="statDraws">0</b></span>
+        </div>
+      </div>
+    </div>
+
+    <button class="play-btn" id="findBtn">
+      <svg class="i" viewBox="0 0 24 24" style="width:22px;height:22px"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+      <span data-i="findDuel">Meklēt pretinieku</span>
+    </button>
+
+    <div class="card">
+      <div class="rules-list">
+        <div class="rule-item">
+          <svg class="i" viewBox="0 0 24 24" width="16" height="16"><circle cx="12" cy="12" r="10"/><path d="M12 6v6l4 2"/></svg>
+          <span data-i="rule1">12 zibensjautājumi: artikuli, laiki, prievārdi, pareizrakstība.</span>
+        </div>
+        <div class="rule-item">
+          <svg class="i" viewBox="0 0 24 24" width="16" height="16"><path d="M13 2L3 14h9l-1 8 10-12h-9l1-8z"/></svg>
+          <span data-i="rule2">Jautājumi 1-7: 10 sekundes. Jautājumi 8-12: 6 sekundes (zibensfināls).</span>
+        </div>
+        <div class="rule-item">
+          <svg class="i" viewBox="0 0 24 24" width="16" height="16"><path d="M12 20V10"/><path d="M18 20V4"/><path d="M6 20v-4"/></svg>
+          <span data-i="rule3">Punkti = pareizība + ātrums. Jo ātrāk atbildi pareizi, jo vairāk punktu.</span>
+        </div>
+        <div class="rule-item">
+          <svg class="i" viewBox="0 0 24 24" width="16" height="16"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.6h7.6z"/></svg>
+          <span data-i="rule4">Uzvara maina tavu dueļu reitingu — pieveic spēcīgākus pretiniekus, lai kāptu augstāk.</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ SEARCHING ============ -->
+  <div id="searchingScreen">
+    <div class="pulse-ring">
+      <svg class="i" viewBox="0 0 24 24" width="30" height="30" style="color:var(--cyan)"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+    </div>
+    <div>
+      <div style="font-size:17px;font-weight:800" data-i="searching">Meklējam pretinieku…</div>
+      <div class="sub" id="searchTime" style="margin-top:6px">0s</div>
+    </div>
+    <button class="cancel-btn" id="cancelSearchBtn" data-i="cancelSearch">Atcelt</button>
+  </div>
+
+  <!-- ============ GAME ============ -->
+  <div id="gameScreen">
+    <div class="vs-bar">
+      <div class="player-chip me">
+        <span class="name" id="meName">Tu</span>
+        <span class="score mono" id="meScore">0</span>
+      </div>
+      <span class="vs-label">VS</span>
+      <div class="player-chip">
+        <span class="name" id="oppName">…</span>
+        <span class="score mono" id="oppScore">0</span>
+      </div>
+    </div>
+
+    <div class="progress-dots" id="progressDots"></div>
+
+    <div class="timer-wrap">
+      <div class="timer-ring">
+        <svg viewBox="0 0 64 64">
+          <circle class="bg" cx="32" cy="32" r="28"></circle>
+          <circle class="fg" id="timerCircle" cx="32" cy="32" r="28"></circle>
+        </svg>
+        <div class="timer-num mono" id="timerNum">10</div>
+      </div>
+    </div>
+
+    <div class="card question-card">
+      <div class="q-eyebrow" id="qEyebrow">JAUTĀJUMS 1 / 12</div>
+      <div class="q-text" id="qText">…</div>
+    </div>
+
+    <div class="options-grid" id="optionsGrid"></div>
+
+    <div class="waiting-note" id="waitingNote" style="display:none">
+      <span data-i="waitingOpp">Gaidām pretinieku</span>
+      <span class="dot-flash"><span></span><span></span><span></span></span>
+    </div>
+  </div>
+
+  <!-- ============ RESULT ============ -->
+  <div id="resultScreen">
+    <div class="card result-hero">
+      <div class="result-icon" id="resultIcon">
+        <svg class="i" viewBox="0 0 24 24" width="30" height="30"><path d="M12 2l2.4 7.2H22l-6 4.6 2.3 7.2-6.3-4.6-6.3 4.6 2.3-7.2-6-4.6h7.6z"/></svg>
+      </div>
+      <div class="result-title" id="resultTitle">—</div>
+      <div class="result-sub" id="resultSub">—</div>
+
+      <div class="score-compare">
+        <div>
+          <div class="num" id="finalMeScore" style="color:var(--cyan)">0</div>
+          <div class="lbl" data-i="you">Tu</div>
+        </div>
+        <div class="vs">VS</div>
+        <div>
+          <div class="num" id="finalOppScore">0</div>
+          <div class="lbl" id="finalOppLbl">Pretinieks</div>
+        </div>
+      </div>
+
+      <div class="rating-delta" id="ratingDelta">+0</div>
+    </div>
+
+    <div class="result-actions">
+      <button class="btn-secondary" id="resultLobbyBtn" data-i="backToLobby">Uz sākumu</button>
+      <button class="play-btn" id="resultRematchBtn" style="flex:1;padding:14px;font-size:14px">
+        <span data-i="playAgain">Spēlēt vēlreiz</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- ============ LEADERBOARD ============ -->
+  <div id="lbScreen">
+    <div id="lbList"></div>
+  </div>
+</main>
+
+<div class="toast" id="toast"></div>
+
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => document.querySelectorAll(s);
+
+const DUEL_WORKER_URL = "https://duel-worker.gegeodin.workers.dev/";
+
+const TOTAL_QUESTIONS = 12;
+
+let lang = "lv";
+let currentDuelId = null;
+let pollTimer = null;
+let searchPollTimer = null;
+let searchStartedAt = null;
+let searchSecTimer = null;
+let selectedChoice = null;
+let lastRenderedQuestion = -1;
+let timerAnimStart = null;
+let timerAnimLimit = 10;
+let timerRAF = null;
+
+const dict = {
+  lv: {
+    back: "Sākumlapa", pageTitle: "⚔️ Duelis", tabPlay: "Spēlēt", tabLeaders: "Līderi",
+    ratingLbl: "Tavs dueļu reitings", wins: "Uzvaras:", losses: "Zaudējumi:", draws: "Neizšķirti:",
+    findDuel: "Meklēt pretinieku", searching: "Meklējam pretinieku…", cancelSearch: "Atcelt",
+    rule1: "12 zibensjautājumi: artikuli, laiki, prievārdi, pareizrakstība.",
+    rule2: "Jautājumi 1-7: 10 sekundes. Jautājumi 8-12: 6 sekundes (zibensfināls).",
+    rule3: "Punkti = pareizība + ātrums. Jo ātrāk atbildi pareizi, jo vairāk punktu.",
+    rule4: "Uzvara maina tavu dueļu reitingu — pieveic spēcīgākus pretiniekus, lai kāptu augstāk.",
+    waitingOpp: "Gaidām pretinieku", you: "Tu", backToLobby: "Uz sākumu", playAgain: "Spēlēt vēlreiz",
+    win: "Uzvara!", loss: "Zaudējums", draw: "Neizšķirts",
+    winSub: "Tu biji ātrāks un precīzāks.", lossSub: "Šoreiz neveicās — mēģini vēlreiz!", drawSub: "Vienāds rezultāts abiem.",
+    noOpponentFound: "Pretinieks nav atrasts. Mēģini vēlreiz.",
+    genFailed: "Neizdevās sagatavot jautājumus. Mēģini vēlreiz.",
+    connectionLost: "Savienojums pārtrūka. Atgriežamies uz sākumu.",
+    emptyLb: "Vēl nav neviena dueļu spēlētāja. Esi pirmais!",
+    q: "JAUTĀJUMS", loginRequired: "Vispirms jāpieslēdzas.",
+    tiers: { novice: "Iesācējs", apprentice: "Praktikants", skilled: "Prasmīgais", expert: "Eksperts", master: "Meistars", grandmaster: "Lielmeistars", legend: "Leģenda" }
+  },
+  ru: {
+    back: "Главная", pageTitle: "⚔️ Дуэль", tabPlay: "Играть", tabLeaders: "Лидеры",
+    ratingLbl: "Твой рейтинг дуэлей", wins: "Победы:", losses: "Поражения:", draws: "Ничьи:",
+    findDuel: "Найти соперника", searching: "Ищем соперника…", cancelSearch: "Отмена",
+    rule1: "12 блиц-вопросов: артикли, времена, предлоги, орфография.",
+    rule2: "Вопросы 1-7: 10 секунд. Вопросы 8-12: 6 секунд (блиц-финал).",
+    rule3: "Очки = правильность + скорость. Чем быстрее верный ответ, тем больше очков.",
+    rule4: "Победа меняет твой рейтинг дуэлей — обыгрывай сильных соперников, чтобы расти.",
+    waitingOpp: "Ждём соперника", you: "Ты", backToLobby: "На главную", playAgain: "Играть снова",
+    win: "Победа!", loss: "Поражение", draw: "Ничья",
+    winSub: "Ты был быстрее и точнее.", lossSub: "В этот раз не повезло — попробуй ещё!", drawSub: "Одинаковый счёт у обоих.",
+    noOpponentFound: "Соперник не найден. Попробуй ещё раз.",
+    genFailed: "Не удалось подготовить вопросы. Попробуй ещё раз.",
+    connectionLost: "Соединение потеряно. Возвращаемся на главный экран.",
+    emptyLb: "Пока никто не играл дуэли. Стань первым!",
+    q: "ВОПРОС", loginRequired: "Сначала нужно войти.",
+    tiers: { novice: "Новичок", apprentice: "Ученик", skilled: "Умелый", expert: "Эксперт", master: "Мастер", grandmaster: "Грандмастер", legend: "Легенда" }
+  }
+};
+
+function t() { return dict[lang]; }
+
+function showToast(msg) {
+  const el = $("#toast");
+  el.textContent = msg;
+  el.classList.add("show");
+  setTimeout(() => el.classList.remove("show"), 3200);
+}
+
+function applyLang() {
+  document.documentElement.lang = lang;
+  $$("[data-i]").forEach(el => {
+    const key = el.dataset.i;
+    if (t()[key]) el.textContent = t()[key];
+  });
+}
+
+function screen(name) {
+  ["lobbyScreen", "searchingScreen", "gameScreen", "resultScreen", "lbScreen"].forEach(id => {
+    $("#" + id).style.display = "none";
+  });
+  const map = { lobby: "lobbyScreen", searching: "searchingScreen", game: "gameScreen", result: "resultScreen", leaders: "lbScreen" };
+  $("#" + map[name]).style.display = "flex";
+}
+
+function authHeaders() {
+  const token = localStorage.getItem("session_token");
+  return { "Content-Type": "application/json", "Authorization": "Bearer " + (token || "") };
+}
+
+async function apiCall(path, body) {
+  const res = await fetch(DUEL_WORKER_URL + path, { method: "POST", headers: authHeaders(), body: JSON.stringify(body || {}) });
+  const data = await res.json().catch(() => ({}));
+  return { ok: res.ok, status: res.status, data: data };
+}
+
+const RATING_TIERS = [
+  { min: 0, max: 399, id: "novice" },
+  { min: 400, max: 799, id: "apprentice" },
+  { min: 800, max: 1099, id: "skilled" },
+  { min: 1100, max: 1399, id: "expert" },
+  { min: 1400, max: 1699, id: "master" },
+  { min: 1700, max: 1899, id: "grandmaster" },
+  { min: 1900, max: 2000, id: "legend" }
+];
+function tierFor(rating) {
+  for (const tier of RATING_TIERS) if (rating >= tier.min && rating <= tier.max) return tier;
+  return RATING_TIERS[0];
+}
+
+async function loadMyStats() {
+  const { ok, data } = await apiCall("duel-leaderboard", {});
+  if (!ok) return;
+  const s = data.myStats;
+  if (!s) return;
+  $("#ratingVal").textContent = s.rating;
+  const tier = tierFor(s.rating);
+  $("#tierName").textContent = t().tiers[tier.id] || tier.id;
+  $("#statWins").textContent = s.wins;
+  $("#statLosses").textContent = s.losses;
+  $("#statDraws").textContent = s.draws;
+  const pct = Math.round((s.rating / 2000) * 100);
+  $("#ratingBadge").style.setProperty("--pct", pct + "%");
+  renderLeaderboard(data);
+}
+
+function renderLeaderboard(data) {
+  const list = $("#lbList");
+  if (!data.top || data.top.length === 0) {
+    list.innerHTML = '<div class="empty-lb">' + t().emptyLb + '</div>';
+    return;
+  }
+  const myUsername = localStorage.getItem("username") || "";
+  list.innerHTML = data.top.map((p, i) => {
+    const rank = i + 1;
+    const isMe = p.username === myUsername;
+    const tierLabel = t().tiers[p.tier] || p.tier;
+    return '<div class="lb-row' + (isMe ? ' me' : '') + '">' +
+      '<span class="lb-rank' + (rank === 1 ? ' top1' : '') + '">' + rank + '</span>' +
+      '<div style="flex:1;overflow:hidden">' +
+        '<div class="lb-name">' + escapeHtml(p.displayName) + '</div>' +
+        '<div class="lb-tier">' + tierLabel + ' · ' + p.wins + 'W ' + p.losses + 'L ' + p.draws + 'D</div>' +
+      '</div>' +
+      '<span class="lb-rating mono">' + p.rating + '</span>' +
+    '</div>';
+  }).join("");
+}
+
+function escapeHtml(s) {
+  return String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+}
+
+$("#findBtn").addEventListener("click", async () => {
+  const token = localStorage.getItem("session_token");
+  if (!token) { showToast(t().loginRequired); return; }
+
+  screen("searching");
+  searchStartedAt = Date.now();
+  searchSecTimer = setInterval(() => {
+    $("#searchTime").textContent = Math.floor((Date.now() - searchStartedAt) / 1000) + "s";
+  }, 500);
+
+  const { ok, data } = await apiCall("duel-find", {});
+  if (!ok) {
+    stopSearching();
+    showToast(t().genFailed);
+    screen("lobby");
+    return;
+  }
+  if (data.matched) {
+    stopSearching();
+    startDuel(data.duelId);
+    return;
+  }
+  searchPollTimer = setInterval(pollSearchStatus, 1500);
+});
+
+async function pollSearchStatus() {
+  const { ok, data } = await apiCall("duel-find-status", {});
+  if (ok && data.matched) {
+    stopSearching();
+    startDuel(data.duelId);
+  }
+}
+
+function stopSearching() {
+  clearInterval(searchPollTimer);
+  clearInterval(searchSecTimer);
+  searchPollTimer = null;
+  searchSecTimer = null;
+}
+
+$("#cancelSearchBtn").addEventListener("click", async () => {
+  stopSearching();
+  await apiCall("duel-cancel", {});
+  screen("lobby");
+});
+
+function startDuel(duelId) {
+  currentDuelId = duelId;
+  lastRenderedQuestion = -1;
+  screen("game");
+  pollDuelState();
+  pollTimer = setInterval(pollDuelState, 1200);
+}
+
+async function pollDuelState() {
+  if (!currentDuelId) return;
+  const { ok, data } = await apiCall("duel-state", { duelId: currentDuelId });
+  if (!ok) {
+    clearInterval(pollTimer);
+    showToast(t().connectionLost);
+    screen("lobby");
+    currentDuelId = null;
+    return;
+  }
+  renderDuelState(data);
+  if (data.status === "finished") {
+    clearInterval(pollTimer);
+    pollTimer = null;
+    showResult(data);
+  }
+}
+
+function renderDuelState(data) {
+  $("#meName").textContent = data.me.displayName || "Tu";
+  $("#oppName").textContent = data.opponent.displayName || "…";
+  $("#meScore").textContent = data.me.score;
+  $("#oppScore").textContent = data.opponent.score;
+
+  const dots = $("#progressDots");
+  if (dots.children.length !== TOTAL_QUESTIONS) {
+    dots.innerHTML = "";
+    for (let i = 0; i < TOTAL_QUESTIONS; i++) {
+      const s = document.createElement("span");
+      dots.appendChild(s);
+    }
+  }
+  Array.from(dots.children).forEach((el, i) => {
+    el.classList.toggle("done", i < data.currentQuestion);
+    el.classList.toggle("current", i === data.currentQuestion);
+  });
+
+  const isNewQuestion = data.currentQuestion !== lastRenderedQuestion;
+  if (isNewQuestion) {
+    lastRenderedQuestion = data.currentQuestion;
+    selectedChoice = null;
+    renderQuestion(data);
+    startTimerAnim(data.timeLimit, data.questionStartedAt);
+  }
+
+  $("#waitingNote").style.display = data.me.answeredCurrent && !data.opponent.answeredCurrent ? "flex" : "none";
+
+  if (data.correctIndex !== null && data.me.answeredCurrent) {
+    revealAnswer(data.correctIndex);
+  }
+}
+
+function renderQuestion(data) {
+  $("#qEyebrow").textContent = t().q + " " + (data.currentQuestion + 1) + " / " + TOTAL_QUESTIONS;
+  $("#qText").textContent = data.question ? data.question.q : "…";
+
+  const grid = $("#optionsGrid");
+  grid.innerHTML = "";
+  const letters = ["A", "B", "C", "D"];
+  (data.question ? data.question.options : []).forEach((opt, i) => {
+    const btn = document.createElement("button");
+    btn.className = "opt-btn";
+    btn.innerHTML = '<span class="opt-letter">' + letters[i] + '</span><span>' + escapeHtml(opt) + '</span>';
+    btn.addEventListener("click", () => submitAnswer(i, data.currentQuestion));
+    grid.appendChild(btn);
+  });
+}
+
+async function submitAnswer(choiceIndex, questionIndex) {
+  if (selectedChoice !== null) return;
+  selectedChoice = choiceIndex;
+
+  const buttons = $$("#optionsGrid .opt-btn");
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === choiceIndex) b.classList.add("selected");
+  });
+
+  await apiCall("duel-answer", { duelId: currentDuelId, questionIndex: questionIndex, choiceIndex: choiceIndex });
+  pollDuelState();
+}
+
+function revealAnswer(correctIndex) {
+  const buttons = $$("#optionsGrid .opt-btn");
+  buttons.forEach((b, i) => {
+    b.disabled = true;
+    if (i === correctIndex) b.classList.add("correct");
+    else if (i === selectedChoice) b.classList.add("wrong");
+  });
+}
+
+function startTimerAnim(limitSec, startedAt) {
+  timerAnimLimit = limitSec;
+  timerAnimStart = startedAt;
+  const circle = $("#timerCircle");
+  const circumference = 2 * Math.PI * 28;
+  circle.style.strokeDasharray = circumference;
+
+  if (timerRAF) cancelAnimationFrame(timerRAF);
+  function tick() {
+    const elapsed = (Date.now() - timerAnimStart) / 1000;
+    const remaining = Math.max(0, limitSec - elapsed);
+    const frac = remaining / limitSec;
+    circle.style.strokeDashoffset = circumference * (1 - frac);
+    circle.classList.toggle("urgent", remaining <= 3);
+    $("#timerNum").textContent = Math.ceil(remaining);
+    if (remaining > 0 && selectedChoice === null) {
+      timerRAF = requestAnimationFrame(tick);
+    }
+  }
+  tick();
+}
+
+function showResult(data) {
+  screen("result");
+  const icon = $("#resultIcon");
+  icon.className = "result-icon " + data.result;
+  $("#resultTitle").textContent = t()[data.result];
+  $("#resultSub").textContent = t()[data.result + "Sub"];
+  $("#finalMeScore").textContent = data.finalScoreMe;
+  $("#finalOppScore").textContent = data.finalScoreOpponent;
+  $("#finalOppLbl").textContent = data.opponent.displayName || "Pretinieks";
+
+  const delta = data.ratingDelta || 0;
+  const deltaEl = $("#ratingDelta");
+  deltaEl.textContent = (delta > 0 ? "+" : "") + delta + " → " + data.newRating;
+  deltaEl.className = "rating-delta " + (delta > 0 ? "up" : delta < 0 ? "down" : "");
+
+  currentDuelId = null;
+}
+
+$("#resultLobbyBtn").addEventListener("click", () => {
+  screen("lobby");
+  loadMyStats();
+});
+$("#resultRematchBtn").addEventListener("click", () => {
+  screen("lobby");
+  loadMyStats();
+  $("#findBtn").click();
+});
+
+$$("#mainTabs .tab").forEach(tab => {
+  tab.addEventListener("click", () => {
+    $$("#mainTabs .tab").forEach(x => x.classList.remove("active"));
+    tab.classList.add("active");
+    if (tab.dataset.tab === "play") { screen("lobby"); }
+    else { screen("leaders"); loadMyStats(); }
+  });
+});
+
+function init() {
+  lang = (localStorage.getItem("lang") === "ru") ? "ru" : "lv";
+  applyLang();
+  screen("lobby");
+  loadMyStats();
+}
+if (window.authReady) init();
+else document.addEventListener("auth-ready", init, { once: true });
+</script>
+</body>
+</html>
