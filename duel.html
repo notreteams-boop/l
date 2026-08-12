@@ -155,7 +155,7 @@ h1{font-size:22px;font-weight:800;margin:0}
   <div id="lobbyScreen">
     <div class="card rating-hero">
       <div class="rating-badge" id="ratingBadge" style="--pct:50%">
-        <span class="val mono" id="ratingVal">800</span>
+        <span class="val mono" id="ratingVal">200</span>
       </div>
       <div>
         <div class="tier-name" id="tierName">—</div>
@@ -382,13 +382,13 @@ async function apiCall(path, body) {
 }
 
 const RATING_TIERS = [
-  { min: 0, max: 399, id: "novice" },
-  { min: 400, max: 799, id: "apprentice" },
-  { min: 800, max: 1099, id: "skilled" },
-  { min: 1100, max: 1399, id: "expert" },
-  { min: 1400, max: 1699, id: "master" },
-  { min: 1700, max: 1899, id: "grandmaster" },
-  { min: 1900, max: 2000, id: "legend" }
+  { min: 0, max: 99, id: "novice" },
+  { min: 100, max: 199, id: "apprentice" },
+  { min: 200, max: 499, id: "skilled" },
+  { min: 500, max: 899, id: "expert" },
+  { min: 900, max: 1299, id: "master" },
+  { min: 1300, max: 1699, id: "grandmaster" },
+  { min: 1700, max: 2000, id: "legend" }
 ];
 function tierFor(rating) {
   for (const tier of RATING_TIERS) if (rating >= tier.min && rating <= tier.max) return tier;
@@ -437,6 +437,8 @@ function escapeHtml(s) {
   return String(s || "").replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
 }
 
+const SEARCH_CLIENT_TIMEOUT_MS = 30000; // должен совпадать с QUEUE_TIMEOUT_MS на сервере
+
 $("#findBtn").addEventListener("click", async () => {
   const token = localStorage.getItem("session_token");
   if (!token) { showToast(t().loginRequired); return; }
@@ -444,7 +446,14 @@ $("#findBtn").addEventListener("click", async () => {
   screen("searching");
   searchStartedAt = Date.now();
   searchSecTimer = setInterval(() => {
-    $("#searchTime").textContent = Math.floor((Date.now() - searchStartedAt) / 1000) + "s";
+    const elapsed = Date.now() - searchStartedAt;
+    $("#searchTime").textContent = Math.floor(elapsed / 1000) + "s";
+    if (elapsed >= SEARCH_CLIENT_TIMEOUT_MS) {
+      stopSearching();
+      apiCall("duel-cancel", {});
+      showToast(t().noOpponentFound);
+      screen("lobby");
+    }
   }, 500);
 
   const { ok, data } = await apiCall("duel-find", {});
@@ -642,7 +651,7 @@ $$("#mainTabs .tab").forEach(tab => {
 });
 
 function init() {
-  lang = (localStorage.getItem("lang") === "ru") ? "ru" : "lv";
+  lang = (localStorage.getItem("site_lang") === "ru") ? "ru" : "lv";
   applyLang();
   screen("lobby");
   loadMyStats();
