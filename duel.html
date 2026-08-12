@@ -457,6 +457,7 @@ $("#findBtn").addEventListener("click", async () => {
   }, 500);
 
   const { ok, data } = await apiCall("duel-find", {});
+  console.log("[duel debug] find:", JSON.stringify(data));
   if (!ok) {
     stopSearching();
     showToast(t().genFailed);
@@ -473,6 +474,7 @@ $("#findBtn").addEventListener("click", async () => {
 
 async function pollSearchStatus() {
   const { ok, data } = await apiCall("duel-find-status", {});
+  console.log("[duel debug] poll:", JSON.stringify(data));
   if (ok && data.matched) {
     stopSearching();
     startDuel(data.duelId);
