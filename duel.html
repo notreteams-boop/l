@@ -144,7 +144,7 @@ h1{font-size:22px;font-weight:800;margin:0}
       <span data-i="back">Sākumlapa</span>
     </a>
     <h1 data-i="pageTitle">⚔️ Duelis</h1>
-    <button id="debugTokenBtn" style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid var(--bd);font-size:16px">🔑</button>
+    <span style="width:36px"></span>
   </div>
 
   <div class="tabs" id="mainTabs">
@@ -281,7 +281,6 @@ h1{font-size:22px;font-weight:800;margin:0}
 
   <!-- ============ LEADERBOARD ============ -->
   <div id="lbScreen">
-    <pre id="lbDebugRaw" style="font-size:10px;color:#888;white-space:pre-wrap;word-break:break-all;background:#111;padding:8px;border-radius:8px;margin-bottom:10px"></pre>
     <div id="lbList"></div>
   </div>
 </main>
@@ -430,32 +429,33 @@ function suspendFindButton(errorText) {
 
 async function loadMyStats() {
   const { ok, data } = await apiCall("duel-leaderboard", {});
-  console.log("[duel debug] leaderboard:", JSON.stringify(data));
-  const dbg = document.getElementById("lbDebugRaw");
-  if (dbg) dbg.textContent = "ok=" + ok + " " + JSON.stringify(data).slice(0, 500);
   if (!ok) return;
-  try {
-    const s = data.myStats;
-    if (!s) return;
-    $("#ratingVal").textContent = s.rating;
+
+  // Блок статистики/рейтинга живёт только на экране "Spēlēt" (lobby) — эти
+  // элементы физически отсутствуют, пока показан экран "Līderi", поэтому
+  // каждое обращение защищено проверкой на null (иначе один упавший .textContent
+  // обрывал бы всю функцию и список лидеров ниже вообще не отрисовывался).
+  const s = data.myStats;
+  if (s) {
+    const ratingEl = $("#ratingVal");
+    if (ratingEl) ratingEl.textContent = s.rating;
     const tier = tierFor(s.rating);
-    $("#tierName").textContent = t().tiers[tier.id] || tier.id;
-    $("#statWins").textContent = s.wins;
-    $("#statLosses").textContent = s.losses;
-    $("#statDraws").textContent = s.draws;
-    const pct = Math.round((s.rating / 2000) * 100);
-    $("#ratingBadge").style.setProperty("--pct", pct + "%");
-    if (data.suspendedUntil && data.suspendedUntil > Date.now()) {
-      suspendFindButtonForSeconds((data.suspendedUntil - Date.now()) / 1000);
-    }
-  } catch (e) {
-    if (dbg) dbg.textContent += "\n\nERROR before render: " + (e && e.message ? e.message : String(e));
+    const tierEl = $("#tierName");
+    if (tierEl) tierEl.textContent = t().tiers[tier.id] || tier.id;
+    const winsEl = $("#statWins");
+    if (winsEl) winsEl.textContent = s.wins;
+    const lossesEl = $("#statLosses");
+    if (lossesEl) lossesEl.textContent = s.losses;
+    const drawsEl = $("#statDraws");
+    if (drawsEl) drawsEl.textContent = s.draws;
+    const badgeEl = $("#ratingBadge");
+    if (badgeEl) badgeEl.style.setProperty("--pct", Math.round((s.rating / 2000) * 100) + "%");
   }
-  try {
-    renderLeaderboard(data);
-  } catch (e) {
-    if (dbg) dbg.textContent += "\n\nERROR in renderLeaderboard: " + (e && e.message ? e.message : String(e));
+  if (data.suspendedUntil && data.suspendedUntil > Date.now()) {
+    suspendFindButtonForSeconds((data.suspendedUntil - Date.now()) / 1000);
   }
+
+  renderLeaderboard(data);
 }
 
 function renderLeaderboard(data) {
@@ -504,7 +504,6 @@ $("#findBtn").addEventListener("click", async () => {
   }, 500);
 
   const { ok, data } = await apiCall("duel-find", {});
-  console.log("[duel debug] find:", JSON.stringify(data));
   if (!ok) {
     stopSearching();
     if (data && data.errorCode === "duel_suspended") {
@@ -526,7 +525,6 @@ $("#findBtn").addEventListener("click", async () => {
 
 async function pollSearchStatus() {
   const { ok, data } = await apiCall("duel-find-status", {});
-  console.log("[duel debug] poll:", JSON.stringify(data));
   if (ok && data.matched) {
     stopSearching();
     startDuel(data.duelId);
@@ -736,30 +734,6 @@ function init() {
 }
 if (window.authReady) init();
 else document.addEventListener("auth-ready", init, { once: true });
-
-/* ====== ВРЕМЕННО: диагностика — показывает токен и ответ /duel-leaderboard
-   прямо на экране, без консоли и без компьютера. Убрать после того, как
-   проблема с пустым лидербордом будет найдена и исправлена. */
-const debugBtn = document.getElementById("debugTokenBtn");
-if (debugBtn) {
-  debugBtn.addEventListener("click", async () => {
-    const token = localStorage.getItem("session_token");
-    let out = "Токен: " + (token ? token : "НЕТ ТОКЕНА, ты не залогинен") + "\n\n";
-    if (!token) { alert(out); return; }
-    try {
-      const res = await fetch("https://duel-worker.gegeodin.workers.dev/duel-leaderboard", {
-        method: "POST",
-        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
-        body: JSON.stringify({})
-      });
-      const text = await res.text();
-      out += "POST /duel-leaderboard\nHTTP статус: " + res.status + "\n\nОтвет сервера:\n" + text;
-    } catch (e) {
-      out += "ОШИБКА СЕТИ:\n" + (e && e.message ? e.message : String(e));
-    }
-    alert(out);
-  });
-}
 </script>
 </body>
 </html>
