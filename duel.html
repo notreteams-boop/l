@@ -434,20 +434,28 @@ async function loadMyStats() {
   const dbg = document.getElementById("lbDebugRaw");
   if (dbg) dbg.textContent = "ok=" + ok + " " + JSON.stringify(data).slice(0, 500);
   if (!ok) return;
-  const s = data.myStats;
-  if (!s) return;
-  $("#ratingVal").textContent = s.rating;
-  const tier = tierFor(s.rating);
-  $("#tierName").textContent = t().tiers[tier.id] || tier.id;
-  $("#statWins").textContent = s.wins;
-  $("#statLosses").textContent = s.losses;
-  $("#statDraws").textContent = s.draws;
-  const pct = Math.round((s.rating / 2000) * 100);
-  $("#ratingBadge").style.setProperty("--pct", pct + "%");
-  if (data.suspendedUntil && data.suspendedUntil > Date.now()) {
-    suspendFindButtonForSeconds((data.suspendedUntil - Date.now()) / 1000);
+  try {
+    const s = data.myStats;
+    if (!s) return;
+    $("#ratingVal").textContent = s.rating;
+    const tier = tierFor(s.rating);
+    $("#tierName").textContent = t().tiers[tier.id] || tier.id;
+    $("#statWins").textContent = s.wins;
+    $("#statLosses").textContent = s.losses;
+    $("#statDraws").textContent = s.draws;
+    const pct = Math.round((s.rating / 2000) * 100);
+    $("#ratingBadge").style.setProperty("--pct", pct + "%");
+    if (data.suspendedUntil && data.suspendedUntil > Date.now()) {
+      suspendFindButtonForSeconds((data.suspendedUntil - Date.now()) / 1000);
+    }
+  } catch (e) {
+    if (dbg) dbg.textContent += "\n\nERROR before render: " + (e && e.message ? e.message : String(e));
   }
-  renderLeaderboard(data);
+  try {
+    renderLeaderboard(data);
+  } catch (e) {
+    if (dbg) dbg.textContent += "\n\nERROR in renderLeaderboard: " + (e && e.message ? e.message : String(e));
+  }
 }
 
 function renderLeaderboard(data) {
