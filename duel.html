@@ -281,6 +281,7 @@ h1{font-size:22px;font-weight:800;margin:0}
 
   <!-- ============ LEADERBOARD ============ -->
   <div id="lbScreen">
+    <pre id="lbDebugRaw" style="font-size:10px;color:#888;white-space:pre-wrap;word-break:break-all;background:#111;padding:8px;border-radius:8px;margin-bottom:10px"></pre>
     <div id="lbList"></div>
   </div>
 </main>
@@ -430,6 +431,8 @@ function suspendFindButton(errorText) {
 async function loadMyStats() {
   const { ok, data } = await apiCall("duel-leaderboard", {});
   console.log("[duel debug] leaderboard:", JSON.stringify(data));
+  const dbg = document.getElementById("lbDebugRaw");
+  if (dbg) dbg.textContent = "ok=" + ok + " " + JSON.stringify(data).slice(0, 500);
   if (!ok) return;
   const s = data.myStats;
   if (!s) return;
@@ -751,4 +754,4 @@ if (debugBtn) {
 }
 </script>
 </body>
-  </html>
+</html>
