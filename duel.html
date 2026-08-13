@@ -396,8 +396,40 @@ function tierFor(rating) {
   return RATING_TIERS[0];
 }
 
+/* ====== Отстранение за частые уходы из дуэлей ======
+   Блокирует кнопку "Найти соперника" на заданное число секунд, с обратным
+   отсчётом в самой кнопке, автоматически разблокируя по истечении. */
+let suspendTimer = null;
+function suspendFindButtonForSeconds(totalSeconds) {
+  let secondsLeft = Math.max(0, Math.round(totalSeconds));
+  const btn = $("#findBtn");
+  btn.disabled = true;
+  const label = btn.querySelector("span[data-i='findDuel']");
+  if (suspendTimer) clearInterval(suspendTimer);
+  function tick() {
+    const m = Math.floor(secondsLeft / 60);
+    const s = secondsLeft % 60;
+    if (label) label.textContent = (lang === "ru" ? "Заблокировано: " : "Bloķēts: ") + m + ":" + String(s).padStart(2, "0");
+    secondsLeft -= 1;
+    if (secondsLeft < 0) {
+      clearInterval(suspendTimer);
+      suspendTimer = null;
+      btn.disabled = false;
+      if (label) label.textContent = t().findDuel;
+    }
+  }
+  tick();
+  suspendTimer = setInterval(tick, 1000);
+}
+function suspendFindButton(errorText) {
+  const match = String(errorText || "").match(/(\d+)\s*min/);
+  const minutes = match ? parseInt(match[1], 10) : 30;
+  suspendFindButtonForSeconds(minutes * 60);
+}
+
 async function loadMyStats() {
   const { ok, data } = await apiCall("duel-leaderboard", {});
+  console.log("[duel debug] leaderboard:", JSON.stringify(data));
   if (!ok) return;
   const s = data.myStats;
   if (!s) return;
@@ -409,6 +441,9 @@ async function loadMyStats() {
   $("#statDraws").textContent = s.draws;
   const pct = Math.round((s.rating / 2000) * 100);
   $("#ratingBadge").style.setProperty("--pct", pct + "%");
+  if (data.suspendedUntil && data.suspendedUntil > Date.now()) {
+    suspendFindButtonForSeconds((data.suspendedUntil - Date.now()) / 1000);
+  }
   renderLeaderboard(data);
 }
 
@@ -461,7 +496,12 @@ $("#findBtn").addEventListener("click", async () => {
   console.log("[duel debug] find:", JSON.stringify(data));
   if (!ok) {
     stopSearching();
-    showToast(t().genFailed);
+    if (data && data.errorCode === "duel_suspended") {
+      showToast(data.error || t().genFailed);
+      suspendFindButton(data.error);
+    } else {
+      showToast(t().genFailed);
+    }
     screen("lobby");
     return;
   }
@@ -501,7 +541,21 @@ function startDuel(duelId) {
   $("#mainTabs").classList.add("in-game");
   screen("game");
   pollDuelState();
-  pollTimer = setInterval(pollDuelState, 1200);
+  restartPollTimer(1200);
+}
+
+// Во время блиц-концовки (вопросы 8-12, LATE_QUESTION_FROM=7 на сервере)
+// таймер на ответ всего 6 сек — при обычном интервале поллинга 1.2с задержка
+// между "оба ответили" и "оба это увидели" становится заметной на фоне
+// короткого окна. Ускоряем поллинг на этих вопросах, чтобы переход к
+// следующему вопросу ощущался мгновенным, как и на первых семи.
+const POLL_INTERVAL_NORMAL = 1200;
+const POLL_INTERVAL_BLITZ = 500;
+let currentPollInterval = POLL_INTERVAL_NORMAL;
+function restartPollTimer(ms) {
+  if (pollTimer) clearInterval(pollTimer);
+  currentPollInterval = ms;
+  pollTimer = setInterval(pollDuelState, ms);
 }
 
 async function pollDuelState() {
@@ -528,6 +582,12 @@ function renderDuelState(data) {
   $("#oppName").textContent = data.opponent.displayName || "…";
   $("#meScore").textContent = data.me.score;
   $("#oppScore").textContent = data.opponent.score;
+
+  // Ускоряем поллинг на блиц-концовке (вопросы 8-12) — короткий 6-секундный
+  // таймер делает обычную задержку опроса заметнее, чем на первых семи.
+  const LATE_QUESTION_FROM = 7;
+  const wantInterval = data.currentQuestion >= LATE_QUESTION_FROM ? POLL_INTERVAL_BLITZ : POLL_INTERVAL_NORMAL;
+  if (wantInterval !== currentPollInterval) restartPollTimer(wantInterval);
 
   const dots = $("#progressDots");
   if (dots.children.length !== TOTAL_QUESTIONS) {
