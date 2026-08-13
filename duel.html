@@ -144,7 +144,7 @@ h1{font-size:22px;font-weight:800;margin:0}
       <span data-i="back">Sākumlapa</span>
     </a>
     <h1 data-i="pageTitle">⚔️ Duelis</h1>
-    <span style="width:70px"></span>
+    <button id="debugTokenBtn" style="width:36px;height:36px;border-radius:10px;background:rgba(255,255,255,.06);border:1px solid var(--bd);font-size:16px">🔑</button>
   </div>
 
   <div class="tabs" id="mainTabs">
@@ -725,6 +725,30 @@ function init() {
 }
 if (window.authReady) init();
 else document.addEventListener("auth-ready", init, { once: true });
+
+/* ====== ВРЕМЕННО: диагностика — показывает токен и ответ /duel-leaderboard
+   прямо на экране, без консоли и без компьютера. Убрать после того, как
+   проблема с пустым лидербордом будет найдена и исправлена. */
+const debugBtn = document.getElementById("debugTokenBtn");
+if (debugBtn) {
+  debugBtn.addEventListener("click", async () => {
+    const token = localStorage.getItem("session_token");
+    let out = "Токен: " + (token ? token : "НЕТ ТОКЕНА, ты не залогинен") + "\n\n";
+    if (!token) { alert(out); return; }
+    try {
+      const res = await fetch("https://duel-worker.gegeodin.workers.dev/duel-leaderboard", {
+        method: "POST",
+        headers: { "Content-Type": "application/json", "Authorization": "Bearer " + token },
+        body: JSON.stringify({})
+      });
+      const text = await res.text();
+      out += "POST /duel-leaderboard\nHTTP статус: " + res.status + "\n\nОтвет сервера:\n" + text;
+    } catch (e) {
+      out += "ОШИБКА СЕТИ:\n" + (e && e.message ? e.message : String(e));
+    }
+    alert(out);
+  });
+}
 </script>
 </body>
-</html>
+  </html>
