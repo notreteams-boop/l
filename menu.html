@@ -66,21 +66,59 @@
 .streak-mini.igniting .streak-mini-flame,.streak-mini.igniting .streak-mini-num,.streak-mini.igniting,.streak-mini.igniting .streak-mini-burst,.streak-mini[data-tier="high"] .streak-mini-flame,.streak-mini[data-tier="epic"] .streak-mini-flame,.streak-mini[data-tier="legendary"] .streak-mini-flame{animation:none}
 }
 
-/* ====== Полноэкранная вспышка при первом задании за день ======
-   Разгорается из угла, где сидит мини-огонёк (streakMini в шапке),
-   расходится волной на весь экран и гаснет — как в TikTok при стрике.
-   Цвет = var(--ignite-color), выставляется из JS под текущий tier
-   (тот же цвет, что и у мини-огонька), чтобы обе анимации совпадали
-   визуально. pointer-events:none — оверлей никогда не блокирует клики. */
+/* ====== Полноэкранная вспышка при первом задании за день (v2, TikTok-style) ======
+   Механика по референсу: маленький огонёк из шапки не "вспыхивает волной",
+   а САМ РАСТЁТ на месте до огромного размера в верхней части экрана, фон
+   вокруг него темнеет и подсвечивается цветным заревом того же тона, летит
+   конфетти, а к пику вспышки цвет пламени сдвигается в более яркий/тёплый
+   оттенок (имитирует переход оранжевый→розовый из референса, но привязан
+   к текущему tier-цвету через hue-rotate, а не жёстко захардкожен розовым —
+   так это работает одинаково хорошо для всех 5 tier-цветов). */
 #streakFullIgnite{position:fixed;inset:0;z-index:200;pointer-events:none;opacity:0;--ignite-color:#fbbf24}
-#streakFullIgnite.playing{animation:streakFullFade 1.4s ease both}
-#streakFullIgnite .sfi-wave{position:absolute;top:26px;right:34px;width:40px;height:40px;border-radius:50%;background:radial-gradient(circle,var(--ignite-color) 0%,transparent 68%);transform:translate(50%,-50%) scale(0);animation:streakFullWave 1.4s cubic-bezier(.16,.85,.3,1) both}
-#streakFullIgnite .sfi-tint{position:absolute;inset:0;background:radial-gradient(circle at calc(100% - 34px) 26px,var(--ignite-color) 0%,transparent 55%);mix-blend-mode:screen;opacity:0;animation:streakFullTint 1.4s ease both}
-#streakFullIgnite .sfi-spark{position:absolute;top:26px;right:34px;width:5px;height:5px;border-radius:50%;background:var(--ignite-color);box-shadow:0 0 8px 2px var(--ignite-color);opacity:0;animation:streakFullSpark 1s ease-out both}
-@keyframes streakFullFade{0%{opacity:1}75%{opacity:1}100%{opacity:0}}
-@keyframes streakFullWave{0%{transform:translate(50%,-50%) scale(0);opacity:.9}55%{opacity:.5}100%{transform:translate(50%,-50%) scale(48);opacity:0}}
-@keyframes streakFullTint{0%{opacity:0}18%{opacity:.55}60%{opacity:.12}100%{opacity:0}}
-@keyframes streakFullSpark{0%{transform:translate(50%,-50%) scale(.4) rotate(0deg);opacity:0}10%{opacity:1}100%{transform:translate(50%,-50%) scale(14) rotate(35deg);opacity:0}}
+#streakFullIgnite.playing{opacity:1;animation:streakFullFade 2.6s ease both}
+#streakFullIgnite .sfi-dim{position:absolute;inset:0;background:#0a0a0f;opacity:0;animation:streakFullDim 2.6s ease both}
+#streakFullIgnite .sfi-tint{position:absolute;inset:0;background:radial-gradient(circle at 50% 30%,var(--ignite-color) 0%,transparent 60%);mix-blend-mode:screen;opacity:0;animation:streakFullTint 2.6s ease both}
+#streakFullIgnite .sfi-flame-wrap{position:absolute;top:26px;right:34px;width:16px;height:16px;animation:streakFullFlamePos 2.6s cubic-bezier(.2,.8,.25,1) both}
+#streakFullIgnite .sfi-flame{width:100%;height:100%;fill:var(--ignite-color);filter:drop-shadow(0 0 0 transparent);animation:streakFullFlameGrow 2.6s cubic-bezier(.2,.8,.25,1) both,streakFullFlameColor 2.6s ease both}
+#streakFullIgnite .sfi-confetti{position:absolute;top:30%;left:50%;width:8px;height:14px;border-radius:2px;opacity:0}
+#streakFullIgnite .sfi-confetti:nth-child(1){animation:streakFullConfetti1 2.2s ease-out .35s both}
+#streakFullIgnite .sfi-confetti:nth-child(2){animation:streakFullConfetti2 2.2s ease-out .4s both}
+#streakFullIgnite .sfi-confetti:nth-child(3){animation:streakFullConfetti3 2.2s ease-out .3s both}
+#streakFullIgnite .sfi-confetti:nth-child(4){animation:streakFullConfetti4 2.2s ease-out .45s both}
+#streakFullIgnite .sfi-confetti:nth-child(5){animation:streakFullConfetti5 2.2s ease-out .38s both}
+#streakFullIgnite .sfi-confetti:nth-child(6){animation:streakFullConfetti6 2.2s ease-out .5s both}
+@keyframes streakFullFade{0%{opacity:1}82%{opacity:1}100%{opacity:0}}
+@keyframes streakFullDim{0%{opacity:0}22%{opacity:.6}78%{opacity:.55}100%{opacity:0}}
+@keyframes streakFullTint{0%{opacity:0}30%{opacity:.5}78%{opacity:.3}100%{opacity:0}}
+/* Позиция: стартует ровно там, где сидит мини-огонёк (top:26px;right:34px —
+   те же координаты, что и у .streak-mini в шапке), едет к верхней трети
+   экрана по центру и слегка "оседает" в конце, как в референсе. */
+@keyframes streakFullFlamePos{
+0%{top:26px;right:34px;width:16px;height:16px}
+45%{top:16%;right:50%;width:140px;height:140px;transform:translateX(50%)}
+70%{top:14%;right:50%;width:150px;height:150px;transform:translateX(50%)}
+100%{top:14%;right:50%;width:150px;height:150px;transform:translateX(50%)}
+}
+@keyframes streakFullFlameGrow{
+0%{filter:drop-shadow(0 0 0 transparent)}
+45%{filter:drop-shadow(0 0 28px var(--ignite-color)) drop-shadow(0 0 60px var(--ignite-color))}
+100%{filter:drop-shadow(0 0 28px var(--ignite-color)) drop-shadow(0 0 60px var(--ignite-color))}
+}
+/* Цветовой сдвиг к пику — тот же приём, что в референсе (оранжевый уходит
+   в более яркий/розоватый тон), но через hue-rotate поверх tier-цвета,
+   так что работает для любого исходного --ignite-color. */
+@keyframes streakFullFlameColor{
+0%{filter:hue-rotate(0deg) saturate(1)}
+40%{filter:hue-rotate(0deg) saturate(1)}
+72%{filter:hue-rotate(22deg) saturate(1.35) brightness(1.15)}
+100%{filter:hue-rotate(22deg) saturate(1.35) brightness(1.15)}
+}
+@keyframes streakFullConfetti1{0%{opacity:0;transform:translate(-10px,0) rotate(0deg)}12%{opacity:1}100%{opacity:0;transform:translate(-160px,420px) rotate(340deg)}}
+@keyframes streakFullConfetti2{0%{opacity:0;transform:translate(20px,0) rotate(0deg)}12%{opacity:1}100%{opacity:0;transform:translate(190px,460px) rotate(-300deg)}}
+@keyframes streakFullConfetti3{0%{opacity:0;transform:translate(-60px,10px) rotate(0deg)}12%{opacity:1}100%{opacity:0;transform:translate(-260px,380px) rotate(260deg)}}
+@keyframes streakFullConfetti4{0%{opacity:0;transform:translate(50px,-10px) rotate(0deg)}12%{opacity:1}100%{opacity:0;transform:translate(240px,400px) rotate(-380deg)}}
+@keyframes streakFullConfetti5{0%{opacity:0;transform:translate(0,20px) rotate(0deg)}12%{opacity:1}100%{opacity:0;transform:translate(30px,480px) rotate(300deg)}}
+@keyframes streakFullConfetti6{0%{opacity:0;transform:translate(-25px,-15px) rotate(0deg)}12%{opacity:1}100%{opacity:0;transform:translate(-90px,440px) rotate(-260deg)}}
 @media(prefers-reduced-motion:reduce){
 #streakFullIgnite.playing{animation:none;display:none}
 }
@@ -141,7 +179,16 @@ function playStreakFullIgnite(tier) {
   if (!el) {
     el = document.createElement("div");
     el.id = "streakFullIgnite";
-    el.innerHTML = '<div class="sfi-tint"></div><div class="sfi-wave"></div><div class="sfi-spark"></div>';
+    el.innerHTML =
+      '<div class="sfi-dim"></div>' +
+      '<div class="sfi-tint"></div>' +
+      '<div class="sfi-flame-wrap"><svg class="sfi-flame" viewBox="0 0 24 24"><path d="M8.5 14.5A2.5 2.5 0 0 0 11 12c0-1.38-.5-2-1-3-1.072-2.143-.224-4.054 2-6 .5 2.5 2 4.9 4 6.5 2 1.6 3 3.5 3 5.5a7 7 0 1 1-14 0c0-1.153.433-2.294 1-3a2.5 2.5 0 0 0 2.5 2.5z"/></svg></div>' +
+      '<div class="sfi-confetti" style="background:#fbbf24"></div>' +
+      '<div class="sfi-confetti" style="background:#a78bfa"></div>' +
+      '<div class="sfi-confetti" style="background:#fb7185"></div>' +
+      '<div class="sfi-confetti" style="background:#6cf0e0"></div>' +
+      '<div class="sfi-confetti" style="background:#fb923c"></div>' +
+      '<div class="sfi-confetti" style="background:#c084fc"></div>';
     document.body.appendChild(el);
   }
   el.style.setProperty("--ignite-color", STREAK_TIER_COLOR[tier] || STREAK_TIER_COLOR.low);
